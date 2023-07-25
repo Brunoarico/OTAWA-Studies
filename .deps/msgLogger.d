@@ -1,0 +1,37 @@
+msgLogger.o: msgLogger.cpp msgLogger.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/io.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/io/io.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/sys/SystemIO.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/io/UnixInStream.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/string/CString.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/io/InStream.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/io/UnixOutStream.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/io/OutStream.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/io/IOException.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/util/MessageException.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/util/Exception.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/string/String.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/PreIterator.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/iter.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/io/Output.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/arch.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/enum_info.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/type_info.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/int.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/meta.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/types.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/util/VarArg.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/io/Input.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/io/FileInput.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/sys/Path.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/string.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/string/Char.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/string/StringBuffer.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/io/BlockOutStream.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/alloc/DynBlock.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/string/Split.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/string/AutoString.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/io/StringInput.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/io/BlockInStream.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/sys/SystemException.h \
+ /home/whitefox/Documents/TCC/otawa/otawa/include/elm/io/FileOutput.h

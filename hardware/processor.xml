@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This is the equivalent processor description for a single thread on new. -->
+<processor class="otawa::hard::Processor">
+    <arch>arm</arch>
+    <model>new</model>
+    <builder>UC Berkeley</builder>
+    <frequency>25000000</frequency> <!-- Thread execution frequency -->
+    <!-- new clock frequency = 100MHz -->
+    <stages>
+        <stage id="TIE"> <!-- Single stage corresponding to a thread cycle -->
+            <name>Thread Interleaved Execution</name>
+            <type>EXEC</type>
+            <width>1</width>
+            <ordered>true</ordered>
+            <fus>
+                <fu id="MEML"> <!-- Load from DRAM -->
+                    <name>MEML</name>
+                    <latency>4</latency>
+                </fu>
+                <fu id="MEMS"> <!-- Store to DRAM -->
+                    <name>MEMS</name>
+                    <latency>2</latency>
+                </fu>
+                <fu id="SPM"> <!-- Scratchpad access -->
+                    <name>SPM</name>
+                    <latency>1</latency>
+                </fu>
+                <fu id="ALU"> <!-- Data processing -->
+                    <name>ALU</name>
+                    <latency>1</latency>
+                </fu>
+            </fus>
+            <dispatch> <!-- Maps instruction types to functional units -->
+                <inst>
+                    <type>IS_LOAD</type>
+                    <fu ref="MEML"/>
+                </inst>
+                <inst>
+                    <type>IS_STORE</type>
+                    <fu ref="MEMS"/>
+                </inst>
+                <inst>
+                    <type>IS_MEM</type>
+                    <fu ref="SPM"/>
+                </inst>
+                <inst>
+                    <type>IS_FLOAT</type>
+                    <fu ref="ALU"/>
+                </inst>
+                <inst>
+                    <type>IS_MUL</type>
+                    <fu ref="ALU"/>
+                </inst>
+                <inst>
+                    <type>IS_DIV</type>
+                    <fu ref="ALU"/>
+                </inst>
+                <inst>
+                    <type>IS_INT</type>
+                    <fu ref="ALU"/>
+                </inst>
+                <inst>
+                    <type>IS_CONTROL</type>
+                    <fu ref="ALU"/>
+                </inst>
+                <inst>
+                    <type>IS_INTERN</type>
+                    <fu ref="ALU"/>
+                </inst>
+            </dispatch>
+        </stage>
+    </stages>
+    <queues>
+    </queues>
+</processor>
