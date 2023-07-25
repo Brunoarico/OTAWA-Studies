@@ -1,3 +1,5 @@
 *.o
 ipet
 *.d
+.cpp
+.eld
