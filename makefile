@@ -39,7 +39,7 @@ $(PROGRAM): $(OBJECTS)
 -include $(DEPS)
 
 clean:
-	rm -rf *.o $(PROGRAM) *~ core.* *.lo .libs .deps
+	rm -rf *.o $(PROGRAM) *~ core.* *.lo .libs .deps .eld .cpp
 
 run: $(PROGRAM)
 	./$(PROGRAM) $(TEST_TARGET) $(HARDWRE_FOLDER)
