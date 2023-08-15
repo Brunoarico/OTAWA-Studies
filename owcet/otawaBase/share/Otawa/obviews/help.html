@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="style.css"/>
+        <link rel="icon" href="http://www.tracesgroup.net/otawa/wp-content/uploads/2015/12/logo-small.png" sizes="32x32" />
+        <title> ModedEmploi </title>
+    </head>
+    <body style="background-image:url(back.png)">
+		<div class="top">
+			<div class="title">
+				<span class="main">Obviews V1.0</span><br/>
+				<span class="subtitle"><a href="http://www.otawa/fr">OTAWA</a> Binary Viewers</span>
+			</div>
+			<div class="menu">
+				<button onclick="help();">Help</button>
+				<button onclick="window.close();">Close</button>
+			</div>
+		</div>
+
+        <section class="doc">
+
+<p>
+<b>Obviews</b> (<i>OTAWA Binary Viewers</i>) allows to displays program representation and statistics produced by OTAWA tools.
+</p>
+
+<h2>How to run Obviews?</h2>
+
+<p>
+The program representation (including CFG and source) can be produced with tool <code>dumpcfg</code>:
+</p>
+
+<pre>
+	$ dumpcfg -W <i>EXECUTABLE</i> [<i>FUNCTION</i>]
+</pre>
+
+<p>
+Arguments between <code>[</code>...<code>]</code> are optional. As default, the tool applis to function <code>main</code>.
+</p>
+
+<p>
+To get statistics and views about a WCET calculation, one has to pass the option <code>-W</code> and <code>--stats</code>:
+</p>
+
+<pre>
+	$ owcet -W --stats EXECUTABLE [FUNCTION]
+</pre>
+
+<p>
+This will result in a directory named <i>EXECUTABLE</i>/<i>FUNCTION</i> containing several <code>.csv</code> files. To get a display, run the command:
+</p>
+
+<pre>
+	$ <i>PATH</i>/bin/obviews.py <i>EXECUTABLE</i> <i>[FUNCTION]</i>
+</pre>
+
+<p>
+This opens an HTML page where the program representation and its statistics are displayed.
+</p>
+
+<p>
+For example, from the test directory, one can type:
+</p>
+<pre>
+	$ ..//bin/obviews.py bs.elf
+</pre>
+
+
+<h2> User interface quick guide</h2>
+
+<p>
+There are mainly 3 parts:
+</p>
+<ul>
+<li>Left pane contains the list of functions and of sources.</li>
+<li>Left-bottom pane displays specific information depending in the chose statistics.</li>
+<li>Main pane contains colored sources or CFGs depending on what is selected in the left pane.</li>
+</ul>
+
+<p>
+To navigate in the CFG,
+</p>
+<ul>
+<li>click and move to change the view point,</li>
+<li>mouse wheel or top-right buttons to zoom/unzoom,</li>
+<li>click on a call vertex to move to the CFG of the called function.</li>
+</ul>
+
+<p>
+In CFG mode, the program representation can be tuned by the `View` button:
+</p>
+<ol>
+<li>Select the required representations,</li>
+<li>And finally click on `Done`.</li>
+</ol>
+
+<p>
+To select a displayed statistics, click on the `statistic button`and the program representation (CFG or source) becomes colorized according to the intensity of the statistics (darker is stronger). In addition, in CFG mode, the statistics value is displayed in the vertices.
+</p>
+
+<p>
+Over the main pane, is displayed the current exposed source file name or function name. In case of CFG, it is also displayed the context of the function call: the list of functions and calls that leads to the displayed CFG and its statistics. The same function may have different statistics with different contexts. This context may be clicked to move to the corresponding CFG or function call. Back button on the right can be used to come back to caller CFG when the navigation has been performed by clicking on function call vertices.
+</p>
+			
+        </section>
+        <script src="obviews.js"></script>
+    </body>
+
+</html>

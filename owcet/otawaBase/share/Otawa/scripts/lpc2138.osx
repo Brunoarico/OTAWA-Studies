@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<otawa-script
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+<name>LPC213x</name>
+
+<id>
+	<arch>arm</arch>
+	<abi>eabi</abi>
+	<mach>lpc213x</mach>
+</id>
+
+<info>
+	<h1>LPC2138x</h1>
+	<p>This OTAWA script provides support for LPC213x ARM-based microprocessor family from NXP.</p>
+
+	<h2>Supported Hardware Configuration</h2>
+
+	<p>The MAM is a a prefetch device for the flash memory of the LPC213x processor. It allows to speed up
+	flash accesses but only modes 0 and 1 are supported by OTAWA.</p>
+	<blockquote><tt>MAMCR(0xE01F C000) [MAM_mode 00_control] = 00 or 01  </tt></blockquote>
+</info>
+
+<configuration>
+	<item name="CCLK" type="range" default="5" label="Frequency" low="1" high="5">
+		<help>Select the frequency of the ARM core (x 10 MHz).</help>
+	</item>
+	<item name="MAM_fetch_cycle_timing" type="range" default="1" label="MAM timing" low="1" high="7">
+		<help>Select the time in cycles to access flash memory.</help>
+	</item>
+	<item name="processor_model" type="enum" label="model">
+		<help>Select the microprocessor model.</help>
+		<value label="LPC2131" value="'lpc2131'"/>
+		<value label="LPC2132" value="'lpc2132'"/>
+		<value label="LPC2134" value="'lpc2134'"/>
+		<value label="LPC2136" value="'lpc2136'"/>
+		<value label="LPC2138" value="'lpc2138'" default="true"/>
+	</item>
+</configuration>
+
+<platform>
+	<xi:include href="lpc2138/pipeline.xml"/>
+	<xi:include href="lpc2138/memory.xml"/>
+</platform>
+
+<script>
+	<config name="otawa::lpc2138::FLASH_MISS">
+		<xsl:attribute name="value"><xsl:value-of select="$MAM_fetch_cycle_timing"/></xsl:attribute>
+	</config>
+	<step require="otawa::REDUCED_LOOPS_FEATURE"/>
+	<step require="otawa::VIRTUALIZED_CFG_FEATURE"/>
+	<!--step processor="otawa::lpc2138::AbsMAMBlockBuilder"/-->
+	<!--step processor="otawa::lpc2138::CATMAMBuilder"/-->
+	<step processor="otawa::lpc2138::MAMEventBuilder"/>
+	<step processor="otawa::lpc2138::EventBuilder"/>
+	<step processor="otawa::lpc2138::BBTime">
+		<config name="otawa::etime::RECORD_TIME" value="true"/>
+		<!-- config name="otawa::GRAPHS_OUTPUT_DIRECTORY" value="xgraph"/-->
+	</step>
+	<step require="otawa::ipet::WCET_FEATURE"/>
+</script>
+
+</otawa-script>
+
+

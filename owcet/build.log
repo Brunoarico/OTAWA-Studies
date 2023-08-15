@@ -1,0 +1,508 @@
+=== created by sis-install.py V1.0 (2023-08-14 12:12:29.045934) ===
+
+
+Dowloading gliss2: git clone  https://git.renater.fr/anonscm/git/gliss2/gliss2.git '/tmp/tmpc104z1rx-sis/gliss2'Cloning into '/tmp/tmpc104z1rx-sis/gliss2'...
+
+Building gliss2: make 
+make[1]: Entering directory '/tmp/tmpc104z1rx-sis/gliss2/irg'
+echo "let install_dir = \"/usr\"" > config.ml
+echo "let source_dir = \"/tmp/tmpc104z1rx-sis/gliss2/irg/..\"" >> config.ml
+echo "let version = \"2.3\"" >> config.ml
+if [ 500 -ge 403 ]; then \
+	echo "let lowercase = String.lowercase_ascii" >> config.ml; \
+	echo "let uppercase = String.uppercase_ascii" >> config.ml; \
+	echo "let char_lowercase = Char.lowercase_ascii" >> config.ml; \
+	echo "let char_uppercase = Char.uppercase_ascii" >> config.ml; \
+else \
+	echo "let lowercase = String.lowercase" >> config.ml; \
+	echo "let uppercase = String.uppercase" >> config.ml; \
+	echo "let char_lowercase = Char.lowercase" >> config.ml; \
+	echo "let char_uppercase = Char.uppercase" >> config.ml; \
+fi
+ocamllex  -o lexer.ml lexer.mll
+98 states, 700 transitions, table size 3388 bytes
+ocamlyacc -v parser.mly
+1 rule never reduced
+23 reduce/reduce conflicts.
+ocamlc -g  -o config.cmo -c config.ml
+ocamlc -g  -o IdMaker.cmo -c IdMaker.ml
+ocamlc -g  -o irg.cmo -c irg.ml
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The str subdirectory has been
+automatically added to the search path, but you should add -I +str to the
+command-line to silence this alert (e.g. by adding str to the list of
+libraries in your dune file, or adding use_str to your _tags file for
+ocamlbuild, or using -package str for ocamlfind).
+ocamlc -g  -o irgio.cmo -c irgio.ml
+ocamlc -g  -o instantiate.cmo -c instantiate.ml
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The str subdirectory has been
+automatically added to the search path, but you should add -I +str to the
+command-line to silence this alert (e.g. by adding str to the list of
+libraries in your dune file, or adding use_str to your _tags file for
+ocamlbuild, or using -package str for ocamlfind).
+ocamlc -g  -o parser.cmi -c parser.mli
+ocamlc -g  -o lexer.cmo -c lexer.ml
+ocamlc -g  -o sem.cmo -c sem.ml
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The str subdirectory has been
+automatically added to the search path, but you should add -I +str to the
+command-line to silence this alert (e.g. by adding str to the list of
+libraries in your dune file, or adding use_str to your _tags file for
+ocamlbuild, or using -package str for ocamlfind).
+ocamlc -g  -o iter.cmo -c iter.ml
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The str subdirectory has been
+automatically added to the search path, but you should add -I +str to the
+command-line to silence this alert (e.g. by adding str to the list of
+libraries in your dune file, or adding use_str to your _tags file for
+ocamlbuild, or using -package str for ocamlfind).
+ocamlc -g  -o parser.cmo -c parser.ml
+ocamlc -g  -o irgUtil.cmo -c irgUtil.ml
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The unix subdirectory has been
+automatically added to the search path, but you should add -I +unix to the
+command-line to silence this alert (e.g. by adding unix to the list of
+libraries in your dune file, or adding use_unix to your _tags file for
+ocamlbuild, or using -package unix for ocamlfind).
+ocamlc -a   -o irg.cma config.cmo IdMaker.cmo irg.cmo irgio.cmo instantiate.cmo lexer.cmo sem.cmo iter.cmo parser.cmo irgUtil.cmo 
+ocamlc -g  -o print_irg.cmo -c print_irg.ml
+ocamlc   unix.cma str.cma irg.cma -g -o print_irg print_irg.cmo 
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The str subdirectory has been
+automatically added to the search path, but you should add -I +str to the
+command-line to silence this alert (e.g. by adding str to the list of
+libraries in your dune file, or adding use_str to your _tags file for
+ocamlbuild, or using -package str for ocamlfind).
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The unix subdirectory has been
+automatically added to the search path, but you should add -I +unix to the
+command-line to silence this alert (e.g. by adding unix to the list of
+libraries in your dune file, or adding use_unix to your _tags file for
+ocamlbuild, or using -package unix for ocamlfind).
+ocamlc -g  -o mkirg.cmo -c mkirg.ml
+ocamlc   unix.cma str.cma irg.cma -g -o mkirg mkirg.cmo 
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The str subdirectory has been
+automatically added to the search path, but you should add -I +str to the
+command-line to silence this alert (e.g. by adding str to the list of
+libraries in your dune file, or adding use_str to your _tags file for
+ocamlbuild, or using -package str for ocamlfind).
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The unix subdirectory has been
+automatically added to the search path, but you should add -I +unix to the
+command-line to silence this alert (e.g. by adding unix to the list of
+libraries in your dune file, or adding use_unix to your _tags file for
+ocamlbuild, or using -package unix for ocamlfind).
+ocamlc -g  -o gliss_tree.cmo -c gliss_tree.ml
+ocamlc   unix.cma str.cma irg.cma -g -o gliss-tree gliss_tree.cmo 
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The str subdirectory has been
+automatically added to the search path, but you should add -I +str to the
+command-line to silence this alert (e.g. by adding str to the list of
+libraries in your dune file, or adding use_str to your _tags file for
+ocamlbuild, or using -package str for ocamlfind).
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The unix subdirectory has been
+automatically added to the search path, but you should add -I +unix to the
+command-line to silence this alert (e.g. by adding unix to the list of
+libraries in your dune file, or adding use_unix to your _tags file for
+ocamlbuild, or using -package unix for ocamlfind).
+make[1]: Leaving directory '/tmp/tmpc104z1rx-sis/gliss2/irg'
+make[1]: Entering directory '/tmp/tmpc104z1rx-sis/gliss2/optirg'
+ocamllex  -o formatlexer.ml formatlexer.mll
+27 states, 361 transitions, table size 1606 bytes
+ocamlc -g -I ../irg -o formatlexer.cmo -c formatlexer.ml
+ocamlc -g -I ../irg -o string_of_expr.cmo -c string_of_expr.ml
+ocamlc -g -I ../irg -o image_attr_size.cmo -c image_attr_size.ml
+ocamlc -g -I ../irg -o sw_fun.cmo -c sw_fun.ml
+ocamlc -g -I ../irg -o irgp.cmo -c irgp.ml
+ocamlc -g -I ../irg -o canon.cmo -c canon.ml
+ocamlc -g -I ../irg -o node_classes.cmo -c node_classes.ml
+ocamlc -g -I ../irg -o classfusion.cmo -c classfusion.ml
+ocamlc -g -I ../irg -o optirg.cmo -c optirg.ml
+ocamlc -a   -o liboptirg.cma formatlexer.cmo string_of_expr.cmo image_attr_size.cmo sw_fun.cmo irgp.cmo canon.cmo node_classes.cmo classfusion.cmo optirg.cmo 
+ocamlc -g -I ../irg -o main.cmo -c main.ml
+ocamlc   unix.cma str.cma ../irg/irg.cma liboptirg.cma -g -I ../irg -o optirg main.cmo 
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The str subdirectory has been
+automatically added to the search path, but you should add -I +str to the
+command-line to silence this alert (e.g. by adding str to the list of
+libraries in your dune file, or adding use_str to your _tags file for
+ocamlbuild, or using -package str for ocamlfind).
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The unix subdirectory has been
+automatically added to the search path, but you should add -I +unix to the
+command-line to silence this alert (e.g. by adding unix to the list of
+libraries in your dune file, or adding use_unix to your _tags file for
+ocamlbuild, or using -package unix for ocamlfind).
+make[1]: Leaving directory '/tmp/tmpc104z1rx-sis/gliss2/optirg'
+make[1]: Entering directory '/tmp/tmpc104z1rx-sis/gliss2/gep'
+ocamllex  -o templater.ml templater.mll
+182 states, 565 transitions, table size 3352 bytes
+2620 additional bytes used for bindings
+ocamlc -g -I ../irg -I ../optirg -o bitmask.cmo -c bitmask.ml
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The str subdirectory has been
+automatically added to the search path, but you should add -I +str to the
+command-line to silence this alert (e.g. by adding str to the list of
+libraries in your dune file, or adding use_str to your _tags file for
+ocamlbuild, or using -package str for ocamlfind).
+ocamlc -g -I ../irg -I ../optirg -o opti.cmo -c opti.ml
+ocamlc -g -I ../irg -I ../optirg -o toc.cmo -c toc.ml
+ocamlc -g -I ../irg -I ../optirg -o templater.cmo -c templater.ml
+ocamlc -g -I ../irg -I ../optirg -o app.cmo -c app.ml
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The unix subdirectory has been
+automatically added to the search path, but you should add -I +unix to the
+command-line to silence this alert (e.g. by adding unix to the list of
+libraries in your dune file, or adding use_unix to your _tags file for
+ocamlbuild, or using -package unix for ocamlfind).
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The str subdirectory has been
+automatically added to the search path, but you should add -I +str to the
+command-line to silence this alert (e.g. by adding str to the list of
+libraries in your dune file, or adding use_str to your _tags file for
+ocamlbuild, or using -package str for ocamlfind).
+ocamlc -g -I ../irg -I ../optirg -o profile.cmo -c profile.ml
+ocamlc -g -I ../irg -I ../optirg -o decode_arg.cmo -c decode_arg.ml
+ocamlc -g -I ../irg -I ../optirg -o bits.cmo -c bits.ml
+ocamlc -g -I ../irg -I ../optirg -o stot.cmo -c stot.ml
+ocamlc -g -I ../irg -I ../optirg -o pqmc.cmo -c pqmc.ml
+ocamlc -a   -o libgep.cma bitmask.cmo opti.cmo toc.cmo templater.cmo app.cmo profile.cmo decode_arg.cmo bits.cmo stot.cmo pqmc.cmo 
+ocamlc -g -I ../irg -I ../optirg -o fetch.cmo -c fetch.ml
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The str subdirectory has been
+automatically added to the search path, but you should add -I +str to the
+command-line to silence this alert (e.g. by adding str to the list of
+libraries in your dune file, or adding use_str to your _tags file for
+ocamlbuild, or using -package str for ocamlfind).
+ocamlc -g -I ../irg -I ../optirg -o decode.cmo -c decode.ml
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The str subdirectory has been
+automatically added to the search path, but you should add -I +str to the
+command-line to silence this alert (e.g. by adding str to the list of
+libraries in your dune file, or adding use_str to your _tags file for
+ocamlbuild, or using -package str for ocamlfind).
+ocamlc -g -I ../irg -I ../optirg -o gep.cmo -c gep.ml
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The unix subdirectory has been
+automatically added to the search path, but you should add -I +unix to the
+command-line to silence this alert (e.g. by adding unix to the list of
+libraries in your dune file, or adding use_unix to your _tags file for
+ocamlbuild, or using -package unix for ocamlfind).
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The str subdirectory has been
+automatically added to the search path, but you should add -I +str to the
+command-line to silence this alert (e.g. by adding str to the list of
+libraries in your dune file, or adding use_str to your _tags file for
+ocamlbuild, or using -package str for ocamlfind).
+ocamlc   str.cma unix.cma ../irg/irg.cma ../optirg/liboptirg.cma ../gep/libgep.cma -g -o gep fetch.cmo decode.cmo gep.cmo 
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The unix subdirectory has been
+automatically added to the search path, but you should add -I +unix to the
+command-line to silence this alert (e.g. by adding unix to the list of
+libraries in your dune file, or adding use_unix to your _tags file for
+ocamlbuild, or using -package unix for ocamlfind).
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The str subdirectory has been
+automatically added to the search path, but you should add -I +str to the
+command-line to silence this alert (e.g. by adding str to the list of
+libraries in your dune file, or adding use_str to your _tags file for
+ocamlbuild, or using -package str for ocamlfind).
+ocamlc -g -I ../irg -I ../optirg -o disasm.cmo -c disasm.ml
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The str subdirectory has been
+automatically added to the search path, but you should add -I +str to the
+command-line to silence this alert (e.g. by adding str to the list of
+libraries in your dune file, or adding use_str to your _tags file for
+ocamlbuild, or using -package str for ocamlfind).
+ocamlc   str.cma unix.cma ../irg/irg.cma ../optirg/liboptirg.cma libgep.cma -g -o gliss-disasm disasm.cmo 
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The unix subdirectory has been
+automatically added to the search path, but you should add -I +unix to the
+command-line to silence this alert (e.g. by adding unix to the list of
+libraries in your dune file, or adding use_unix to your _tags file for
+ocamlbuild, or using -package unix for ocamlfind).
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The str subdirectory has been
+automatically added to the search path, but you should add -I +str to the
+command-line to silence this alert (e.g. by adding str to the list of
+libraries in your dune file, or adding use_str to your _tags file for
+ocamlbuild, or using -package str for ocamlfind).
+ocamlc -g -I ../irg -I ../optirg -o gliss_attr.cmo -c gliss_attr.ml
+ocamlc   str.cma unix.cma ../irg/irg.cma ../optirg/liboptirg.cma libgep.cma -g -o gliss-attr gliss_attr.cmo 
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The unix subdirectory has been
+automatically added to the search path, but you should add -I +unix to the
+command-line to silence this alert (e.g. by adding unix to the list of
+libraries in your dune file, or adding use_unix to your _tags file for
+ocamlbuild, or using -package unix for ocamlfind).
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The str subdirectory has been
+automatically added to the search path, but you should add -I +str to the
+command-line to silence this alert (e.g. by adding str to the list of
+libraries in your dune file, or adding use_str to your _tags file for
+ocamlbuild, or using -package str for ocamlfind).
+ocamlc -g -I ../irg -I ../optirg -o gliss_used_regs.cmo -c gliss_used_regs.ml
+ocamlc   str.cma unix.cma ../irg/irg.cma ../optirg/liboptirg.cma libgep.cma -g -o gliss-used-regs gliss_used_regs.cmo 
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The unix subdirectory has been
+automatically added to the search path, but you should add -I +unix to the
+command-line to silence this alert (e.g. by adding unix to the list of
+libraries in your dune file, or adding use_unix to your _tags file for
+ocamlbuild, or using -package unix for ocamlfind).
+File "_none_", line 1:
+Alert ocaml_deprecated_auto_include: 
+OCaml's lib directory layout changed in 5.0. The str subdirectory has been
+automatically added to the search path, but you should add -I +str to the
+command-line to silence this alert (e.g. by adding str to the list of
+libraries in your dune file, or adding use_str to your _tags file for
+ocamlbuild, or using -package str for ocamlfind).
+make[1]: Leaving directory '/tmp/tmpc104z1rx-sis/gliss2/gep'
+
+Dowloading riscv: git clone  https://git.renater.fr/anonscm/git/gliss2/riscv.git '/tmp/tmpc104z1rx-sis/riscv'Cloning into '/tmp/tmpc104z1rx-sis/riscv'...
+
+Building riscv: make WITH_DYNLIB=1
+cp config.tpl config.mk
+../gliss2/gep/gliss-nmp2nml.pl riscv.nmp riscv.nml
+Warning: nmp/macros.nmp: 37: Macro 'NotWordValue` doesn't use parameter 'x` ! 
+Warning: nmp/macros.nmp: 51: Macro 'CoprocessorOperation` doesn't use parameter 'z` ! 
+Warning: nmp/macros.nmp: 52: Macro 'COP_LD` doesn't use parameter 'z` ! 
+Warning: nmp/macros.nmp: 52: Macro 'COP_LD` doesn't use parameter 'rt` ! 
+Warning: nmp/macros.nmp: 52: Macro 'COP_LD` doesn't use parameter 'memdouble` ! 
+Warning: nmp/macros.nmp: 53: Macro 'COP_LW` doesn't use parameter 'z` ! 
+Warning: nmp/macros.nmp: 53: Macro 'COP_LW` doesn't use parameter 'rt` ! 
+Warning: nmp/macros.nmp: 53: Macro 'COP_LW` doesn't use parameter 'memword` ! 
+Warning: nmp/macros.nmp: 67: Macro 'AddressTranslation` doesn't use parameter 'IorD` ! 
+Warning: nmp/macros.nmp: 67: Macro 'AddressTranslation` doesn't use parameter 'LorS` ! 
+Warning: nmp/macros.nmp: 69: Macro 'LoadMemoryBYTE` doesn't use parameter 'CCA` ! 
+Warning: nmp/macros.nmp: 69: Macro 'LoadMemoryBYTE` doesn't use parameter 'vAddr` ! 
+Warning: nmp/macros.nmp: 69: Macro 'LoadMemoryBYTE` doesn't use parameter 'IorD` ! 
+Warning: nmp/macros.nmp: 70: Macro 'LoadMemoryHALFWORD` doesn't use parameter 'CCA` ! 
+Warning: nmp/macros.nmp: 70: Macro 'LoadMemoryHALFWORD` doesn't use parameter 'vAddr` ! 
+Warning: nmp/macros.nmp: 70: Macro 'LoadMemoryHALFWORD` doesn't use parameter 'IorD` ! 
+Warning: nmp/macros.nmp: 71: Macro 'LoadMemoryWORD` doesn't use parameter 'CCA` ! 
+Warning: nmp/macros.nmp: 71: Macro 'LoadMemoryWORD` doesn't use parameter 'vAddr` ! 
+Warning: nmp/macros.nmp: 71: Macro 'LoadMemoryWORD` doesn't use parameter 'IorD` ! 
+Warning: nmp/macros.nmp: 72: Macro 'LoadMemoryDOUBLEWORD` doesn't use parameter 'CCA` ! 
+Warning: nmp/macros.nmp: 72: Macro 'LoadMemoryDOUBLEWORD` doesn't use parameter 'vAddr` ! 
+Warning: nmp/macros.nmp: 72: Macro 'LoadMemoryDOUBLEWORD` doesn't use parameter 'IorD` ! 
+Warning: nmp/macros.nmp: 74: Macro 'StoreMemoryBYTE` doesn't use parameter 'CCA` ! 
+Warning: nmp/macros.nmp: 74: Macro 'StoreMemoryBYTE` doesn't use parameter 'vAddr` ! 
+Warning: nmp/macros.nmp: 75: Macro 'StoreMemoryHALFWORD` doesn't use parameter 'CCA` ! 
+Warning: nmp/macros.nmp: 75: Macro 'StoreMemoryHALFWORD` doesn't use parameter 'vAddr` ! 
+Warning: nmp/macros.nmp: 76: Macro 'StoreMemoryWORD` doesn't use parameter 'CCA` ! 
+Warning: nmp/macros.nmp: 76: Macro 'StoreMemoryWORD` doesn't use parameter 'vAddr` ! 
+Warning: nmp/macros.nmp: 77: Macro 'StoreMemoryDOUBLEWORD` doesn't use parameter 'CCA` ! 
+Warning: nmp/macros.nmp: 77: Macro 'StoreMemoryDOUBLEWORD` doesn't use parameter 'vAddr` ! 
+nmp2nml succeeded, 1775 line(s) parsed, 1881 line(s) written, 63 macro substitution(s) done !
+../gliss2/irg/mkirg riscv.nml riscv.irg
+../gliss2/gep/gep -switch -D -m mem:vfast_mem			 -m loader:old_elf -m syscall:syscall-embedded -m sysparm:sysparm-reg32 -m code:code -m exception:extern/exception -m emu:extern/emu -m env:void_env -a disasm.c riscv.irg -S
+creating "include/"
+creating "include"
+creating "/tmp/tmpc104z1rx-sis/riscv/include/riscv"
+creating "/tmp/tmpc104z1rx-sis/riscv/include/riscv"
+creating "include/riscv/id.h"
+creating "include/riscv/api.h"
+creating "include/riscv/debug.h"
+creating "include/riscv/macros.h"
+creating "src/"
+creating "src"
+creating "src/riscv-config"
+creating "src/api.c"
+creating "src/Makefile"
+creating "src/debug.c"
+creating "src/platform.h"
+creating "src/fetch_table.h"
+creating "include/riscv/fetch.h"
+creating "src/fetch.c"
+creating "src/decode_table.h"
+DEBUG: const(card(32), "__EXTRACT(0x1F00000, 20, code_inst)")
+DEBUG: "__RISCV_EXTS16" (const(int(32), 12L), (((const(card(32), "__EXTRACT(0xFE000000, 25, code_inst)") & const(card(32), 127L)) << const(card(32), 5L)) | ((const(card(32), "__EXTRACT(0xF80, 7, code_inst)") & const(card(32), 31L)) << const(card(32), 0L)))): int(12)
+DEBUG: const(card(32), "__EXTRACT(0xF8000, 15, code_inst)")
+DEBUG: const(card(32), "__EXTRACT(0x1F00000, 20, code_inst)")
+DEBUG: "__RISCV_EXTS16" (const(int(32), 12L), (((const(card(32), "__EXTRACT(0xFE000000, 25, code_inst)") & const(card(32), 127L)) << const(card(32), 5L)) | ((const(card(32), "__EXTRACT(0xF80, 7, code_inst)") & const(card(32), 31L)) << const(card(32), 0L)))): int(12)
+DEBUG: const(card(32), "__EXTRACT(0xF8000, 15, code_inst)")
+DEBUG: const(card(32), "__EXTRACT(0x1F00000, 20, code_inst)")
+DEBUG: "__RISCV_EXTS16" (const(int(32), 12L), (((const(card(32), "__EXTRACT(0xFE000000, 25, code_inst)") & const(card(32), 127L)) << const(card(32), 5L)) | ((const(card(32), "__EXTRACT(0xF80, 7, code_inst)") & const(card(32), 31L)) << const(card(32), 0L)))): int(12)
+DEBUG: const(card(32), "__EXTRACT(0xF8000, 15, code_inst)")
+DEBUG: const(card(32), "__EXTRACT(0x1F00000, 20, code_inst)")
+DEBUG: "__RISCV_EXTS16" (const(int(32), 12L), (((const(card(32), "__EXTRACT(0xFE000000, 25, code_inst)") & const(card(32), 127L)) << const(card(32), 5L)) | ((const(card(32), "__EXTRACT(0xF80, 7, code_inst)") & const(card(32), 31L)) << const(card(32), 0L)))): int(12)
+DEBUG: const(card(32), "__EXTRACT(0xF8000, 15, code_inst)")
+DEBUG: const(card(32), "__EXTRACT(0x1F00000, 20, code_inst)")
+DEBUG: "__RISCV_EXTS16" (const(int(32), 12L), (((const(card(32), "__EXTRACT(0xFE000000, 25, code_inst)") & const(card(32), 127L)) << const(card(32), 5L)) | ((const(card(32), "__EXTRACT(0xF80, 7, code_inst)") & const(card(32), 31L)) << const(card(32), 0L)))): int(12)
+DEBUG: const(card(32), "__EXTRACT(0xF8000, 15, code_inst)")
+DEBUG: const(card(32), "__EXTRACT(0x1F00000, 20, code_inst)")
+DEBUG: "__RISCV_EXTS16" (const(int(32), 12L), (((const(card(32), "__EXTRACT(0xFE000000, 25, code_inst)") & const(card(32), 127L)) << const(card(32), 5L)) | ((const(card(32), "__EXTRACT(0xF80, 7, code_inst)") & const(card(32), 31L)) << const(card(32), 0L)))): int(12)
+DEBUG: const(card(32), "__EXTRACT(0xF8000, 15, code_inst)")
+DEBUG: const(card(32), "__EXTRACT(0xF80, 7, code_inst)")
+DEBUG: "__RISCV_EXTS32" (const(int(32), 20L), (((((const(card(32), "__EXTRACT(0x80000000, 31, code_inst)") & const(card(32), 1L)) << const(card(32), 19L)) | ((const(card(32), "__EXTRACT(0x7FE00000, 21, code_inst)") & const(card(32), 1023L)) << const(card(32), 0L))) | ((const(card(32), "__EXTRACT(0x100000, 20, code_inst)") & const(card(32), 1L)) << const(card(32), 10L))) | ((const(card(32), "__EXTRACT(0xFF000, 12, code_inst)") & const(card(32), 255L)) << const(card(32), 11L)))): int(20)
+DEBUG: const(card(32), "__EXTRACT(0xF8000, 15, code_inst)")
+DEBUG: const(card(32), "__EXTRACT(0x1F00000, 20, code_inst)")
+DEBUG: "__RISCV_EXTS16" (const(int(32), 12L), (((((const(card(32), "__EXTRACT(0x80000000, 31, code_inst)") & const(card(32), 1L)) << const(card(32), 11L)) | ((const(card(32), "__EXTRACT(0x7E000000, 25, code_inst)") & const(card(32), 63L)) << const(card(32), 4L))) | ((const(card(32), "__EXTRACT(0xF00, 8, code_inst)") & const(card(32), 15L)) << const(card(32), 0L))) | ((const(card(32), "__EXTRACT(0x80, 7, code_inst)") & const(card(32), 1L)) << const(card(32), 10L)))): int(12)
+DEBUG: const(card(32), "__EXTRACT(0xF8000, 15, code_inst)")
+DEBUG: const(card(32), "__EXTRACT(0x1F00000, 20, code_inst)")
+DEBUG: "__RISCV_EXTS16" (const(int(32), 12L), (((((const(card(32), "__EXTRACT(0x80000000, 31, code_inst)") & const(card(32), 1L)) << const(card(32), 11L)) | ((const(card(32), "__EXTRACT(0x7E000000, 25, code_inst)") & const(card(32), 63L)) << const(card(32), 4L))) | ((const(card(32), "__EXTRACT(0xF00, 8, code_inst)") & const(card(32), 15L)) << const(card(32), 0L))) | ((const(card(32), "__EXTRACT(0x80, 7, code_inst)") & const(card(32), 1L)) << const(card(32), 10L)))): int(12)
+DEBUG: const(card(32), "__EXTRACT(0xF8000, 15, code_inst)")
+DEBUG: const(card(32), "__EXTRACT(0x1F00000, 20, code_inst)")
+DEBUG: "__RISCV_EXTS16" (const(int(32), 12L), (((((const(card(32), "__EXTRACT(0x80000000, 31, code_inst)") & const(card(32), 1L)) << const(card(32), 11L)) | ((const(card(32), "__EXTRACT(0x7E000000, 25, code_inst)") & const(card(32), 63L)) << const(card(32), 4L))) | ((const(card(32), "__EXTRACT(0xF00, 8, code_inst)") & const(card(32), 15L)) << const(card(32), 0L))) | ((const(card(32), "__EXTRACT(0x80, 7, code_inst)") & const(card(32), 1L)) << const(card(32), 10L)))): int(12)
+DEBUG: const(card(32), "__EXTRACT(0xF8000, 15, code_inst)")
+DEBUG: const(card(32), "__EXTRACT(0x1F00000, 20, code_inst)")
+DEBUG: "__RISCV_EXTS16" (const(int(32), 12L), (((((const(card(32), "__EXTRACT(0x80000000, 31, code_inst)") & const(card(32), 1L)) << const(card(32), 11L)) | ((const(card(32), "__EXTRACT(0x7E000000, 25, code_inst)") & const(card(32), 63L)) << const(card(32), 4L))) | ((const(card(32), "__EXTRACT(0xF00, 8, code_inst)") & const(card(32), 15L)) << const(card(32), 0L))) | ((const(card(32), "__EXTRACT(0x80, 7, code_inst)") & const(card(32), 1L)) << const(card(32), 10L)))): int(12)
+DEBUG: const(card(32), "__EXTRACT(0xF8000, 15, code_inst)")
+DEBUG: const(card(32), "__EXTRACT(0x1F00000, 20, code_inst)")
+DEBUG: "__RISCV_EXTS16" (const(int(32), 12L), (((((const(card(32), "__EXTRACT(0x80000000, 31, code_inst)") & const(card(32), 1L)) << const(card(32), 11L)) | ((const(card(32), "__EXTRACT(0x7E000000, 25, code_inst)") & const(card(32), 63L)) << const(card(32), 4L))) | ((const(card(32), "__EXTRACT(0xF00, 8, code_inst)") & const(card(32), 15L)) << const(card(32), 0L))) | ((const(card(32), "__EXTRACT(0x80, 7, code_inst)") & const(card(32), 1L)) << const(card(32), 10L)))): int(12)
+DEBUG: const(card(32), "__EXTRACT(0xF8000, 15, code_inst)")
+DEBUG: const(card(32), "__EXTRACT(0x1F00000, 20, code_inst)")
+DEBUG: "__RISCV_EXTS16" (const(int(32), 12L), (((((const(card(32), "__EXTRACT(0x80000000, 31, code_inst)") & const(card(32), 1L)) << const(card(32), 11L)) | ((const(card(32), "__EXTRACT(0x7E000000, 25, code_inst)") & const(card(32), 63L)) << const(card(32), 4L))) | ((const(card(32), "__EXTRACT(0xF00, 8, code_inst)") & const(card(32), 15L)) << const(card(32), 0L))) | ((const(card(32), "__EXTRACT(0x80, 7, code_inst)") & const(card(32), 1L)) << const(card(32), 10L)))): int(12)
+creating "include/riscv/decode.h"
+creating "src/decode.c"
+creating "src/code_table.h"
+creating "/tmp/tmpc104z1rx-sis/riscv/src/mem.c"
+creating "/tmp/tmpc104z1rx-sis/riscv/include/riscv/mem.h"
+creating "/tmp/tmpc104z1rx-sis/riscv/src/grt.c"
+creating "/tmp/tmpc104z1rx-sis/riscv/include/riscv/grt.h"
+creating "/tmp/tmpc104z1rx-sis/riscv/src/error.c"
+creating "/tmp/tmpc104z1rx-sis/riscv/include/riscv/error.h"
+creating "/tmp/tmpc104z1rx-sis/riscv/src/gen_int.c"
+creating "/tmp/tmpc104z1rx-sis/riscv/include/riscv/gen_int.h"
+creating "/tmp/tmpc104z1rx-sis/riscv/src/loader.c"
+creating "/tmp/tmpc104z1rx-sis/riscv/include/riscv/loader.h"
+creating "/tmp/tmpc104z1rx-sis/riscv/src/syscall.c"
+creating "/tmp/tmpc104z1rx-sis/riscv/include/riscv/syscall.h"
+creating "/tmp/tmpc104z1rx-sis/riscv/src/sysparm.c"
+creating "/tmp/tmpc104z1rx-sis/riscv/include/riscv/sysparm.h"
+creating "/tmp/tmpc104z1rx-sis/riscv/src/code.c"
+creating "/tmp/tmpc104z1rx-sis/riscv/include/riscv/code.h"
+creating "/tmp/tmpc104z1rx-sis/riscv/src/exception.c"
+creating "/tmp/tmpc104z1rx-sis/riscv/include/riscv/exception.h"
+creating "/tmp/tmpc104z1rx-sis/riscv/src/emu.c"
+creating "/tmp/tmpc104z1rx-sis/riscv/include/riscv/emu.h"
+creating "/tmp/tmpc104z1rx-sis/riscv/src/env.c"
+creating "/tmp/tmpc104z1rx-sis/riscv/include/riscv/env.h"
+creating "sim"
+test -d include/riscv || mkdir include/riscv
+cp extern/config.tpl include/riscv/config.h
+echo "#define TARGET_ENDIANNESS little	" >> include/riscv/config.h
+echo "#define HOST_ENDIANNESS little" >> include/riscv/config.h
+../gliss2/gep/gliss-disasm -switch riscv.irg -o src/disasm.c -c
+creating "src/disasm.c"
+creating "disasm"
+(cd src; make -j WITH_DYNLIB=1)
+make[1]: Entering directory '/tmp/tmpc104z1rx-sis/riscv/src'
+cc -g3 -O3 -I../include -fPIC   -c -o api.o api.c
+cc -g3 -O3 -I../include -fPIC   -c -o fetch.o fetch.c
+cc -g3 -O3 -I../include -fPIC   -c -o decode.o decode.c
+cc -g3 -O3 -I../include -fPIC   -c -o debug.o debug.c
+cc -g3 -O3 -I../include -fPIC   -c -o mem.o mem.c
+cc -g3 -O3 -I../include -fPIC   -c -o grt.o grt.c
+cc -g3 -O3 -I../include -fPIC   -c -o error.o error.c
+cc -g3 -O3 -I../include -fPIC   -c -o gen_int.o gen_int.c
+cc -g3 -O3 -I../include -fPIC   -c -o loader.o loader.c
+cc -g3 -O3 -I../include -fPIC   -c -o syscall.o syscall.c
+cc -g3 -O3 -I../include -fPIC   -c -o sysparm.o sysparm.c
+cc -g3 -O3 -I../include -fPIC   -c -o code.o code.c
+cc -g3 -O3 -I../include -fPIC   -c -o exception.o exception.c
+cc -g3 -O3 -I../include -fPIC   -c -o emu.o emu.c
+cc -g3 -O3 -I../include -fPIC   -c -o env.o env.c
+cc -g3 -O3 -I../include -fPIC   -c -o disasm.o disasm.c
+ar rcsu libriscv.a api.o fetch.o decode.o debug.o mem.o grt.o error.o gen_int.o loader.o syscall.o sysparm.o code.o exception.o emu.o env.o disasm.o
+ar: `u' modifier ignored since `D' is the default (see `U')
+ranlib libriscv.a
+make[1]: Leaving directory '/tmp/tmpc104z1rx-sis/riscv/src'
+cd disasm; make -j3
+make[1]: Entering directory '/tmp/tmpc104z1rx-sis/riscv/disasm'
+cc -I../include -I../src -g -O3   -c -o riscv-disasm.o riscv-disasm.c
+riscv-disasm.c: In function ‘main’:
+riscv-disasm.c:304:9: warning: implicit declaration of function ‘riscv_set_cond_state’; did you mean ‘riscv_copy_state’? [-Wimplicit-function-declaration]
+  304 |         riscv_set_cond_state(d, state);
+      |         ^~~~~~~~~~~~~~~~~~~~
+      |         riscv_copy_state
+cc -I../include -I../src -g -O3 -o riscv-disasm riscv-disasm.o -L'/tmp/tmpc104z1rx-sis/riscv/src' -lriscv           
+make[1]: Leaving directory '/tmp/tmpc104z1rx-sis/riscv/disasm'
+cd sim; make -j3
+make[1]: Entering directory '/tmp/tmpc104z1rx-sis/riscv/sim'
+cc -I../include -I../src -g -O3   -c -o riscv-sim.o riscv-sim.c
+cc -I../include -I../src -g -O3 -o riscv-sim riscv-sim.o -L'/tmp/tmpc104z1rx-sis/riscv/src' -lriscv           
+make[1]: Leaving directory '/tmp/tmpc104z1rx-sis/riscv/sim'
+
+Dowloading otawa-riscv: git clone  https://git.renater.fr/anonscm/git/otawa/otawa-riscv.git '/tmp/tmpc104z1rx-sis/otawa-riscv'Cloning into '/tmp/tmpc104z1rx-sis/otawa-riscv'...
+
+Setting up otawa-riscv: cmake . -DOTAWA_CONFIG='/home/whitefox/Documents/TCC/otawa/otawa/bin/otawa-config'
+CMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):
+  Compatibility with CMake < 2.8.12 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value or use a ...<max> suffix to tell
+  CMake that the project does not need compatibility with older versions.
+
+
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- riscv library found at /tmp/tmpc104z1rx-sis/riscv/src/libriscv.a
+-- otawa-config found at /home/whitefox/Documents/TCC/otawa/otawa/bin/otawa-config
+-- C++ set using CMAKE_CXX_STANDARD
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /tmp/tmpc104z1rx-sis/otawa-riscv
+
+Building otawa-riscv: make
+[ 14%] Generating otawa_write.h
+nmp2nml succeeded, 161 line(s) parsed, 245 line(s) written, 55 macro substitution(s) done !
+creating "/tmp/tmpc104z1rx-sis/otawa-riscv/otawa_write.h"
+[ 28%] Generating otawa_delayed.h
+nmp2nml succeeded, 24 line(s) parsed, 24 line(s) written,  macro substitution(s) done !
+creating "/tmp/tmpc104z1rx-sis/otawa-riscv/otawa_delayed.h"
+[ 42%] Generating otawa_kind.h
+nmp2nml succeeded, 192 line(s) parsed, 192 line(s) written,  macro substitution(s) done !
+creating "/tmp/tmpc104z1rx-sis/otawa-riscv/otawa_kind.h"
+[ 57%] Generating otawa_read.h
+nmp2nml succeeded, 161 line(s) parsed, 245 line(s) written, 55 macro substitution(s) done !
+creating "/tmp/tmpc104z1rx-sis/otawa-riscv/otawa_read.h"
+[ 71%] Generating otawa_target.h
+nmp2nml succeeded, 24 line(s) parsed, 24 line(s) written,  macro substitution(s) done !
+creating "/tmp/tmpc104z1rx-sis/otawa-riscv/otawa_target.h"
+[ 85%] Building CXX object CMakeFiles/riscv.dir/riscv.cpp.o
+[100%] Linking CXX shared library riscv.so
+[100%] Built target riscv
+
+Installing otawa-riscv: make install

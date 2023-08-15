@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+		<link id="favicon" rel="shortcut icon" href="logo-small.png">
+        <link rel="stylesheet" href="style.css"/>
+        <title>Obiews-${application}-${task}</title>
+        <script>
+			var VIEW_MASK = ${view-mask};
+			${stat-colors}
+		</script>
+    </head>
+    <body onbeforeunload="javascript:logOut();">
+
+		<div class="top">
+			<div class="title">
+				<span class="main">Obviews V1.0</span><br/>
+				<span class="subtitle"><a href="http://www.otawa/fr">OTAWA</a> Binary Viewers</span>
+			</div>
+			<div class="menu">
+				<button onclick="help();">Help</button>
+				<button onclick="about();">About</button>
+				<button onclick="logOut();">Quit</button>
+			</div>
+		</div>
+
+		<div id="main-bar">
+			<div id="main-name">
+			</div>
+
+			<div class="dropdown">
+				<button onclick="javascript:view_switch();" id="view-button">
+					View
+					&nbsp;
+					<img src="dropdown.png" style="width: 1em;"/>
+				</button>
+				<div id="view-menu" class="dropdown-content">
+				${views}
+				<button onclick="javascript:view_switch();">Done</button>
+				</div>
+			</div>
+				
+			<div class="toolbar">
+				<select id="stat" onchange="javascript:show_stat(this.selectedIndex, this.value);">
+					${stats}
+				</select>
+			</div>
+
+			<button onclick="javascript: cfg_unzoom();" id="zoom-button">
+				<img src="zoom.png" style="width: 1em;"/>
+			</button>
+			<button onclick="javascript: cfg_zoom();" id="unzoom-button">
+				<img src="unzoom.png" style="width: 1em;"/>
+			</button>
+			<button onclick="javascript: return_function();" id="back-button">
+				<img src="goback.png" style="width: 1em;"/>
+			</button>
+		</div>
+
+
+		<div class="page">
+			<div class="left">
+				<div class="list code">
+					<div class="list-header">Functions</div>
+					<div id="function-list" class="items">
+						${functions}
+					</div>
+					<div class="list-header">Sources</div>
+					<div id="source-list" class="items">
+						${sources}
+					</div>
+				</div>
+				<div id="infos" class="infos code">
+				</div>
+			</div>
+		
+
+			<div class="main">
+				<div id="code" class="code">
+					<div class="hint">
+						Nothing to display.
+						<br/>
+						<i>Select an item in the list at left.</i>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="bottom">
+			Copyright (c) 2022 <a href="http://www.otawa.fr">University of Toulouse</a>.
+		</div>
+
+        <script src="obviews.js"></script>
+    </body>
+</html>

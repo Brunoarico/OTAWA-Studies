@@ -1,0 +1,419 @@
+/*
+ *	Obviews CSS
+ *
+ *	This file is part of OTAWA
+ *	Copyright (c) 2022, IRIT UPS.
+ *
+ *	OTAWA is free software; you can redistribute it and/or modify
+ *	it under the terms of the GNU General Public License as published by
+ *	the Free Software Foundation; either version 2 of the License, or
+ *	(at your option) any later version.
+ *
+ *	OTAWA is distributed in the hope that it will be useful,
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	GNU General Public License for more details.
+ *
+ *	You should have received a copy of the GNU General Public License
+ *	along with OTAWA; if not, write to the Free Software
+ *	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+* {
+  box-sizing: border-box;
+}
+
+/* body */
+body {
+    background-position: left top;
+    background-size: auto;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    font-family: 'Trebuchet MS', Arial, sans-serif;
+    background: #EEEEEE;
+    /*background: pink;*/
+	height: 100vh;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	max-height: 100vh;
+}
+
+div.top {
+    background: #EEEEEE;
+    padding: 8px;
+    flex: 0;
+}
+
+div.page {
+	content: "";
+	clear: both;
+	width: 100%;
+	padding-left: 8px;
+	padding-right: 8px;
+	/*background: green;*/
+	flex: 1;
+	display: flex;
+	overflow: hidden;
+}
+
+
+/* deprecated */
+header
+{
+    width: 70%;;
+    margin: auto;
+    
+    margin-bottom: 10px;
+    margin-top: 1%;
+    /*position: top;*/
+    border-radius: 10px;
+    border: 2px rgb(122, 4, 201) solid;
+    background-color: rgb(228, 213, 238);
+    text-transform: uppercase;
+    padding-top: 3px;
+}
+#enTete
+{
+    width: 900px;
+    margin: auto;
+}
+nav ul
+{
+    list-style-type: none;
+    display: flex;
+}
+nav li
+{
+    margin: auto;
+}
+nav a
+{
+    font-size: 1.3em;
+    padding-bottom: 3px;
+}
+nav a:hover
+{
+    text-decoration: none;
+    color: white;
+    font-size: 1.3em;
+}
+nav
+{
+    width: 50%;
+    margin: auto;
+    margin-bottom: 5px;
+    padding: 5px;
+    border-radius: 10px;
+    border: 1px rgb(122, 4, 201) solid;
+    background-color: rgb(228, 213, 238);
+}
+section
+{
+    width: 70%;
+    margin: auto;
+    padding-bottom: 3%;
+    padding-top: 3%;
+    margin-bottom: 5px;
+    border-radius: 10px;
+    border: 2px rgb(122, 4, 201) solid;
+    background-color: rgb(228, 213, 238);
+}
+.titreSection
+{   
+    width: 50%;
+    margin: auto;
+    padding-bottom: 1%;
+    padding-top: 1%;
+    margin-bottom: 2%;
+    background-color: rgb(182, 129, 231);
+    border-radius: 5px;
+    text-align: center;
+}
+.titreSection h1
+{
+    text-align: center;
+}
+#infosServeur{
+    background-color: rgba(172, 158, 255, 0.808);
+    border-radius: 5px;
+    width: 80%;
+    margin: auto;
+    margin-bottom: 5px;
+    padding-bottom: 1%;
+    padding-top: 0.5%;
+    text-align: center;
+}
+.corpsDeSection
+{
+    background-color: rgba(172, 158, 255, 0.808);
+    border-radius: 5px;
+    width: 80%;
+    margin: auto;
+    margin-bottom: 2%;
+    padding-bottom: 1%;
+    text-align: center;
+}
+section #modedemploi
+{
+    text-align: center;
+}
+section #fondAbout
+{
+    text-align: center;
+}
+section #fondAbout ul
+{
+    text-align: center;
+    list-style-type: none;
+}
+
+
+#graph_links{
+    border:  black 3px;
+    border-style: solid solid none solid;
+    background-color:  white;
+    width: 1400px;
+}
+.invisible{
+    display: none;
+}
+
+#source_code
+{
+    background-color: rgba(171, 111, 250, 0.808);
+    border-radius: 5px;
+    width: 839px;
+    margin: auto;
+    padding-bottom: 1%;
+    padding-top: 1%;
+    text-align: center;
+}
+
+#graph_body{
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    align-items:  center;
+}
+
+#server_answer{
+    /*position: absolute;*/
+    /*background-color: red;*/
+}
+
+#graph_border{
+    border: solid black 3px;
+    background-color:  white;
+    height: 1000px;
+    width: 1400px;
+}
+
+#graph_frame{
+    /*clip-path: polygon(626px 463px,765px 236px,687px 31px,271px 100px,70px 10px,49px 250px,133px 406px,374px 462px,529px 393px);*/
+    clip-path: polygon(0px 0px,1400px 0px,1400px 1000px,0px 1000px);
+    /*background-color: green;*/
+    background-color:  white;
+    height: 1000px;
+    width: 1400px;
+}
+footer
+{
+    width: 70%;
+    margin: auto;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    margin-top: 5px;
+    border-radius: 10px;
+    border: 2px rgb(122, 4, 201) solid;
+    background-color: rgb(228, 213, 238);
+    text-align: center;
+}
+footer ul
+{
+    width: 50%;
+    display: flex;
+    margin: auto;
+}
+footer li
+{
+    margin: auto;
+    list-style-type: none;
+}
+footer li a:hover
+{
+    text-decoration: none;
+    color: white;
+}
+
+
+/* Top bar */
+div.top div.title {
+	display: inline-block;
+}
+div.top div.title span.main {
+	color: #6C4EAE;
+	text-shadow: 2px 2px 5px gray;
+	font-weight: bold;
+	font-size: 2em;
+}
+div.top div.title span.subtitle {
+	color: gray;
+	font-style: italic;
+	font-size: .75em;
+}
+div.top div.menu {
+	display: inline-block;
+	float: right;
+}
+
+/* left part */
+div.left {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	overflow: clip;
+}
+
+/* infos part */
+div.infos {
+	flex: 1;
+	margin-right: 8px;
+	margin-top: 8px; 
+}
+
+/* list part */
+div.list {
+	display: inline-block;
+	float: left;
+	overflow: scroll;
+	flex: 4;
+	margin-right: 8px;
+}
+div.items {
+	padding-left: 8px;
+}
+
+/* main part */
+div.main {
+	display: inline-block;
+	flex: 4;
+	/*background: pink;*/
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+#main-bar {
+	display: flex;
+	padding: 4px;
+	padding-left: 8px;
+	padding-right: 8px;
+}
+
+#main-name {
+	flex: 1;
+	vertical-align: middle;
+}
+
+
+/* bottom */
+div.bottom {
+	flex: 0;
+	text-align: center;
+	padding: 8px;
+}
+
+/* generic classes */
+.code {
+	background: white;
+	border-style: inset;
+	border-width: 2px;
+	border-radius: 4px;
+	overflow: auto;
+	padding: 4px;
+	flex: 1;
+	margin: 0;
+}
+
+.empty-code {
+	text-align: center;
+}
+
+.toolbar {
+	flex: 0;
+}
+
+.hint {
+	text-align: center;
+}
+
+
+/* dropdown menu */
+.dropdown-content {
+	display: none;
+	position: absolute;
+	overflow: auto;
+	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	padding: 8px;
+	background-color: white;
+	z-index: 1000;
+}
+
+
+/* classic links */
+a {
+	color: black;
+	background-color: none;
+	padding: 4px;
+	text-decoration: none;
+}
+
+a:hover {
+	color: white;
+	background-color: #8088C9;
+	border-radius: 4px;
+}
+
+
+.items div {
+	padding: 4px;
+}
+
+
+/* help, about */
+.doc {
+	text-align: center;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	padding: 1em;
+}
+
+.doc h2 {
+	margin-top: 2em;
+}
+
+.doc p, h2, pre {
+	text-align: justify;
+	margin: 8px;
+	box-sizing: content-box;	
+}
+
+.doc pre {
+	text-align: left;
+}
+
+.doc a {
+	text-decoration: underline;
+}
+.doc a:hover {
+	color: #8088C9;
+	background-color: initial;
+	border: none;
+}
+.doc ul, ol {
+	text-align: left;
+}

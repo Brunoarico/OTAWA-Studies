@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<memory xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<!--
+	PARAMETERS
+	processor_model: one of lpc2131, lpc2132, lpc2134, lpc2136 or lpc2138
+	MAM_fetch_cycle_timing: in range [1, 7]
+	
+	PROCESSOR CONFIGURATION
+	MAMCR[MAM_mode_control] = 
+	
+-->
+	<banks>
+	
+		<bank>
+			<name>ON-CHIP NON-VOLATILE MEMORY</name>
+			<address><offset>0x00000000</offset></address>
+			<xsl:choose>
+				<xsl:when test="$processor_model='lpc2131'"><size>0x8000</size></xsl:when>
+				<xsl:when test="$processor_model='lpc2132'"><size>0x10000</size></xsl:when>
+				<xsl:when test="$processor_model='lpc2134'"><size>0x20000</size></xsl:when>
+				<xsl:when test="$processor_model='lpc2136'"><size>0x40000</size></xsl:when>
+				<xsl:when test="$processor_model='lpc2138'"><size>0x80000</size></xsl:when>
+			</xsl:choose>
+			<type>ROM</type>
+			<on_chip>true</on_chip>
+			<latency><xsl:value-of select="$MAM_fetch_cycle_timing"/></latency>
+			<!-- NOTE: interfaced with the MAM device -->
+		</bank>
+		
+		<bank>
+			<name>ON-CHIP STATIC RAM</name>
+			<address><offset>0x40000000</offset></address>
+			<xsl:choose>
+				<xsl:when test="$processor_model='lpc2131'"><size>0x2000</size></xsl:when>
+				<xsl:when test="$processor_model='lpc2132'"><size>0x4000</size></xsl:when>
+				<xsl:when test="$processor_model='lpc2134'"><size>0x4000</size></xsl:when>
+				<xsl:when test="$processor_model='lpc2136'"><size>0x8000</size></xsl:when>
+				<xsl:when test="$processor_model='lpc2138'"><size>0x8000</size></xsl:when>
+			</xsl:choose>
+			<latency>1</latency>
+			<type>SPM</type>
+			<on_chip>true</on_chip>
+		</bank>
+		
+		<bank>
+			<name>VPB PERIPHERALS</name>
+			<address><offset>0xe0000000</offset></address>
+			<size>0x10000000</size>
+			<type>IO</type>
+		</bank>
+
+		<bank>
+			<name>AHB PERIPHERALS</name>
+			<address><offset>0xf0000000</offset></address>
+			<size>0x10000000</size>
+			<type>IO</type>
+		</bank>
+	</banks>
+</memory>
