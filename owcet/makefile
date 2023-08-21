@@ -43,6 +43,6 @@ clean:
 	rm -rf *.o $(PROGRAM) *~ core.* *.lo .libs .deps .eld
 
 run: $(PROGRAM)
-	# ./$(PROGRAM) -S -s trivial $(TEST_TARGET)
-	./$(PROGRAM) -S -s lpc2138 $(TEST_TARGET)
+	./$(PROGRAM) -S -s trivial $(TEST_TARGET)
+	# ./$(PROGRAM) -S -s lpc2138 $(TEST_TARGET)
 
