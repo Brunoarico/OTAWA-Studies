@@ -1,9 +1,6 @@
 MODULES         =             
-#PROGRAM         = ipet
-#SOURCES         = ipet.cpp msgLogger.cpp
-
-PROGRAM         = test
-SOURCES         = test.cpp
+PROGRAM         = ipet
+SOURCES         = ipet.cpp msgLogger.cpp
 
 
 TEST_FOLDER     = test_files

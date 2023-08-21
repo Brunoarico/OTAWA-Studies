@@ -24,11 +24,11 @@ DEPS            = $(addprefix .deps,$(SOURCES:.cpp=.d))
 # Rules
 all: .deps $(PROGRAM)
 	echo $(LD_LIBRARY_PATH)
-	$(shell export LD_LIBRARY_PATH)
+	export LD_LIBRARY_PATH
 	echo $(LD_LIBRARY_PATH)
 
 $(PROGRAM): $(OBJECTS)
-	$(LD) -o $@ $^ $(LDFLAGS) $(LDLIBS)
+	$(LD) -o $@ $^ SparseMatrix.h SparseMatrix.cpp $(LDFLAGS) $(LDLIBS)
 
 .deps:
 	mkdir .deps
@@ -43,5 +43,6 @@ clean:
 	rm -rf *.o $(PROGRAM) *~ core.* *.lo .libs .deps .eld
 
 run: $(PROGRAM)
-	./$(PROGRAM) -S -s trivial $(TEST_TARGET)
+	# ./$(PROGRAM) -S -s trivial $(TEST_TARGET)
+	./$(PROGRAM) -S -s lpc2138 $(TEST_TARGET)
 

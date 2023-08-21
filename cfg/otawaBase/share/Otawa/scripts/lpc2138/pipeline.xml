@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<processor class="otawa::hard::Processor"  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+	<!--  PARAMETERS
+			CCLK: frequency in [1, 5]
+	-->
+
+	<!-- TIMING INFORMATION (ARM7)
+
+		* fetch delay
+			B, BX					0
+			ALU w/ shift, control	1
+			ALU else				0
+			LDR	w/o control			memory latency
+			LDR w/ control			memory latency + 1
+			LDM	w/o control			n * memory latency
+			LDM	w/ control			n * memory latency + 1
+			STR						memory latency
+			STM						n * memory latency
+
+		* execution additional time
+			B, BX				0
+			MLA					6	(overestimation)
+			MUL					4
+			ALU with shift 		1
+			ALU w/o shift		0
+			LDR					memory latency + 1
+			STR					memory latency
+			LDM					n * memory latency + 1
+			STM					n * memory latency
+
+		* support for MAM
+			ensure that
+				prefetching instruction time + fetch latency >= prefetched instruction time
+			if there is any load / store before between prefetching and prefetched
+				load / store time + fetch latency >= prefetched instruction time
+	-->
+
+	<arch>arm</arch>
+	<model>lpc2138</model>
+	<builder>NXP</builder>
+	<frequency><xsl:value-of select="$CCLK*10000000"/></frequency>
+
+	<stages>
+		<stage id="FI">
+			<name>FI</name>
+			<width>1</width>
+			<type>FETCH</type>
+		</stage>
+		<stage id="DI">
+			<name>DI</name>
+			<width>1</width>
+			<type>LAZY</type>
+		</stage>
+
+		<stage id="EX">
+			<name>EX</name>
+			<type>EXEC</type>
+			<width>1</width>
+			<ordered>true</ordered>
+			<mem>true</mem>
+		</stage>
+		<stage id="CM">
+			<name>CM</name>
+			<type>COMMIT</type>
+			<width>1</width>
+			<!-- latency>0</latency-->
+		</stage>
+
+	</stages>
+	<queues>
+		<queue>
+			<name>FETCH_QUEUE</name>
+			<size>1</size>
+			<input ref="FI"/>
+			<output ref="DI"/>
+		</queue>
+		<queue>
+			<name>DECODE_QUEUE</name>
+			<size>1</size>
+			<input ref="DI"/>
+			<output ref="EX"/>
+		</queue>
+		<queue>
+			<name>EXEC_QUEUE</name>
+			<size>1</size>
+			<input ref="EX"/>
+			<output ref="CM"/>
+		</queue>
+	</queues>
+
+</processor>

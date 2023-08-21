@@ -26,11 +26,13 @@
 #include <otawa/cfg/features.h>
 #include <otawa/ilp/System.h>
 #include <otawa/ipet/IPET.h>
+#include <otawa/ipet/BasicObjectFunctionBuilder.h>
 #include <otawa/script/Script.h>
 #include <otawa/stats/StatInfo.h>
 #include <otawa/util/BBRatioDisplayer.h>
 #include <otawa/flowfact/FlowFactLoader.h>
-
+#include <otawa/stats/BBStatCollector.h>
+#include "SparseMatrix.h"
 using namespace otawa;
 using namespace elm::option;
 
@@ -138,7 +140,6 @@ public:
 	),
 	params			(ListOption<string>		::Make(*this).cmd("-p")			.cmd("--param").description("parameter passed to the script").argDescription("IDENTIFIER=VALUE")),
 	script			(ValueOption<string>	::Make(*this).cmd("-s")			.cmd("--script").description("script used to compute WCET").argDescription("PATH")),
-	ilp_dump		(SwitchOption			::Make(*this).cmd("-i")			.cmd("--dump-ilp").description("dump ILP system to standard output")),
 	list			(SwitchOption			::Make(*this).cmd("--list")		.cmd("-l").description("list configuration items")),
 	timed			(SwitchOption			::Make(*this).cmd("--timed")	.cmd("-t").description("display computation")),
 	display_stats	(SwitchOption			::Make(*this).cmd("-S")			.cmd("--display-stats").description("display statistics")),
@@ -148,7 +149,6 @@ public:
 
 protected:
 	virtual void work (const string &entry, PropList &props) {
-
 		// set statistics option
 		if(display_stats)
 			Processor::COLLECT_STATS(props) = true;
@@ -188,19 +188,18 @@ protected:
 		}
 		if(isVerbose())
 			cerr << "INFO: using script from " << path << io::endl;
-
+		
 		if(list)
 			script::ONLY_CONFIG(props) = true;
 		if(timed)
 			script::TIME_STAT(props) = true;
-		if(ilp_dump)
-			ipet::EXPLICIT(props) = true;
 		TASK_ENTRY(props) = entry;
 		script::PATH(props) = path;
-		cout <<  path << endl;
+		
 		script::Script *scr = new script::Script();
+		cout <<  scr << endl;
 		workspace()->run(scr, props);
-
+		cfg2Matrix();
 		// process the list option
 		if(list) {
 			cerr << "CONFIGURATION OF " << *script << io::endl;
@@ -222,15 +221,7 @@ protected:
 		else if(scr->version() == 1)
 			cout << "WCET[" << entry << "] = " << wcet << " cycles\n";
 
-		// ILP dump
-		if(ilp_dump) {
-			ilp::System *sys = ipet::SYSTEM(workspace());
-			if(sys) {
-				OutStream *out = elm::sys::System::createFile(entry + ".lp");
-				sys->dumpLPSolve(*out);
-				delete out;
-			}
-		}
+
 
 		// display statistics
 		if(wcet >= 0 && display_stats) {
@@ -263,10 +254,91 @@ protected:
 		}
 	}
 
+	void cfg_print() {
+		for(auto g: **otawa::INVOLVED_CFGS(workspace())) {
+			cout << "CFG " << g << io::endl;
+			for(auto v: *g) {
+
+				cout << "\t" << v << io::endl;
+				cout << "\t\tSUCCS: ";
+				for(auto w: SUCCS(v))
+					cout << w << " ";
+				cout << "\n";
+
+				cout << "\t\tPREDS: ";
+				for(auto w: PREDS(v))
+					cout << w << " ";
+				cout << "\n";
+
+				if(LOOP_HEADER(v)) {
+
+					cout << "\t\tBACK_EDGES: ";
+					for(auto e: BACK_EDGES(v))
+						cout << e << " ";
+					cout << io::endl;
+
+					cout << "\t\tENTRY_EDGES: ";
+					for(auto e: ENTRY_EDGES(v))
+						cout << e << " ";
+					cout << io::endl;
+
+					cout << "\t\tEXIT_EDGES: ";
+					for(auto e: EXIT_EDGES(v))
+						cout << e << " ";
+					cout << io::endl;
+
+				}
+			}
+		}
+	}
+
+	void cfg2Matrix() {
+
+		for(auto g: **otawa::INVOLVED_CFGS(workspace())) {
+			SparseMatrix sparseConv;
+			SparseMatrix sparseLoop;
+			cout << "Funcao " << g << io::endl;
+			for(auto v: *g) {
+				cout << "Bloco: " << v->index() << " ";
+				if(v->isBasic()){
+					ot::time time = otawa::ipet::TIME(v);
+					cout << "Ciclos: " << time << io::endl;
+					cout << "Instruçoes: " << v->toBasic()->count() << io::endl;
+				}
+				cout << "Sucessores: ";
+				for(auto w: SUCCS(v)) {
+					ot::time time = otawa::ipet::TIME(w);
+					if(time > 0) sparseConv.set(v->index(), w->index(), time);
+					else sparseConv.set(v->index(), w->index(), 1);
+					cout << w << " ";
+				}
+				cout << "\n";
+				if(LOOP_HEADER(v)) {
+					cout << "\t\tBACK_EDGES: ";
+					for(auto e: BACK_EDGES(v)){
+						otawa::Edge *edge = e;
+						ot::time time = otawa::ipet::TIME( edge->source());
+						sparseLoop.set(v->index(), edge->source()->index(), time);
+						cout << edge->source()->index() << " ";
+					}
+					cout << io::endl;
+				}
+				else{
+					cout << "\t\tBACK_EDGES: "<< io::endl;
+				}
+
+			}
+			cout << "\nMatriz de Convencionais: " << io::endl;
+			sparseConv.print();
+			cout << "\nMatriz de loop: " << io::endl;
+			sparseLoop.print();
+		}
+	}
+
+
 private:
 	ListOption<string> params;
 	ValueOption<string> script;
-	SwitchOption ilp_dump;
 	SwitchOption list;
 	SwitchOption timed;
 	SwitchOption display_stats;
