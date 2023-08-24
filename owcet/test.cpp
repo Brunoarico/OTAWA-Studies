@@ -330,8 +330,10 @@ protected:
 			}
 			cout << "\nMatriz de Convencionais: " << io::endl;
 			sparseConv.print();
+			sparseConv.exportToCSV("conv.csv");
 			cout << "\nMatriz de loop: " << io::endl;
 			sparseLoop.print();
+			sparseLoop.exportToCSV("loop.csv");
 		}
 	}
 

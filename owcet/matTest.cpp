@@ -4,10 +4,8 @@
 
 int main() {
     SparseMatrix sparse;
-
-    sparse.set(0, 1, 5);
-    sparse.set(1, 2, 8);
-    sparse.set(2, 0, 3); 
+    std::cout<< "Teste de matriz esparsa" << std::endl;
+    sparse.importFromCSV("./conv.csv");
     sparse.print();
     return 0;
 }

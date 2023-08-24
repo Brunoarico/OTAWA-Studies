@@ -1,0 +1,10 @@
+checksum "bsort100.elf" 0x794e0e32;
+
+// Function Initialize (bsort100.c:73)
+loop "Initialize" + 0x34 2 ; // 0x8340 (bsort100.c:83)
+
+// Function BubbleSort (bsort100.c:94)
+loop "BubbleSort" + 0x24 30 ; // 0x83c0 (bsort100.c:98)
+	loop "BubbleSort" + 0x40 30 ; // 0x83dc (bsort100.c:103)
+
+

@@ -1,5 +1,7 @@
 #include "SparseMatrix.h"
 #include <iostream>
+#include <fstream>
+#include <string>
 
 void SparseMatrix::set(int row, int col, int value) {
     if (row < 0 || col < 0) {
@@ -46,4 +48,46 @@ void SparseMatrix::print() {
         }
         std::cout << std::endl;
     }
+}
+
+void SparseMatrix::exportToCSV(const std::string& filename) {
+    std::ofstream csvFile(filename);
+
+    if (!csvFile.is_open()) {
+        std::cerr << "Erro ao abrir o arquivo CSV para escrita." << std::endl;
+        return;
+    }
+
+    for (size_t row = 0; row < matrix.size(); ++row) {
+        for (size_t col = 0; col < matrix[row].size(); ++col) {
+            int value = matrix[row][col].value;
+            if (value != 0) {
+                csvFile << row << "," << col << "," << value << "\n";
+            }
+        }
+    }
+
+    csvFile.close();
+}
+
+
+void SparseMatrix::importFromCSV(const std::string& filename) {
+    std::ifstream csvFile(filename);
+
+    if (!csvFile.is_open()) {
+        std::cerr << "Erro ao abrir o arquivo CSV para leitura." << std::endl;
+        return;
+    }
+    else {
+        std::cout << "Arquivo CSV aberto com sucesso." << std::endl;
+    }
+
+    int value1, value2, value3;
+    char comma; // Para consumir as vírgulas
+
+    while (csvFile >> value1 >> comma >> value2 >> comma >> value3) {
+        set(value1, value2, value3);
+    }
+
+    csvFile.close();
 }
