@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cstdlib>
 
 void SparseMatrix::set(int row, int col, int value) {
     if (row < 0 || col < 0) {
@@ -30,6 +31,70 @@ int SparseMatrix::get(int row, int col) {
     }
 
     return matrix[row][col].value;
+}
+
+
+SparseMatrix SparseMatrix::subtract(SparseMatrix& other){
+    SparseMatrix result;
+
+    int numRows = std::max(matrix.size(), other.matrix.size());
+    for (int row = 0; row < numRows; ++row) {
+        for (int col = 0; col < numRows; ++col) {
+            int value = get(row, col) - other.get(row, col);
+            result.set(row, col, value);
+        }
+    }
+
+    return result;
+}
+
+bool SparseMatrix::hasNegativeValues(){
+    for (const auto& row : matrix) {
+        for (const auto& element : row) {
+            if (element.value < 0) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void SparseMatrix::generateGraphImage(const std::string& file) const {
+    std::ofstream dotFile(file);
+    
+    if (!dotFile.is_open()) {
+        std::cout << "Error opening dot file." << std::endl;
+        return;
+    }
+
+    dotFile << "digraph G {" << std::endl;
+    for (int row = 0; row < matrix.size(); ++row) {
+        for (int col = 0; col < matrix[row].size(); ++col) {
+            if (matrix[row][col].value != 0) {
+                if (row == 0) {
+                    dotFile << "  " << "in" << " -> " << col << " [label=" << matrix[row][col].value << "];" << std::endl;
+                    std::cout << row <<" " << col << " " << matrix[row][col].value << std::endl;
+                }
+                else if(col == matrix.size()){
+                    dotFile << "  " << row << " -> " << "out" << " [label=" << matrix[row][col].value << "];" << std::endl;
+                    std::cout << row <<" " << col << " " << matrix[row][col].value << std::endl;
+                }
+                else {
+                    dotFile << "  " << row << " -> " << col << " [label=" << matrix[row][col].value << "];" << std::endl;
+                    std::cout << row <<" " << col << " " << matrix[row][col].value << std::endl;
+                }
+            }
+        }
+    }
+ 
+    dotFile << "}" << std::endl;
+    dotFile.close();
+
+    // Generate the PNG image using Graphviz
+    std::string command = "dot -Tpng " + file + " -o " + file.substr(0, file.size() - 4) +".png";
+    system(command.c_str());
+
+    std::cout << "Graph image generated." << std::endl;
 }
 
 void SparseMatrix::print() {

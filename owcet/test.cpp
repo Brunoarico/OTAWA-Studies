@@ -26,6 +26,16 @@
 #include <otawa/cfg/features.h>
 #include <otawa/ilp/System.h>
 #include <otawa/ipet/IPET.h>
+
+#include <otawa/etime/features.h>
+#include <otawa/hard/Processor.h>
+#include <otawa/ilp.h>
+#include <otawa/ipet/features.h>
+#include <otawa/cfg/features.h>
+#include <otawa/stats/BBStatCollector.h>
+
+#include <otawa/ipet/WCETComputation.h>
+
 #include <otawa/ipet/BasicObjectFunctionBuilder.h>
 #include <otawa/script/Script.h>
 #include <otawa/stats/StatInfo.h>
@@ -33,8 +43,10 @@
 #include <otawa/flowfact/FlowFactLoader.h>
 #include <otawa/stats/BBStatCollector.h>
 #include "SparseMatrix.h"
+#include <unordered_set>
 using namespace otawa;
 using namespace elm::option;
+
 
 /**
  * @addtogroup commands
@@ -310,30 +322,38 @@ protected:
 					ot::time time = otawa::ipet::TIME(w);
 					if(time > 0) sparseConv.set(v->index(), w->index(), time);
 					else sparseConv.set(v->index(), w->index(), 1);
-					cout << w << " ";
+					cout << w->index() << " ";
 				}
 				cout << "\n";
 				if(LOOP_HEADER(v)) {
+					
+					std::unordered_set<int> exclusionSet;
+					for(auto e: ENTRY_EDGES(v)) exclusionSet.insert(e->source()->index());
+					
 					cout << "\t\tBACK_EDGES: ";
 					for(auto e: BACK_EDGES(v)){
-						otawa::Edge *edge = e;
-						ot::time time = otawa::ipet::TIME( edge->source());
-						sparseLoop.set(v->index(), edge->source()->index(), time);
-						cout << edge->source()->index() << " ";
+						if(exclusionSet.find(e->source()->index()) == exclusionSet.end()){
+							ot::time time = otawa::ipet::TIME(e->sink());
+							sparseLoop.set(e->source()->index(), v->index(), time);
+							cout << e->source()->index() << " ";
+						}
 					}
-					cout << io::endl;
 				}
 				else{
 					cout << "\t\tBACK_EDGES: "<< io::endl;
 				}
 
 			}
-			cout << "\nMatriz de Convencionais: " << io::endl;
+			sparseConv.generateGraphImage("full.dot");
 			sparseConv.print();
+			sparseConv = sparseConv.subtract(sparseLoop); // remove loop backs from conv
+			cout << "\nMatriz de Convencionais: " << io::endl;
 			sparseConv.exportToCSV("conv.csv");
+			sparseConv.generateGraphImage("conv.dot");
 			cout << "\nMatriz de loop: " << io::endl;
 			sparseLoop.print();
 			sparseLoop.exportToCSV("loop.csv");
+			sparseLoop.generateGraphImage("loop.dot");
 		}
 	}
 

@@ -43,8 +43,7 @@ $(PROGRAM): $(OBJECTS)
 -include $(DEPS)
 
 clean:
-	rm -rf *.o $(PROGRAM) *~ core.* *.lo .libs .deps .eld .csv
-
+	rm -rf *.o $(PROGRAM) *~ core.* *.lo .libs .deps .eld *.csv *.dot *.png
 if: $(PROGRAM)
 	./$(PROGRAM) -S -s $(MICROARCH) $(TEST_TARGET_IF)
 
