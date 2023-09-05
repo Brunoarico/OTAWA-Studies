@@ -27,12 +27,13 @@
 #include <otawa/ilp/System.h>
 #include <otawa/ipet/IPET.h>
 
-#include <otawa/etime/features.h>
+#include <otawa/events/features.h>
 #include <otawa/hard/Processor.h>
 #include <otawa/ilp.h>
 #include <otawa/ipet/features.h>
 #include <otawa/cfg/features.h>
 #include <otawa/stats/BBStatCollector.h>
+
 
 #include <otawa/ipet/WCETComputation.h>
 
@@ -42,8 +43,17 @@
 #include <otawa/util/BBRatioDisplayer.h>
 #include <otawa/flowfact/FlowFactLoader.h>
 #include <otawa/stats/BBStatCollector.h>
-#include "SparseMatrix.h"
+
+#include <otawa/tsim/BBTimeSimulator.h>
+#include <otawa/ipet/IPET.h>
+#include <otawa/sim.h>
+#include <otawa/sim/BasicBlockDriver.h>
+
+
+#include "CfgMatrix.h"
+//#include "FlowFactProcess.h"
 #include <unordered_set>
+#include <vector>
 using namespace otawa;
 using namespace elm::option;
 
@@ -155,7 +165,6 @@ public:
 	list			(SwitchOption			::Make(*this).cmd("--list")		.cmd("-l").description("list configuration items")),
 	timed			(SwitchOption			::Make(*this).cmd("--timed")	.cmd("-t").description("display computation")),
 	display_stats	(SwitchOption			::Make(*this).cmd("-S")			.cmd("--display-stats").description("display statistics")),
-	//detailed_stats	(SwitchOption			::Make(*this).cmd("-D")			.cmd("--detailed-stats").description("output detail of statistics")),
 	wcet_stats		(SwitchOption			::Make(*this).cmd("-w")			.cmd("--wcet-stat").description("detailed statistics about WCET"))
 	{ }
 
@@ -209,9 +218,8 @@ protected:
 		script::PATH(props) = path;
 		
 		script::Script *scr = new script::Script();
-		cout <<  scr << endl;
 		workspace()->run(scr, props);
-		cfg2Matrix();
+		
 		// process the list option
 		if(list) {
 			cerr << "CONFIGURATION OF " << *script << io::endl;
@@ -264,98 +272,66 @@ protected:
 		if(wcet >= 0 && wcet_stats) {
 			workspace()->run<BBRatioDisplayer>(props);
 		}
-	}
 
-	void cfg_print() {
-		for(auto g: **otawa::INVOLVED_CFGS(workspace())) {
-			cout << "CFG " << g << io::endl;
-			for(auto v: *g) {
-
-				cout << "\t" << v << io::endl;
-				cout << "\t\tSUCCS: ";
-				for(auto w: SUCCS(v))
-					cout << w << " ";
-				cout << "\n";
-
-				cout << "\t\tPREDS: ";
-				for(auto w: PREDS(v))
-					cout << w << " ";
-				cout << "\n";
-
-				if(LOOP_HEADER(v)) {
-
-					cout << "\t\tBACK_EDGES: ";
-					for(auto e: BACK_EDGES(v))
-						cout << e << " ";
-					cout << io::endl;
-
-					cout << "\t\tENTRY_EDGES: ";
-					for(auto e: ENTRY_EDGES(v))
-						cout << e << " ";
-					cout << io::endl;
-
-					cout << "\t\tEXIT_EDGES: ";
-					for(auto e: EXIT_EDGES(v))
-						cout << e << " ";
-					cout << io::endl;
-
-				}
-			}
-		}
+		cfg2Matrix();
 	}
 
 	void cfg2Matrix() {
 
+		string dir = workspace()->workDir();
+		std::string s = dir.asSysString();
+		size_t lastSlashPos = s.find_last_of('/');
+		std::string result = s.substr(0, lastSlashPos);
+        cout << "Resultado: " << result.c_str() << io::endl;
+		
+		//FlowFactProcess ffp;
+		//ffp.load(result.c_str());
+		//ffp.print();
+
 		for(auto g: **otawa::INVOLVED_CFGS(workspace())) {
-			SparseMatrix sparseConv;
-			SparseMatrix sparseLoop;
-			cout << "Funcao " << g << io::endl;
+			CfgMatrix cfgM;
+			
+			cout << "Function " << g << io::endl;
 			for(auto v: *g) {
-				cout << "Bloco: " << v->index() << " ";
-				if(v->isBasic()){
-					ot::time time = otawa::ipet::TIME(v);
-					cout << "Ciclos: " << time << io::endl;
-					cout << "Instruçoes: " << v->toBasic()->count() << io::endl;
-				}
-				cout << "Sucessores: ";
+				//cout << "Bloco: " << v->index() << " ";
+				/*if(v->isBasic()){
+					cout << "Time: " << ipet::TIME(bb) << io::endl;
+				}*/
 				for(auto w: SUCCS(v)) {
-					ot::time time = otawa::ipet::TIME(w);
-					if(time > 0) sparseConv.set(v->index(), w->index(), time);
-					else sparseConv.set(v->index(), w->index(), 1);
-					cout << w->index() << " ";
+					if(w->isBasic()){
+						ot::time time = otawa::ipet::TIME(w);
+						
+						if(time > 0) cfgM.addConv(v->index(), w->index(), time, w->address().offset());
+						else cfgM.addConv(v->index(), w->index(), 1, 0);
+					}
 				}
-				cout << "\n";
 				if(LOOP_HEADER(v)) {
 					
 					std::unordered_set<int> exclusionSet;
-					for(auto e: ENTRY_EDGES(v)) exclusionSet.insert(e->source()->index());
-					
-					cout << "\t\tBACK_EDGES: ";
+					for(auto e: ENTRY_EDGES(v)) {	
+						exclusionSet.insert(e->source()->index());
+					}
 					for(auto e: BACK_EDGES(v)){
+						
 						if(exclusionSet.find(e->source()->index()) == exclusionSet.end()){
 							ot::time time = otawa::ipet::TIME(e->sink());
-							sparseLoop.set(e->source()->index(), v->index(), time);
-							cout << e->source()->index() << " ";
+							cfgM.addLoop(e->source()->index(), v->index(), time, v->address().offset());
+							if(MAX_ITERATION(v) > 0) cfgM.addObrigatoryPass(v->index(), MAX_ITERATION(v));
+
 						}
 					}
 				}
-				else{
-					cout << "\t\tBACK_EDGES: "<< io::endl;
-				}
-
 			}
-			sparseConv.generateGraphImage("full.dot");
-			sparseConv.print();
-			sparseConv = sparseConv.subtract(sparseLoop); // remove loop backs from conv
-			cout << "\nMatriz de Convencionais: " << io::endl;
-			sparseConv.exportToCSV("conv.csv");
-			sparseConv.generateGraphImage("conv.dot");
-			cout << "\nMatriz de loop: " << io::endl;
-			sparseLoop.print();
-			sparseLoop.exportToCSV("loop.csv");
-			sparseLoop.generateGraphImage("loop.dot");
+			cfgM.printCycles();
+			cfgM.printIterations();
+			cfgM.print_all_cycles();
+			cfgM.printOuts();
+			cfgM.exportCSVs();
+			cfgM.exportDots();
 		}
+
 	}
+
 
 
 private:
@@ -366,7 +342,6 @@ private:
 	SwitchOption display_stats;
 	SwitchOption wcet_stats;
 	string bin, task;
-
 };
 
 OTAWA_RUN(OWCET);

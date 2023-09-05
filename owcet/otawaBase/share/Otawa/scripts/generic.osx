@@ -83,6 +83,7 @@ to be provided:
 	<!-- timing analysis -->
 	<step require="otawa::etime::EDGE_TIME_FEATURE"/>
 	<step require="otawa::ipet::WCET_FEATURE"/>
+	<config name="otawa::etime::RECORD_TIME" value="true"/>
 
 	<!-- outputs -->
 	<xsl:if test="$bbstats">
