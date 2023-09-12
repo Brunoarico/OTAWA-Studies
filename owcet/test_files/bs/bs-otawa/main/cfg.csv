@@ -1,5 +1,5 @@
 #Task: main
-#Exec: test_files/bs.elf
+#Exec: ./test_files/bs/bs.elf
 G	main	00008218	[]
 N
 B	00008218	20
@@ -10,7 +10,7 @@ E	0	1	N
 E	1	3	T
 E	2	4	T
 E	3	2	N
-G	binary_search	00008234	[]
+G	binary_search	00008234	[FUN(00008218), CALL(00008228)]
 N
 B	00008234	44
 B	00008304	16

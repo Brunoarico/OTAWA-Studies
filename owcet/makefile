@@ -7,30 +7,29 @@ TEST_FOLDER        = test_files
 TEST_TARGET_BS     = $(TEST_FOLDER)/bs/bs.elf
 TEST_TARGET_BS100  = $(TEST_FOLDER)/bsort100/bsort100.elf
 TEST_TARGET_IF     = $(TEST_FOLDER)/if/if.elf
-TEST_TARGET_LUCMP  = $(TEST_FOLDER)/ludcmp/ludcmp.elf
+TEST_TARGET_FORIF  = $(TEST_FOLDER)/forif/forif.elf
 HARDWRE_FOLDER     = hardware
 
-MICROARCH	      = trivial
+#MICROARCH	      = trivial
 MICROARCH	      = lpc2138
 
 # Configuration
 FLAGS           = -I./otawaBase/include
 DATADIR         = otawaBase/share
 CXXFLAGS        = $(FLAGS) -DDATA_DIR="$(DATADIR)"
-LDLIBS          = -L./otawaBase/lib -lotawa -lelm -lgel++ -lgel 
+LDLIBS          = -L./otawaBase/lib -lotawa -lelm -lgel++ -lgel ./otawaBase/lib/otawa/otawa/etime.so ./otawaBase/lib/otawa/otawa/branch.so
 CFLAGS          = -std=c++11 
 LDFLAGS         = -dlopen force 
 CXX             = g++
 LD              = libtool --mode=link --tag=CXX g++ 
-LIBRARY_PATH    := ./otawaBase/lib
+LIBRARY_PATH    = ./otawaBase/lib:./otawaBase/lib/otawa/otawa
 # Derivated
 OBJECTS         = $(SOURCES:.cpp=.o)
 DEPS            = $(addprefix .deps,$(SOURCES:.cpp=.d))
 
 # Rules
 all: .deps $(PROGRAM)
-	echo $(LIBRARY_PATH)
-	export LD_LIBRARY_PATH=$(LIBRARY_PATH)
+	export LD_LIBRARY_PATH=./otawaBase/lib:./otawaBase/lib/otawa/otawa
 
 $(PROGRAM): $(OBJECTS)
 	$(LD) -o $@ $^ SparseMatrix.h SparseMatrix.cpp CfgMatrix.h CfgMatrix.cpp $(LDFLAGS) $(LDLIBS)
@@ -56,5 +55,5 @@ bs: $(PROGRAM)
 bsort100: $(PROGRAM)
 	./$(PROGRAM) -S -s $(MICROARCH) $(TEST_TARGET_BS100)
 
-ludcmp: $(PROGRAM)
-	./$(PROGRAM) -S -s $(MICROARCH) $(TEST_TARGET_LUCMP)
+forif: $(PROGRAM)
+	./$(PROGRAM) -S -s $(MICROARCH) $(TEST_TARGET_FORIF)

@@ -34,7 +34,7 @@
 #include <otawa/cfg/features.h>
 #include <otawa/stats/BBStatCollector.h>
 
-
+#include <otawa/etime/features.h>
 #include <otawa/ipet/WCETComputation.h>
 
 #include <otawa/ipet/BasicObjectFunctionBuilder.h>
@@ -276,6 +276,35 @@ protected:
 		cfg2Matrix();
 	}
 
+	ot::time blockTime(Block *b) {
+		ilp::System *sys;	
+		sys = ipet::SYSTEM(workspace());
+		BasicBlock::basic_preds_t ps;
+		b->toBasic()->basicPreds(ps);
+		ot::time t2 = 0;
+
+		for(auto p: ps)
+			if(p.snd->hasProp(otawa::etime::LTS_TIME)) {
+				
+				// compute low time
+				int lt = otawa::etime::LTS_TIME(p.snd);
+				int lc = sys->valueOf(ipet::VAR(p.snd));
+				t2 += lc * lt;
+
+				// compute high times
+				for(auto c: otawa::etime::HTS_CONFIG.all(p.snd)) {
+					int ht = c.fst;
+					int hc = sys->valueOf(c.snd);
+					t2 += hc * ht;
+				}
+			}
+		ot::time t1 =  ipet::TIME(b);
+		if (t2 > 0) return t2;
+		else if (t1 > 0) return t1;
+		else return 1;
+	}
+
+
 	void cfg2Matrix() {
 
 		string dir = workspace()->workDir();
@@ -287,45 +316,58 @@ protected:
 		//FlowFactProcess ffp;
 		//ffp.load(result.c_str());
 		//ffp.print();
-
+		bool some = otawa::etime::EDGE_TIME_FEATURE(workspace());
+		cout << "Some: " << some << io::endl;
+		
 		for(auto g: **otawa::INVOLVED_CFGS(workspace())) {
 			CfgMatrix cfgM;
 			
 			cout << "Function " << g << io::endl;
+
 			for(auto v: *g) {
 				//cout << "Bloco: " << v->index() << " ";
-				/*if(v->isBasic()){
-					cout << "Time: " << ipet::TIME(bb) << io::endl;
+				
+				/*if(v->isBasic()){	
+					cout << "T: " << blockTime(v) << io::endl;
 				}*/
+
+				/*if(v->isEntry()){
+						cout << "Bloco: " << "Entrada" << " ";
+						for(auto w: SUCCS(v)) cout << "Bloco: " << v-> << " ";
+
+				}
+				else if(v->isExit()) {
+						cout << "Bloco: " << "Saida" << " ";
+				}*/
+
 				for(auto w: SUCCS(v)) {
 					if(w->isBasic()){
-						ot::time time = otawa::ipet::TIME(w);
-						
+						ot::time time = blockTime(w);
 						if(time > 0) cfgM.addConv(v->index(), w->index(), time, w->address().offset());
 						else cfgM.addConv(v->index(), w->index(), 1, 0);
 					}
 				}
+
 				if(LOOP_HEADER(v)) {
-					
 					std::unordered_set<int> exclusionSet;
 					for(auto e: ENTRY_EDGES(v)) {	
 						exclusionSet.insert(e->source()->index());
 					}
 					for(auto e: BACK_EDGES(v)){
-						
 						if(exclusionSet.find(e->source()->index()) == exclusionSet.end()){
-							ot::time time = otawa::ipet::TIME(e->sink());
+							ot::time time = blockTime(e->sink());
 							cfgM.addLoop(e->source()->index(), v->index(), time, v->address().offset());
 							if(MAX_ITERATION(v) > 0) cfgM.addObrigatoryPass(v->index(), MAX_ITERATION(v));
-
 						}
 					}
 				}
 			}
+
+
 			cfgM.printCycles();
 			cfgM.printIterations();
 			cfgM.print_all_cycles();
-			cfgM.printOuts();
+			//cfgM.printOuts();
 			cfgM.exportCSVs();
 			cfgM.exportDots();
 		}
