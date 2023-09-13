@@ -14,7 +14,7 @@ HARDWRE_FOLDER     = hardware
 MICROARCH	      = lpc2138
 
 # Configuration
-FLAGS           = -I./otawaBase/include
+FLAGS           = -I./otawaBase/include/ 
 DATADIR         = otawaBase/share
 CXXFLAGS        = $(FLAGS) -DDATA_DIR="$(DATADIR)"
 LDLIBS          = -L./otawaBase/lib -lotawa -lelm -lgel++ -lgel ./otawaBase/lib/otawa/otawa/etime.so ./otawaBase/lib/otawa/otawa/branch.so

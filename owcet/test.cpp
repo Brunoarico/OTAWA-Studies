@@ -1,124 +1,40 @@
-/*
- *	owcet command implementation
- *
- *	This file is part of OTAWA
- *	Copyright (c) 2009, IRIT UPS.
- *
- *	OTAWA is free software; you can redistribute it and/or modify
- *	it under the terms of the GNU General Public License as published by
- *	the Free Software Foundation; either version 2 of the License, or
- *	(at your option) any later version.
- *
- *	OTAWA is distributed in the hope that it will be useful,
- *	but WITHOUT ANY WARRANTY; without even the implied warranty of
- *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *	GNU General Public License for more details.
- *
- *	You should have received a copy of the GNU General Public License
- *	along with OTAWA; if not, write to the Free Software
- *	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
+#include "elm/option/StringList.h"
+#include "elm/sys/System.h"
 
-#include <elm/option/StringList.h>
-#include <elm/sys/System.h>
+#include "otawa/app/Application.h"
+#include "otawa/cfg/features.h"
+#include "otawa/ilp/System.h"
+#include "otawa/ipet/IPET.h"
 
-#include <otawa/app/Application.h>
-#include <otawa/cfg/features.h>
-#include <otawa/ilp/System.h>
-#include <otawa/ipet/IPET.h>
+#include "otawa/events/features.h"
+#include "otawa/hard/Processor.h"
+#include "otawa/ilp.h"
+#include "otawa/ipet/features.h"
+#include "otawa/cfg/features.h"
+#include "otawa/stats/BBStatCollector.h"
 
-#include <otawa/events/features.h>
-#include <otawa/hard/Processor.h>
-#include <otawa/ilp.h>
-#include <otawa/ipet/features.h>
-#include <otawa/cfg/features.h>
-#include <otawa/stats/BBStatCollector.h>
+#include "otawa/etime/features.h"
+#include "otawa/ipet/WCETComputation.h"
 
-#include <otawa/etime/features.h>
-#include <otawa/ipet/WCETComputation.h>
+#include "otawa/ipet/BasicObjectFunctionBuilder.h"
+#include "otawa/script/Script.h"
+#include "otawa/stats/StatInfo.h"
+#include "otawa/util/BBRatioDisplayer.h"
+#include "otawa/flowfact/FlowFactLoader.h"
+#include "otawa/stats/BBStatCollector.h"
 
-#include <otawa/ipet/BasicObjectFunctionBuilder.h>
-#include <otawa/script/Script.h>
-#include <otawa/stats/StatInfo.h>
-#include <otawa/util/BBRatioDisplayer.h>
-#include <otawa/flowfact/FlowFactLoader.h>
-#include <otawa/stats/BBStatCollector.h>
-
-#include <otawa/tsim/BBTimeSimulator.h>
-#include <otawa/ipet/IPET.h>
-#include <otawa/sim.h>
-#include <otawa/sim/BasicBlockDriver.h>
+#include "otawa/tsim/BBTimeSimulator.h"
+#include "otawa/ipet/IPET.h"
+#include "otawa/sim.h"
+#include "otawa/sim/BasicBlockDriver.h"
 
 
 #include "CfgMatrix.h"
-//#include "FlowFactProcess.h"
 #include <unordered_set>
 #include <vector>
 using namespace otawa;
 using namespace elm::option;
 
-
-/**
- * @addtogroup commands
- * @section owcet owcet Command
- *
- * owcet command allows to compute WCET of an application using a script
- * provided for a particular architecture implementation. It provide full power
- * of OTAWA framework including selection of architecture-dependent plugin
- * and fine-tuned computation scripts.
- *
- * @par Syntax
- *
- * @code
- * SYNTAX: owcet [options] EXECUTABLE_PATH [TASK_ENTRY] -s SCRIPT_PATH
- * @endcode
- *
- * The @i EXECUTABLE_PATH must be the path of the executable file to compute WCET for.
- * This executable file must be in a machine language understood by OTAWA (currently OTAWA
- * supports PowerPC, ARM, Sparc, HCS12 and partly TriCore).
- *
- * The optional @i TASK_ENTRY designs the function to compute the WCET for and usually
- * matches a task in the real-time applications. If this parameter is not given,
- * the @tt main function is used.
- *
- * The @i SCRIPT_PATH is the path of the file containing the script. These file are usually
- * found in $OTAWA_HOME/share/Otawa/scripts. When an architecture plugin is installed,
- * it provides usually its own script.
- *
- * Other options includes:
- * * --add-prop ID=VAL: add the property named ID with the value VAL to the configuration properties of the
- * analysis,
- * * -f, --flowfacts PATH: OTAWA can not automatically found loops so this options is used
- * to design the file containing loop bounds; supported formats includes .ff or .ffx (@ref ff). Flowfacts allows also
- * to pass specific configuration for the flow execution of a program.
- * * -i, --dump-ilp: dump the ILP system (if any) to the standard output.
- * * -l, --list: list the configuration items of the used script.
- * * --load-param ID=VAL: set the load parameter named ID to the value VAL.
- * * --log LEVEL: select the log level (one of proc, deps, cfg, bb or inst).
- * * -p, --param ID=VAL: several parameters with this form may be passed; these definition are used
- * to pass parameters to the script and the supported @i ID depends on the launched script (see its documentation
- * for more details).
- * * -s, --script PATH: use the given script to compute the WCET.
- * * -S, --display-stats: display statistics produced by the analysis.
- * * --stats: outputs available statistics in work directory.
- * * -t, --timed: display computation time.
- * * -v, --verbose: verbose display of the process (same as --log bb)
- * *-W, --wcet-stat: outputs detailed statistics about WCET.
- * * --work-dir PATH: change the working directory to PATH.
- *
- * @par Hints
- *
- * Real-time systems do not usually perform formatted output as @tt printf family of functions but such a function
- * are often used in case of error. Usually formatting performed by @tt printf is big and complex piece of code
- * that, in the case we take it into account in the WCET computation, would dominate the execution time
- * and drive to a very overestimated WCET. To avoid this, you can command to OTAWA to ignore them
- * without recompiling your application. Just create a file named YOU_EXECUTABLE.ff and write inside:
- * @code
- * nocall "printf";
- * @endcode
- * You can do the like with any function disturbing your computation. You can find in @ref f4 more details
- * about the commande @tt .ff files. You may also use XML format called @tt .ffx (see @ref ffx).
- */
 
 class Summer: public StatCollector::Collector {
 public:
@@ -162,10 +78,7 @@ public:
 	),
 	params			(ListOption<string>		::Make(*this).cmd("-p")			.cmd("--param").description("parameter passed to the script").argDescription("IDENTIFIER=VALUE")),
 	script			(ValueOption<string>	::Make(*this).cmd("-s")			.cmd("--script").description("script used to compute WCET").argDescription("PATH")),
-	list			(SwitchOption			::Make(*this).cmd("--list")		.cmd("-l").description("list configuration items")),
-	timed			(SwitchOption			::Make(*this).cmd("--timed")	.cmd("-t").description("display computation")),
-	display_stats	(SwitchOption			::Make(*this).cmd("-S")			.cmd("--display-stats").description("display statistics")),
-	wcet_stats		(SwitchOption			::Make(*this).cmd("-w")			.cmd("--wcet-stat").description("detailed statistics about WCET"))
+	display_stats	(SwitchOption			::Make(*this).cmd("-S")			.cmd("--display-stats").description("display statistics"))
 	{ }
 
 protected:
@@ -209,30 +122,12 @@ protected:
 		}
 		if(isVerbose())
 			cerr << "INFO: using script from " << path << io::endl;
-		
-		if(list)
-			script::ONLY_CONFIG(props) = true;
-		if(timed)
-			script::TIME_STAT(props) = true;
+
 		TASK_ENTRY(props) = entry;
 		script::PATH(props) = path;
 		
 		script::Script *scr = new script::Script();
 		workspace()->run(scr, props);
-		
-		// process the list option
-		if(list) {
-			cerr << "CONFIGURATION OF " << *script << io::endl;
-			for(script::Script::ItemIter item(*scr); item(); item++) {
-				cerr << "* item " << item->name << ": " << script::ScriptItem::type_labels[item->type];
-				if(item->deflt)
-					cerr << " (" << item->deflt << ")";
-				cerr << io::endl;
-				if(item->help)
-					cerr << item->help;
-				cerr << io::endl;
-			}
-		}
 
 		// display the result
 		ot::time wcet = ipet::WCET(workspace());
@@ -240,8 +135,6 @@ protected:
 			cerr << "ERROR: no WCET computed (see errors above)." << io::endl;
 		else if(scr->version() == 1)
 			cout << "WCET[" << entry << "] = " << wcet << " cycles\n";
-
-
 
 		// display statistics
 		if(wcet >= 0 && display_stats) {
@@ -262,15 +155,9 @@ protected:
 					 << ", max=" << s.max()
 					 << ", min=" << s.min() << io::endl;
 			}
-
 			// no state message
 			if(!found)
 				cerr << "No statistics to display.\n";
-		}
-
-		// display detailed statistics about WCET
-		if(wcet >= 0 && wcet_stats) {
-			workspace()->run<BBRatioDisplayer>(props);
 		}
 
 		cfg2Matrix();
@@ -311,13 +198,6 @@ protected:
 		std::string s = dir.asSysString();
 		size_t lastSlashPos = s.find_last_of('/');
 		std::string result = s.substr(0, lastSlashPos);
-        cout << "Resultado: " << result.c_str() << io::endl;
-		
-		//FlowFactProcess ffp;
-		//ffp.load(result.c_str());
-		//ffp.print();
-		bool some = otawa::etime::EDGE_TIME_FEATURE(workspace());
-		cout << "Some: " << some << io::endl;
 		
 		for(auto g: **otawa::INVOLVED_CFGS(workspace())) {
 			CfgMatrix cfgM;
@@ -332,12 +212,12 @@ protected:
 				}*/
 
 				/*if(v->isEntry()){
-						cout << "Bloco: " << "Entrada" << " ";
-						for(auto w: SUCCS(v)) cout << "Bloco: " << v-> << " ";
+					cout << "Bloco: " << "Entrada" << " ";
+					for(auto w: SUCCS(v)) cout << "Bloco: " << v-> << " ";
 
 				}
 				else if(v->isExit()) {
-						cout << "Bloco: " << "Saida" << " ";
+					cout << "Bloco: " << "Saida" << " ";
 				}*/
 
 				for(auto w: SUCCS(v)) {
@@ -363,7 +243,6 @@ protected:
 				}
 			}
 
-
 			cfgM.printCycles();
 			cfgM.printIterations();
 			cfgM.print_all_cycles();
@@ -379,10 +258,7 @@ protected:
 private:
 	ListOption<string> params;
 	ValueOption<string> script;
-	SwitchOption list;
-	SwitchOption timed;
 	SwitchOption display_stats;
-	SwitchOption wcet_stats;
 	string bin, task;
 };
 

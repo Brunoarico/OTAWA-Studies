@@ -1,13 +1,12 @@
 #Label: Total Execution Time
 #Unit: cycle
-#Total: 43
+#Total: 135
 #LineOp: sum
 #ConcatOp: sum
 #ContextOp: sum
 #Description: Represents the total number of cycles the code takes during the execution of the worst case execution path.
-#Time: 860 ns
-#WCET: 43 cycles
-23	08000000	28	[]
-9	0800001c	10	[]
-4	08000026	4	[]
-7	0800002a	12	[]
+#WCET: 135 cycles
+70	08000000	28	[]
+25	0800001c	10	[]
+10	08000026	4	[]
+30	0800002a	12	[]

@@ -1,5 +1,5 @@
 #Task: main
-#Exec: ./test_files/if/if.elf
+#Exec: test_files/if/if.elf
 G	main	08000000	[]
 N
 B	08000000	28
