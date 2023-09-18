@@ -14,9 +14,10 @@ HARDWRE_FOLDER     = hardware
 MICROARCH	      = lpc2138
 
 # Configuration
-FLAGS           = -I./otawaBase/include/ 
+FLAGSA           = -I./otawaBase/include/
+FLAGSB           = -I./otawaBase/include/otawa/* 
 DATADIR         = otawaBase/share
-CXXFLAGS        = $(FLAGS) -DDATA_DIR="$(DATADIR)"
+CXXFLAGS        = -DDATA_DIR="$(DATADIR)"
 LDLIBS          = -L./otawaBase/lib -lotawa -lelm -lgel++ -lgel ./otawaBase/lib/otawa/otawa/etime.so ./otawaBase/lib/otawa/otawa/branch.so
 CFLAGS          = -std=c++11 
 LDFLAGS         = -dlopen force 
@@ -38,8 +39,8 @@ $(PROGRAM): $(OBJECTS)
 	mkdir .deps
 
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) $(CFLAGS) -MM -MF .deps/$*.d -c $<
-	$(CXX) $(CXXFLAGS) $(CFLAGS) -c $< -o $@ 
+	$(CXX) $(FLAGSA) $(CXXFLAGS) $(CFLAGS) -MM -MF .deps/$*.d -c $<
+	$(CXX) $(FLAGSA) $(FLAGSB) $(CXXFLAGS) $(CFLAGS) -c $< -o $@ 
 
 -include $(DEPS)
 

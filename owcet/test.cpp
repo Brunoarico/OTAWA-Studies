@@ -4,13 +4,11 @@
 #include "otawa/app/Application.h"
 #include "otawa/cfg/features.h"
 #include "otawa/ilp/System.h"
-#include "otawa/ipet/IPET.h"
 
 #include "otawa/events/features.h"
 #include "otawa/hard/Processor.h"
 #include "otawa/ilp.h"
 #include "otawa/ipet/features.h"
-#include "otawa/cfg/features.h"
 #include "otawa/stats/BBStatCollector.h"
 
 #include "otawa/etime/features.h"
@@ -21,17 +19,11 @@
 #include "otawa/stats/StatInfo.h"
 #include "otawa/util/BBRatioDisplayer.h"
 #include "otawa/flowfact/FlowFactLoader.h"
-#include "otawa/stats/BBStatCollector.h"
-
-#include "otawa/tsim/BBTimeSimulator.h"
-#include "otawa/ipet/IPET.h"
-#include "otawa/sim.h"
-#include "otawa/sim/BasicBlockDriver.h"
-
 
 #include "CfgMatrix.h"
 #include <unordered_set>
 #include <vector>
+
 using namespace otawa;
 using namespace elm::option;
 
