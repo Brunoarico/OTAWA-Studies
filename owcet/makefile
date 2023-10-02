@@ -1,4 +1,4 @@
-PROGRAM         = biocet
+PROGRAM         = biowcet
 SOURCES         = test.cpp
 
 
