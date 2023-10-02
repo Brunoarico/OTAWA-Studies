@@ -12,11 +12,10 @@ TEST_TARGET_FORIF  = $(TEST_FOLDER)/forif/forif.elf
 MICROARCH	      = lpc2138
 
 # Configuration
-FLAGSA          = $(shell otawa-config --cflags)
-DATADIR         = $(shell otawa-config --datadir)
+FLAGSA          = -I./otawaBase/include/
+DATADIR         = otawaBase/share
 CXXFLAGS        = -DDATA_DIR="$(DATADIR)"
-LIBDIR          = $(shell otawa-config --libdir)
-LDLIBS          = $(shell otawa-config --libs) $(LIBDIR)/otawa/otawa/etime.so $(LIBDIR)/otawa/otawa/branch.so
+LDLIBS          = -L./otawaBase/lib -lotawa -lelm -lgel++ -lgel ./otawaBase/lib/otawa/otawa/etime.so ./otawaBase/lib/otawa/otawa/branch.so
 CFLAGS          = -std=c++11 
 LDFLAGS         = -dlopen force 
 CXX             = g++
@@ -29,7 +28,6 @@ DEPS            = $(addprefix .deps,$(SOURCES:.cpp=.d))
 
 # Rules
 all: .deps $(PROGRAM)
-	echo $(LIBRARY_PATH)
 	export LD_LIBRARY_PATH=./otawaBase/lib:./otawaBase/lib/otawa/otawa
 
 $(PROGRAM): $(OBJECTS)
