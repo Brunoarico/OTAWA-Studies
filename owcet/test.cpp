@@ -20,7 +20,7 @@
 #include <otawa/util/BBRatioDisplayer.h>
 #include <otawa/flowfact/FlowFactLoader.h>        
 
-#include "CfgMatrix.h"
+#include "cfgmatrix/CfgMatrix.h"
 #include <unordered_set>
 #include <vector>
 

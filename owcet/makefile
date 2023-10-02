@@ -21,7 +21,6 @@ CFLAGS          = -std=c++11
 LDFLAGS         = -dlopen force 
 CXX             = g++
 LD              = libtool --mode=link --tag=CXX g++ 
-LIBRARY_PATH    = ./otawaBase/lib:./otawaBase/lib/otawa/otawa
 
 # Derivated
 OBJECTS         = $(SOURCES:.cpp=.o)
@@ -29,14 +28,19 @@ DEPS            = $(addprefix .deps,$(SOURCES:.cpp=.d))
 
 # Rules
 all: .deps $(PROGRAM)
-	echo $(LIBRARY_PATH)
-	export LD_LIBRARY_PATH=./otawaBase/lib:./otawaBase/lib/otawa/otawa
+	export LD_LIBRARY_PATH=$(LIBDIR):$(LIBDIR)/otawa/otawa
 
-$(PROGRAM): $(OBJECTS)
-	$(LD) -o $@ $^ SparseMatrix.h SparseMatrix.cpp CfgMatrix.h CfgMatrix.cpp $(LDFLAGS) $(LDLIBS)
+$(PROGRAM): $(OBJECTS) cfgmatrix/SparseMatrix.o cfgmatrix/CfgMatrix.o
+	$(LD) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
 .deps:
 	mkdir .deps
+
+cfgmatrix/CfgMatrix.o: cfgmatrix/CfgMatrix.cpp cfgmatrix/CfgMatrix.h
+	$(CXX) $(FLAGSA) $(CXXFLAGS) $(CFLAGS) -c $< -o $@
+
+cfgmatrix/SparseMatrix.o: cfgmatrix/SparseMatrix.cpp cfgmatrix/SparseMatrix.h
+	$(CXX) $(FLAGSA) $(CXXFLAGS) $(CFLAGS) -c $< -o $@
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(CFLAGS) -MM -MF .deps/$*.d -c $<
