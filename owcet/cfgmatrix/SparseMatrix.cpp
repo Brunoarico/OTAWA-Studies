@@ -32,15 +32,13 @@ bool SparseMatrix::exist(int row, int col) {
     else return true;
 }
 
-void SparseMatrix::setAddr(int row, int col, unsigned long addr) {
-    if (row < 0 || col < 0 || row >= matrix.size() || col >= matrix[row].size()) return; // Invalid input
-    if(exist(row, col)) matrix[row][col].addr = addr;
+void SparseMatrix::setName(int node, std::string name) {
+    func[node] = name;
 }
 
-int SparseMatrix::getAddr(int row, int col) {
-    if (row < 0 || col < 0 || row >= matrix.size() || col >= matrix[row].size()) return -1; // Invalid input
-    if(exist(row, col)) return matrix[row][col].addr;
-    else return -1;
+std::string SparseMatrix::getName(int node) {
+    if(func.find(node) == func.end()) return "-";
+    else return func[node];
 }
 
 int SparseMatrix::size() {
@@ -56,8 +54,6 @@ SparseMatrix SparseMatrix::subtract(SparseMatrix& other){
         for (int col = 0; col < numRows; ++col) {
             int value = getCycle(row, col) - other.getCycle(row, col);
             result.setCycle(row, col, value);
-            if(getAddr(row, col)) result.setAddr(row, col, getAddr(row, col));
-            else result.setAddr(row, col, other.getAddr(row, col));
         }
     }
 
@@ -72,8 +68,6 @@ SparseMatrix SparseMatrix::sum(SparseMatrix& other){
         for (int col = 0; col < numRows; ++col) {
             int value = getCycle(row, col) + other.getCycle(row, col);
             result.setCycle(row, col, value);
-            if(getAddr(row, col)) result.setAddr(row, col, getAddr(row, col));
-            else result.setAddr(row, col, other.getAddr(row, col));
         }
     }
 
@@ -89,7 +83,7 @@ bool SparseMatrix::hasNegativeValues(){
     return false;
 }
 
-void SparseMatrix::generateGraphImage(const std::string& file) const {
+void SparseMatrix::generateGraphImage(const std::string& file) const{
 
     system(mkImgDir.c_str());
 
@@ -104,7 +98,7 @@ void SparseMatrix::generateGraphImage(const std::string& file) const {
     for (int row = 0; row < matrix.size(); ++row) {
         for (int col = 0; col < matrix[row].size(); ++col) {
             if (matrix[row][col].value != 0) {
-                dotFile << "  " << row << " -> " << col << " [label=" << matrix[row][col].value << "];" << std::endl;
+                dotFile << "   \""+std::to_string(row)+":"+func[row]+"\" -> " << "\""+std::to_string(col)+":"+ func[col]+"\"" << " [label=" << matrix[row][col].value << "];" << std::endl;
                 //std::cout << row <<" " << col << " " << matrix[row][col].value << std::endl;
             }
         }
@@ -140,22 +134,12 @@ void SparseMatrix::printCycles() {
 }
 
 
-void SparseMatrix::printAddrs() {
-    int numRows = matrix.size();
-    int numCols = 0;
-    for (const auto& row : matrix) {
-        for (const auto& element : row) {
-            numCols = std::max(numCols, element.col + 1);
-        }
+int SparseMatrix::getOuts(int node) {
+    int out = 0;
+    for (int col = 0; col < matrix[node].size(); ++col) {
+        if (matrix[node][col].value != 0) out++;
     }
-
-    for (int row = 0; row < numRows; ++row) {
-        for (int col = 0; col < numCols; ++col) {
-            int value = getAddr(row, col);
-            std::cout << "0x" << std::hex << value << " ";
-        }
-        std::cout << std::endl;
-    }
+    return out;
 }
 
 void SparseMatrix::exportToCSV(const std::string& filename) {
@@ -179,14 +163,6 @@ void SparseMatrix::exportToCSV(const std::string& filename) {
     csvFile.close();
 }
 
-
-int SparseMatrix::getOuts(int node) {
-    int out = 0;
-    for (int col = 0; col < matrix[node].size(); ++col) {
-        if (matrix[node][col].value != 0) out++;
-    }
-    return out;
-}
 
 void SparseMatrix::importFromCSV(const std::string& filename) {
     std::ifstream csvFile(filename);

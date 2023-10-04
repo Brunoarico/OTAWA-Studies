@@ -7,9 +7,10 @@ TEST_TARGET_BS     = $(TEST_FOLDER)/bs/bs.elf
 TEST_TARGET_BS100  = $(TEST_FOLDER)/bsort100/bsort100.elf
 TEST_TARGET_IF     = $(TEST_FOLDER)/if/if.elf
 TEST_TARGET_FORIF  = $(TEST_FOLDER)/forif/forif.elf
+TEST_TARGET_FUNC   = $(TEST_FOLDER)/func/func.elf
 
-#MICROARCH	      = trivial
-MICROARCH	      = lpc2138
+MICROARCH	      = trivial
+#MICROARCH	      = lpc2138
 
 # Configuration
 FLAGSA          = $(shell otawa-config --cflags)
@@ -49,7 +50,7 @@ cfgmatrix/SparseMatrix.o: cfgmatrix/SparseMatrix.cpp cfgmatrix/SparseMatrix.h
 -include $(DEPS)
 
 clean:
-	rm -rf *.o $(PROGRAM) *~ core.* *.lo .libs .deps .eld csv dot png
+	rm -rf *.o $(PROGRAM) *~ core.* *.lo .libs .deps .eld csv dot png cfgmatrix/*.o
 
 if: $(PROGRAM)
 	./$(PROGRAM) -S -s $(MICROARCH) $(TEST_TARGET_IF)
@@ -62,3 +63,6 @@ bsort100: $(PROGRAM)
 
 forif: $(PROGRAM)
 	./$(PROGRAM) -S -s $(MICROARCH) $(TEST_TARGET_FORIF)
+
+func: $(PROGRAM)
+	./$(PROGRAM) -S -s $(MICROARCH) $(TEST_TARGET_FUNC)

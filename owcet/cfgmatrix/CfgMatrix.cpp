@@ -4,33 +4,37 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
+#include <string>
+#include <map>
 
 
-void CfgMatrix::addConv(int nodeA, int nodeB, int cycles, unsigned long addr){
+void CfgMatrix::addConv(int nodeA, int nodeB, int cycles){
     adjMatrixTotal.setCycle(nodeA, nodeB, cycles);
-    adjMatrixTotal.setAddr(nodeA, nodeB, addr);
 }
 
-void CfgMatrix::addLoop(int nodeA, int nodeB, int cycles, unsigned long addr){
+void CfgMatrix::addLoop(int nodeA, int nodeB, int cycles){
     adjMatrixLoop.setCycle(nodeA, nodeB, cycles);
-    adjMatrixLoop.setAddr(nodeA, nodeB, addr);
 }
 
 void CfgMatrix::addObrigatoryPass(int node, int iterations){
     this->iterations[node] = iterations;
 }
 
-void CfgMatrix::exportCSVs() {
-    adjMatrixLoop.exportToCSV("loop.csv");
-    SparseMatrix adjMatrixConv = adjMatrixTotal.subtract(adjMatrixLoop);
-    adjMatrixConv.exportToCSV("conv.csv");
+void CfgMatrix::setFuncName(int node, std::string name){
+    adjMatrixTotal.setName(node, name);
 }
 
-void CfgMatrix::exportDots() {
-    adjMatrixLoop.generateGraphImage("loop.dot");
+void CfgMatrix::exportCSVs(std::string funcname) {
+    adjMatrixLoop.exportToCSV(funcname + "_loop.csv");
     SparseMatrix adjMatrixConv = adjMatrixTotal.subtract(adjMatrixLoop);
-    adjMatrixConv.generateGraphImage("conv.dot");
-    adjMatrixTotal.generateGraphImage("full.dot");
+    adjMatrixConv.exportToCSV(funcname +"_conv.csv");
+}
+
+void CfgMatrix::exportDots(std::string funcname) {
+    adjMatrixLoop.generateGraphImage(funcname+"_loop.dot");
+    SparseMatrix adjMatrixConv = adjMatrixTotal.subtract(adjMatrixLoop);
+    adjMatrixConv.generateGraphImage(funcname+"_conv.dot");
+    adjMatrixTotal.generateGraphImage(funcname+"_full.dot");
 }
 
 void CfgMatrix::printCycles() {
@@ -43,14 +47,10 @@ void CfgMatrix::printCycles() {
     adjMatrixTotal.printCycles();
 }
 
-void CfgMatrix::printAddrs() {
-    std::cout << "---Conventional---" << std::endl;
-    SparseMatrix adjMatrixConv = adjMatrixTotal.subtract(adjMatrixLoop);
-    adjMatrixConv.printAddrs();
-    std::cout << "---Loop---" << std::endl;
-    adjMatrixLoop.printAddrs();
-    std::cout << "---Full---" << std::endl;
-    adjMatrixTotal.printAddrs();
+void CfgMatrix::printFunctions() {
+    for (int i = 0; i < adjMatrixTotal.size(); ++i) {
+        std::cout << "Node(" << i << ") = " << adjMatrixTotal.getName(i) << std::endl;
+    }
 }
 
 void CfgMatrix::printIterations() {

@@ -1,0 +1,13 @@
+#Label: Block Execution Time
+#Unit: cycle
+#Total: 0
+#LineOp: sum
+#ConcatOp: sum
+#ContextOp: sum
+45	08000064	36	[]
+15	08000088	12	[]
+30	08000094	24	[]
+45	08000000	36	[]
+20	08000040	16	[]
+25	08000050	20	[]
+35	08000024	28	[]
