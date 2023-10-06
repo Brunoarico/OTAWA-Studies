@@ -22,7 +22,9 @@
 
 #include "cfgmatrix/CfgMatrix.h"
 #include <unordered_set>
+
 #include <vector>
+
 
 using namespace otawa;
 using namespace elm::option;
@@ -191,6 +193,7 @@ protected:
 		size_t lastSlashPos = s.find_last_of('/');
 		std::string result = s.substr(0, lastSlashPos);
 		
+		
 		for(auto g: **otawa::INVOLVED_CFGS(workspace())) {
 			CfgMatrix cfgM;
 			
@@ -202,18 +205,17 @@ protected:
 					cout << "T: " << blockTime(v) << io::endl;
 				}*/
 
-				if(v->isCall()){
+				/*if(v->isCall()){
 					cout << "Bloco chamada: " << v->index() << ": ";
 					for(auto w: SUCCS(v)) cout << w->index() << " ";
 					cout << io::endl;
-				}
+				}*/
 
-				if(v->isBasic()){
+				/*if(v->isBasic()){
 					cout << "Bloco basico: " << v->index() << ": ";
 					for(auto w: SUCCS(v)) cout << w->index() << " ";
 					cout << io::endl;
-
-				}
+				}*/
 	
 
 				if(v->isCall()) {
@@ -226,11 +228,12 @@ protected:
 
 					if(w->isBasic()){
 						ot::time time = blockTime(w);
-						if(time > 0) cfgM.addConv(v->index(), w->index(), time);
-						else cfgM.addConv(v->index(), w->index(), 1);
+						if(time > 0) cfgM.setConv(v->index(), w->index(), time);
+						else cfgM.setConv(v->index(), w->index(), 1);
 					}
 					else if(w->isCall()) {
-						cfgM.addConv(v->index(), w->index(), 1020391239);
+						std::string funcn = w->toSynth()->callee()->name().asSysString();
+						cfgM.setConv(v->index(), w->index(), cfgM.getBlockNameHash(w->index()));
 					}
 				}
 
@@ -242,17 +245,17 @@ protected:
 					for(auto e: BACK_EDGES(v)){
 						if(exclusionSet.find(e->source()->index()) == exclusionSet.end()){
 							ot::time time = blockTime(e->sink());
-							cfgM.addLoop(e->source()->index(), v->index(), time);
-							if(MAX_ITERATION(v) > 0) cfgM.addObrigatoryPass(v->index(), MAX_ITERATION(v));
+							cfgM.setLoop(e->source()->index(), v->index(), time);
+							if(MAX_ITERATION(v) > 0) cfgM.setIteration(v->index(), MAX_ITERATION(v));
 						}
 					}
 				}
 			}
 
-			//cfgM.printCycles();
-			cfgM.printFunctions();
+			cfgM.printCycles();
+			//cfgM.printFunctions();
 			//cfgM.printIterations();
-			//cfgM.print_all_cycles();
+			cfgM.print_all_cycles();
 			//cfgM.printOuts();
 			//cfgM.exportCSVs(g->name().asSysString());
 			cfgM.exportDots(g->name().asSysString());

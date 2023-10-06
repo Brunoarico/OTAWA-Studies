@@ -8,6 +8,7 @@ TEST_TARGET_BS100  = $(TEST_FOLDER)/bsort100/bsort100.elf
 TEST_TARGET_IF     = $(TEST_FOLDER)/if/if.elf
 TEST_TARGET_FORIF  = $(TEST_FOLDER)/forif/forif.elf
 TEST_TARGET_FUNC   = $(TEST_FOLDER)/func/func.elf
+TEST_TARGET_LUDCMP = $(TEST_FOLDER)/ludcmp/ludcmp.elf
 
 MICROARCH	      = trivial
 #MICROARCH	      = lpc2138
@@ -32,10 +33,10 @@ all: .deps $(PROGRAM)
 	export LD_LIBRARY_PATH=$(LIBDIR):$(LIBDIR)/otawa/otawa
 
 $(PROGRAM): $(OBJECTS) cfgmatrix/SparseMatrix.o cfgmatrix/CfgMatrix.o
-	$(LD) -o $@ $^ $(LDFLAGS) $(LDLIBS)
+	@$(LD) -o $@ $^ $(LDFLAGS) $(LDLIBS) 2>/dev/null
 
 .deps:
-	mkdir .deps
+	@mkdir .deps
 
 cfgmatrix/CfgMatrix.o: cfgmatrix/CfgMatrix.cpp cfgmatrix/CfgMatrix.h
 	$(CXX) $(FLAGSA) $(CXXFLAGS) $(CFLAGS) -c $< -o $@
@@ -50,7 +51,7 @@ cfgmatrix/SparseMatrix.o: cfgmatrix/SparseMatrix.cpp cfgmatrix/SparseMatrix.h
 -include $(DEPS)
 
 clean:
-	rm -rf *.o $(PROGRAM) *~ core.* *.lo .libs .deps .eld csv dot png cfgmatrix/*.o
+	@rm -rf *.o $(PROGRAM) *~ core.* *.lo .libs .deps .eld csv dot png cfgmatrix/*.o
 
 if: $(PROGRAM)
 	./$(PROGRAM) -S -s $(MICROARCH) $(TEST_TARGET_IF)
@@ -66,3 +67,6 @@ forif: $(PROGRAM)
 
 func: $(PROGRAM)
 	./$(PROGRAM) -S -s $(MICROARCH) $(TEST_TARGET_FUNC)
+
+ludcmp: $(PROGRAM)
+	./$(PROGRAM) -S -s $(MICROARCH) $(TEST_TARGET_LUDCMP)

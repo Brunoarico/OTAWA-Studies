@@ -54,6 +54,7 @@ SparseMatrix SparseMatrix::subtract(SparseMatrix& other){
         for (int col = 0; col < numRows; ++col) {
             int value = getCycle(row, col) - other.getCycle(row, col);
             result.setCycle(row, col, value);
+            result.setName(row, func[row]);
         }
     }
 
@@ -68,6 +69,7 @@ SparseMatrix SparseMatrix::sum(SparseMatrix& other){
         for (int col = 0; col < numRows; ++col) {
             int value = getCycle(row, col) + other.getCycle(row, col);
             result.setCycle(row, col, value);
+            result.setName(row, func[row]);
         }
     }
 
@@ -103,7 +105,6 @@ void SparseMatrix::generateGraphImage(const std::string& file) const{
             }
         }
     }
- 
     dotFile << "}" << std::endl;
     dotFile.close();
 
