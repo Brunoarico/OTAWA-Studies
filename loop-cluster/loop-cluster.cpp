@@ -193,15 +193,25 @@ int main() {
             }
         }
         int internalLoopMatrix[loopSize][loopSize];
+        memset(internalLoopMatrix, 0, sizeof(internalLoopMatrix));
+        int count1, count2 = 0;
         for (int j = 0; j < size; j++)
         {
             if (loopArrays[i][j] != 0)
             {
-                loopSize++;
+                for (int k = 0; k < size; k++)
+                {
+                    if (loopArrays[i][k] != 0)
+                    {
+                        internalLoopMatrix[count1][count2] = matrix[j][k];
+                        count2++;
+
+                    }
+                }
+                count2 = 0;
+                count1++;
             }
         }
-        
-
     }
     
 
