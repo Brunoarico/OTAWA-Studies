@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "stdint.h": "c",
+        "cron.h": "c",
+        "random": "c",
+        "functional": "c"
+    }
+}

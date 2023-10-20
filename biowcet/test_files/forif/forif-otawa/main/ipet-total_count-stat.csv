@@ -1,0 +1,13 @@
+#Label: Total Execution Count
+#Total: 0
+#LineOp: sum
+#ConcatOp: sum
+#ContextOp: sum
+#Description: Represents the number of execution of the code along the worst-case execution path.
+1	08000000	40	[]
+11	0800006c	12	[]
+1	08000078	20	[]
+10	08000028	16	[]
+10	08000038	20	[]
+10	08000060	12	[]
+0	0800004c	20	[]

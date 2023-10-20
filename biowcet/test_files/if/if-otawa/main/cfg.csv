@@ -1,0 +1,16 @@
+#Task: main
+#Exec: test_files/if/if.elf
+G	main	08000000	[]
+N
+B	08000000	28
+B	0800002a	12
+B	0800001c	10
+B	08000026	4
+X
+E	0	1	N
+E	1	2	T
+E	1	3	N
+E	2	5	T
+E	3	2	T
+E	3	4	N
+E	4	2	N

@@ -1,0 +1,66 @@
+#Name: register
+#Label: Register Usage
+#Description: View read and written registers.
+0	1	00008218	read r13, write r12
+0	1	0000821c	read r13, r11, r12, r14, r15, write r13
+0	1	00008220	read r12, write r11
+0	1	00008224	write r0
+0	1	00008228	write r14, r14
+0	2	0000822c	read r3, write r0
+0	2	00008230	read r13, write r11, r13, r15
+1	1	00008234	read r13, write r12
+1	1	00008238	read r13, r11, r12, r14, r15, write r13
+1	1	0000823c	read r12, write r11
+1	1	00008240	read r13, write r13
+1	1	00008244	read r11, r0
+1	1	00008248	write r3
+1	1	0000824c	read r11, r3
+1	1	00008250	write r3
+1	1	00008254	read r11, r3
+1	1	00008258	write r3
+1	1	0000825c	read r11, r3
+1	2	00008304	read r11, write r3
+1	2	00008308	read r3, write r0
+1	2	0000830c	read r11, write r13
+1	2	00008310	read r13, write r11, r13, r15
+1	3	00008270	read r11, write r2
+1	3	00008274	read r11, write r3
+1	3	00008278	read r2, r3, write r3
+1	3	0000827c	read r3, write r3
+1	3	00008280	read r11, r3
+1	3	00008284	read r15, write r2
+1	3	00008288	read r11, write r3
+1	3	0000828c	read r2, r3, write r2
+1	3	00008290	read r11, write r3
+1	3	00008294	read r2, r3, write sr
+1	3	00008298	read sr, write r14
+1	4	000082cc	read r15, write r2
+1	4	000082d0	read r11, write r3
+1	4	000082d4	read r2, r3, write r2
+1	4	000082d8	read r11, write r3
+1	4	000082dc	read r2, r3, write sr
+1	4	000082e0	read sr, write r14
+1	5	000082f4	read r11, write r3
+1	5	000082f8	read r3, write r3
+1	5	000082fc	read r11, r3
+1	5	00008300	write r14
+1	6	00008260	read r11, write r2
+1	6	00008264	read r11, write r3
+1	6	00008268	read r2, r3, write sr
+1	6	0000826c	read sr, write r14
+1	7	000082e4	read r11, write r3
+1	7	000082e8	read r3, write r3
+1	7	000082ec	read r11, r3
+1	7	000082f0	write r14
+1	8	0000829c	read r11, write r3
+1	8	000082a0	read r3, write r3
+1	8	000082a4	read r11, r3
+1	8	000082a8	read r15, write r2
+1	8	000082ac	read r11, write r3
+1	8	000082b0	write r1
+1	8	000082b4	read r3, write r3
+1	8	000082b8	read r3, r2, write r3
+1	8	000082bc	read r3, r1, write r3
+1	8	000082c0	read r3, write r3
+1	8	000082c4	read r11, r3
+1	8	000082c8	write r14

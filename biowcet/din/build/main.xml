@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<flowfacts>
+    <function name="main" executed="true" extern="false">
+        <call name="generateArrayInvert" numcall="4" line="71" source="src/main.c" executed="true" extern="false">
+            <function name="generateArrayInvert">
+                <loop loopId="5" line="56" source="src/main.c" exact="true" maxcount="500" totalcount="500">
+                </loop>
+            </function>
+        </call>
+        <call name="bubbleSort" numcall="5" line="72" source="src/main.c" executed="true" extern="false">
+            <function name="bubbleSort">
+                <loop loopId="2" line="31" source="src/main.c" exact="false" maxcount="499" totalcount="499">
+                    <loop loopId="3" line="33" source="src/main.c" exact="false" maxcount="499" totalcount="124750">
+                    </loop>
+                </loop>
+            </function>
+        </call>
+        <loop source="src/main.c" line="31" max="499"  min="499">
+        </loop>
+        <loop source="src/main.c" line="33" max="499"  min="499">
+        </loop>
+        <loop source="src/main.c" line="56" max="500"  min="500">
+        </loop>
+    </function>
+</flowfacts>
+

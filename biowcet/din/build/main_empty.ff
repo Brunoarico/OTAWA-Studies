@@ -1,0 +1,10 @@
+checksum "main_otawa.elf" 0x7a36481a;
+
+// Function generateArrayInvert (src/main.c:54)
+loop "generateArrayInvert" + 0x48 ? ; // 0x80005c8 (src/main.c:56)
+
+// Function bubbleSort (src/main.c:27)
+loop "bubbleSort" + 0x108 ? ; // 0x80004f4 (src/main.c:31)
+	loop "bubbleSort" + 0xd8 ? ; // 0x80004c4 (src/main.c:33)
+
+
