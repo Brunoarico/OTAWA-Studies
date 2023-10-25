@@ -1,4 +1,5 @@
 import gdb
+import sys
 
 n_measures = 10
 
@@ -8,7 +9,6 @@ dados_y = []
 measure = list()
 
 file_name = "src/main.c"
-
 def mean(array):
     if not array:
         return 0  
@@ -21,7 +21,7 @@ def findLineCycles():
         nlinhas = len(linhas)
         for i in (range(nlinhas)):
             if("cycles" in linhas[i+1]):
-                print(f"Linha {i+2}: {linhas[i+2].strip()}")
+                #print(f"Linha {i+2}: {linhas[i+2].strip()}")
                 return i+3
     return -1
 
@@ -29,14 +29,13 @@ def findLineCycles():
 def main():
     gdb.execute('set confirm off') #disable quit confirmation
     gdb.execute('set pagination off')  # disable GDB pagination
-    gdb.execute('set logging file /dev/null')  # disable logging
     gdb.execute('target remote localhost:3333')
     breakp = findLineCycles()
     major = 0
     for i in range(0, n_measures):
-        gdb.execute('monitor reset halt')
-        gdb.execute(f'break {breakp}')
-        gdb.execute('c')
+        a = gdb.execute('monitor reset halt', to_string=True)
+        b = gdb.execute(f'break {breakp}', to_string=True)
+        c = gdb.execute('c',to_string=True)
         cycles_value = int(gdb.parse_and_eval('cycles'))
         #gdb.execute('print cycles')
         #gdb.execute('print arr')
@@ -47,6 +46,6 @@ def main():
 
 if __name__ == '__main__':
     main()
-    print('Wcet Dinamico: ', mean(measure))
+    print('Wcet_Dynamic: ', mean(measure))
     gdb.execute('quit')
     

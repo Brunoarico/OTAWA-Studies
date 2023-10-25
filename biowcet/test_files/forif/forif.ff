@@ -1,6 +1,0 @@
-checksum "forif.elf" 0x1c4b0998;
-
-// Function main ()
-loop "main" + 0x6c 10 ; // 0x800006c ()
-
-

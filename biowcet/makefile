@@ -1,22 +1,23 @@
 PROGRAM         = wcet
 SOURCES         = main.cpp
 
-SOURCES += cfgmatrix/CfgMatrix.cpp
-SOURCES += cfgmatrix/SparseMatrix.cpp
-SOURCES += wipet/wcet_ipet.cpp
-SOURCES += wbio/wcet_bio.cpp
-
+SOURCES += src/cfgmatrix/CfgMatrix.cpp
+SOURCES += src/cfgmatrix/SparseMatrix.cpp
+SOURCES += src/wipet/wcet_ipet.cpp
+SOURCES += src/wbio/wcet_bio.cpp
+SOURCES += src/wdyn/wcet_dyn.cpp
+SOURCES += src/utils/utilities.cpp
 
 TEST_FOLDER        = test_files
-TEST_TARGET_BS     = $(TEST_FOLDER)/bs/bs.elf
-TEST_TARGET_BS100  = $(TEST_FOLDER)/bsort100/bsort100.elf
-TEST_TARGET_IF     = $(TEST_FOLDER)/if/if.elf
-TEST_TARGET_FORIF  = $(TEST_FOLDER)/forif/forif.elf
-TEST_TARGET_FUNC   = $(TEST_FOLDER)/func/func.elf
-TEST_TARGET_LUDCMP = $(TEST_FOLDER)/ludcmp/ludcmp.elf
+TEST_TARGET_BS     = $(TEST_FOLDER)/bs/
+TEST_TARGET_BS100  = $(TEST_FOLDER)/bsort100/
+TEST_TARGET_IF     = $(TEST_FOLDER)/if/
+TEST_TARGET_FORIF  = $(TEST_FOLDER)/forif/
+TEST_TARGET_FUNC   = $(TEST_FOLDER)/func/
+TEST_TARGET_LUDCMP = $(TEST_FOLDER)/ludcmp/
 
-MICROARCH	      = trivial
-#MICROARCH	      = lpc2138
+#MICROARCH	      = trivial
+MICROARCH	      = xmc4500
 
 # Configuration
 FLAGSA          = $(shell otawa-config --cflags)
@@ -33,36 +34,38 @@ LD              = libtool --mode=link --tag=CXX g++
 OBJECTS         = $(SOURCES:.cpp=.o)
 
 # Rules
-all: $(PROGRAM)
+all: $(PROGRAM) remove_o
 	export LD_LIBRARY_PATH=$(LIBDIR):$(LIBDIR)/otawa/otawa
 
-$(PROGRAM): $(OBJECTS) cfgmatrix/SparseMatrix.o cfgmatrix/CfgMatrix.o wipet/wcet_ipet.o wbio/wcet_bio.o
+$(PROGRAM): $(OBJECTS)
 	$(LD) -o $@ $^ $(LDFLAGS) $(LDLIBS) 
 
 %.o: %.cpp
 	$(CXX) $(FLAGSA) $(CXXFLAGS) $(CFLAGS) -c $< -o $@ 
 
-clean:
-	@rm -rf *.o $(PROGRAM) *~ core.* *.lo .libs csv dot png cfgmatrix/*.o cfgmatrix/*.gch wipet/*.o wbio/*.o
+remove_o:
+	@rm -rf src/cfgmatrix/*.o  src/wipet/*.o src/wbio/*.o src/wdyn/*.o *.o src/utils/*.o 
+
+clean: remove_o
+	@rm -rf $(PROGRAM) *~ core.* *.lo .libs csv dot png 
 
 if: $(PROGRAM)
-	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_IF)
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_IF)/main.c -d
 
 bs: $(PROGRAM)
-	mkff $(TEST_TARGET_BS).elf
-	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_BS)
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_BS)/main.c -d
 
 bsort100: $(PROGRAM)
-	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_BS100)
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_BS100)/main.c -d
 
 forif: $(PROGRAM)
-	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_FORIF)
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_FORIF)/main.c -d
 
 func: $(PROGRAM)
-	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_FUNC)
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_FUNC)/main.c -d
 
 ludcmp: $(PROGRAM)
-	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_LUDCMP)
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_LUDCMP)/main.c -d
 
 erro: $(PROGRAM)
 	./$(PROGRAM) 

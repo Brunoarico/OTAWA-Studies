@@ -42,8 +42,10 @@ all: $(BIN) $(ELF_OTAWA)
 
 clean:
 	rm -rf $(OUTDIR)
+	rm -rf ./src/main.c
 
 $(OUTDIR)/%.o: $(SRCDIR)/%.c | $(OUTDIR)
+	
 	$(CC) $(CFLAGS) $(MCUFLAGS) $(DFLAGS) $(INCLUDE) -c $< -o $@
 
 $(OUTDIR)/no_mcuflags_%.o: $(SRCDIR)/%.c | $(OUTDIR)
@@ -53,6 +55,7 @@ $(OUTDIR)/%.o: $(ASMDIR)/%.s | $(OUTDIR)
 	$(AS) -c $< -o $@
 
 $(BIN): $(ELF)
+	arm-none-eabi-size $(ELF)
 	arm-none-eabi-objcopy -R .stack -O binary $< $@
 	arm-none-eabi-objdump -D -S $< > $@.lst
 
@@ -67,7 +70,7 @@ flash: $(BIN) | kill_openocd
 
 debug: $(ELF)
 	$(OCD) -f stlink_bluepill.cfg &
-	$(GDB) -x hwdebug.py $<
+	$(GDB) -q -x hwdebug.py $<
 
 test: flash debug
 

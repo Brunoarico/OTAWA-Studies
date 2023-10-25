@@ -2,12 +2,14 @@
 # -*- coding: utf-8 -*-
 import xml.etree.ElementTree as ET
 import re
+import sys
 folder = './build/'
-path_xml = folder+'main.xml'
-path_ff = folder+'main_empty.ff'
+path_xml = folder+'/main.xml'
+path_ff = folder+'/main_empty.ff'
+out_ff = folder+'/main_otawa.ff'
 
 def set_ff(filename, iterations):
-    with open(filename, 'r') as file, open(folder+'main_otawa.ff', 'w') as complete_file:
+    with open(filename, 'r') as file, open(out_ff, 'w') as complete_file:
         content = file.read()
 
         lines = content.split('\n')
@@ -22,7 +24,8 @@ def set_ff(filename, iterations):
                     for i in iterations:
                         if i['line'] == place:
                             if i['max'] == 'NOCOMP':
-                                value = input("Insira as iteraçoes maximas do loop da linha {}: ".format(place))
+                                print("Insira as iteraçoes maximas do loop da linha {}: ".format(place))
+                                value = input()
                                 line = line.replace('?', value)
                                 lines_with_values.append(line)
                             else:
@@ -59,5 +62,15 @@ def extract_xml(filename):
 
     return loops_info
 
-iterations = extract_xml(path_xml)
-location = set_ff(path_ff, iterations)
+if __name__ == '__main__':
+    if len(sys.argv) > 1: 
+        folder = sys.argv[1]
+        path_xml = folder+'/main.xml'
+        path_ff = folder+'/main_empty.ff'
+        out_ff = folder+'/main_otawa.ff'
+        iterations = extract_xml(path_xml)
+        location = set_ff(path_ff, iterations)
+    else:
+        print("no parameter")
+        iterations = extract_xml(path_xml)
+        location = set_ff(path_ff, iterations)

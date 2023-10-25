@@ -1,9 +1,0 @@
-__bswap_16 : without
-__bswap_32 : without
-__bswap_64 : without
-__uint16_identity : without
-__uint32_identity : without
-__uint64_identity : without
-main : without
-ttime : without
-Application is : not recursive

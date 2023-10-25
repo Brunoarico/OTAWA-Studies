@@ -58,6 +58,8 @@
         "forward_list": "cpp",
         "unordered_set": "cpp",
         "typeindex": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "ctime": "cpp",
+        "iomanip": "cpp"
     }
 }

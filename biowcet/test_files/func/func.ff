@@ -1,6 +1,0 @@
-checksum "func.elf" 0x8bdbbd16;
-
-// Function fat ()
-loop "fat" + 0x40 20 ; // 0x8000040 ()
-
-
