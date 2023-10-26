@@ -1,36 +1,25 @@
 
-int fat(int n)
-{
-	int i = 1;
-	int fat = 1;
-# 14 "src/main.c"
-	while(i <= n)
-# 14 "src/main.c"
-	{
-# 15 "src/main.c"
-		fat = fat * i;
-# 16 "src/main.c"
-		i = i + 1;
-	}
-# 18 "src/main.c"
-	return fat;
-}
-
-int sum(int a, int b)
-{
-	int c = a + b;
-# 23 "src/main.c"
-	return c;
-}
-
 int main()
 {
-	int b_0 = 40;
-	int a_0 = 10;
-	int sa = fat(a_0);
-	int sb = fat(b_0);
-	int s = sum(sa, sb);
-# 45 "src/main.c"
+	int a = 1;
+	int b = 2;
+	int c = 3;
+	int d = 4;
+# 27 "src/main.c"
+	if(a == 1)
+# 27 "src/main.c"
+	{
+# 28 "src/main.c"
+		b = 2;
+# 29 "src/main.c"
+		if(c == 3)
+# 29 "src/main.c"
+		{
+# 30 "src/main.c"
+			d = 4;
+		}
+	}
+# 36 "src/main.c"
 	return 0;
 }
 

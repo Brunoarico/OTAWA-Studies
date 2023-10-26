@@ -13,7 +13,7 @@
 #include "src/wdyn/wcet_dyn.h"
 #include "src/utils/utilities.h"
 
-
+#define DEBUG 1
 
 //System Utilitaries
 #define MAKE "make"

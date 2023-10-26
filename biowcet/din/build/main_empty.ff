@@ -1,6 +1,0 @@
-checksum "main_otawa.elf" 0xacd4c691;
-
-// Function fat (src/main.c:11)
-loop "fat" + 0x40 ? ; // 0x8000350 (src/main.c:14)
-
-

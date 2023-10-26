@@ -62,7 +62,7 @@
 #include "cron.h"
 #endif
 
-double a[50][50], b[50], x[50];
+double a[5][5], b[5], x[5];
 
 int ludcmp(/* int nmax, */ int n, double eps);
 
