@@ -66,7 +66,7 @@ int main () {
 
     allocate(graph);
     printMatrix(graph);
-    ACO ACO(graph, SIZE, antNo, maxIter, alpha, beta, rho);
+    ACO ACO(graph, SIZE, 0, antNo, maxIter, alpha, beta, rho);
     ACO.simulate();
     printf("End\n");
     return 0;

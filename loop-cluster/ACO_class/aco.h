@@ -26,6 +26,7 @@ class ACO {
     void runColony();
     void printAnt(int antNo);
     void simulate();
+    int getResults();
 
     private:
     double mean(std::vector<std::vector<int>> array, int size);
@@ -35,7 +36,6 @@ class ACO {
     int fitnessFunction(int antNo);
     void updatePhromone();
     int findQueen();
-    int getResults();
     void printWCEP(Ant a);
     std::vector<std::vector<int>> graph;
     std::vector<std::vector<double>> tau;
