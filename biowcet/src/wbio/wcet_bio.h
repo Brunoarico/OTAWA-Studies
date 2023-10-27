@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "../cfgmatrix/CfgMatrix.h"
+#include "../aco/aco.h"
 
 using namespace otawa;
 
@@ -41,6 +42,14 @@ class WCETCalculatorBio {
     elm::string elfPath;
     uint32_t wcet;
     WorkSpace *ws;
+
+    CfgMatrix *cfgM;
+    //ACO ACO;
+    int maxIter = 30;
+    int antNo = 2;
+    double rho = 0.5; // Evaporation rate 
+    double alpha = 1; // Phromone exponential parameters 
+    double beta = 1;  // Desirability exponential parameter 
 };
 
 #endif  // WCET_CALCULATOR_H

@@ -76,6 +76,18 @@ int CfgMatrix::getOuts(int node) {
     return adjMatrixTotal.getOuts(node);
 }
 
+
+
+/**
+ * @brief Gets the size of the total adjacency matrix.
+ *
+ * @return The size of the total adjacency matrix.
+ */
+size_t CfgMatrix::getSize() {
+    return adjMatrixTotal.size();
+}
+
+
 /**
  * @brief Gets the name of a given node.
  *

@@ -59,12 +59,11 @@ void WCETCalculatorBio::calculateWCET() {
 
     // Convert CFG information to a matrix
     cfg2Matrix(ws);
+    ACO ACO(*cfgM, antNo, maxIter, alpha, beta, rho);
+    wcet = ACO.simulate();
 }
 
-// ToDo
-uint32_t WCETCalculatorBio::getWCET() {
-    return -1;
-}
+
 
 /**
  * @brief Calculates the execution time of a basic block.
@@ -115,33 +114,33 @@ uint32_t WCETCalculatorBio::blockTime(WorkSpace *ws, Block *b) {
  * @param ws The WorkSpace pointer.
  */
 void WCETCalculatorBio::cfg2Matrix(WorkSpace *ws) {
+    cfgM = new CfgMatrix();
     string dir = ws->workDir();
     std::string s = dir.asSysString();
     size_t lastSlashPos = s.find_last_of('/');
     std::string result = s.substr(0, lastSlashPos);
 
     for (auto g : **otawa::INVOLVED_CFGS(ws)) {
-        CfgMatrix cfgM;
 
         cout << "Function " << g << io::endl;
 
         for (auto v : *g) {
             if (v->isCall()) {
                 SynthBlock *sb = v->toSynth();
-                cfgM.setFuncName(v->index(), sb->callee()->name().asSysString());
+                cfgM->setFuncName(v->index(), sb->callee()->name().asSysString());
             }
 
             for (auto w : SUCCS(v)) {
                 if (w->isBasic()) {
                     ot::time time = blockTime(ws, w);
                     if (time > 0)
-                        cfgM.setConv(v->index(), w->index(), time);
+                        cfgM->setConv(v->index(), w->index(), time);
                     else
-                        cfgM.setConv(v->index(), w->index(), 1);
+                        cfgM->setConv(v->index(), w->index(), 1);
                 } else if (w->isCall()) {
                     std::string funcn = w->toSynth()->callee()->name().asSysString();
-                    cfgM.setFuncName(w->index(), funcn);
-                    cfgM.setConv(v->index(), w->index(), cfgM.getBlockNameHash(w->index()));
+                    cfgM->setFuncName(w->index(), funcn);
+                    cfgM->setConv(v->index(), w->index(), cfgM->getBlockNameHash(w->index()));
                 }
             }
 
@@ -153,20 +152,28 @@ void WCETCalculatorBio::cfg2Matrix(WorkSpace *ws) {
                 for (auto e : BACK_EDGES(v)) {
                     if (exclusionSet.find(e->source()->index()) == exclusionSet.end()) {
                         ot::time time = blockTime(ws, e->sink());
-                        cfgM.setLoop(e->source()->index(), v->index(), time);
-                        if (MAX_ITERATION(v) > 0) cfgM.setIteration(v->index(), MAX_ITERATION(v));
+                        cfgM->setLoop(e->source()->index(), v->index(), time);
+                        if (MAX_ITERATION(v) > 0) cfgM->setIteration(v->index(), MAX_ITERATION(v));
                     }
                 }
             }
         }
+        
 
         // You can uncomment and use these functions to print or export data.
-         cfgM.printCycles();
+        cfgM->printCycles();
         // cfgM.printFunctions();
         // cfgM.printIterations();
         // cfgM.print_all_cycles();
         // cfgM.printOuts();
         // cfgM.exportCSVs(g->name().asSysString());
         // cfgM.exportDots(g->name().asSysString());
+
     }
+}
+
+// ToDo
+uint32_t WCETCalculatorBio::getWCET() {
+    
+    return wcet;
 }

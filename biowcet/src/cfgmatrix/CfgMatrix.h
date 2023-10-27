@@ -25,6 +25,7 @@ class CfgMatrix {
     int getCycles(int nodeA, int nodeB);  // devolve a quantidade de ciclos entre dois blocos
     int getOuts(int node);                // devolve a quantidade de saidas de um bloco
     int getBlockNameHash(int node);       // devolve o hash do nome de um bloco
+    size_t getSize();                     // devolve o tamanho da matriz (quantidade de blocos)
 
     void exportCSVs(std::string funcname);  // exporta os csvs relativos ao cfg
     void exportDots(std::string funcname);  // exporta o dot file relativo ao cfg
