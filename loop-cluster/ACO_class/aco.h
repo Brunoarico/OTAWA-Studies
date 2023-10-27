@@ -22,7 +22,7 @@ typedef struct _Colony {
 class ACO {
 
     public:
-    ACO(std::vector<std::vector<int>> graph, int nodeNo, int antNo, int maxIter, double alpha, double beta, double rho);
+    ACO(std::vector<std::vector<int>> graph, int nodeNo, int firstNode, int antNo, int maxIter, double alpha, double beta, double rho);
     void runColony();
     void printAnt(int antNo);
     void simulate();
@@ -35,6 +35,7 @@ class ACO {
     int fitnessFunction(int antNo);
     void updatePhromone();
     int findQueen();
+    int getResults();
     void printWCEP(Ant a);
     std::vector<std::vector<int>> graph;
     std::vector<std::vector<double>> tau;
@@ -44,6 +45,7 @@ class ACO {
 
     Colony colony;
     int nodeNo;
+    int firstNode;
     int antNo;
     int maxIter;
     double tau0;
