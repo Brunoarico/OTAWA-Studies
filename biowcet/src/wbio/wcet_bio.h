@@ -4,6 +4,7 @@
 #include <elm/option/StringList.h>
 #include <elm/sys/System.h>
 #include <otawa/app/Application.h>
+#include <otawa/cfg/LoopUnroller.h>
 #include <otawa/cfg/features.h>
 #include <otawa/etime/features.h>
 #include <otawa/events/features.h>
@@ -20,11 +21,13 @@
 #include <otawa/util/BBRatioDisplayer.h>
 
 #include <iostream>
+#include <queue>
+#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
-#include "../cfgmatrix/CfgMatrix.h"
 #include "../aco/aco.h"
+#include "../cfgmatrix/CfgMatrix.h"
 
 using namespace otawa;
 
@@ -35,6 +38,7 @@ class WCETCalculatorBio {
     uint32_t getWCET();
 
    private:
+    void replaceDependencies(CfgMatrix *c);
     uint32_t blockTime(WorkSpace *ws, Block *b);
     void cfg2Matrix(WorkSpace *ws);
     elm::string scriptPath;
@@ -42,14 +46,13 @@ class WCETCalculatorBio {
     elm::string elfPath;
     uint32_t wcet;
     WorkSpace *ws;
+    std::priority_queue<CfgMatrix, std::vector<CfgMatrix>> pq;
+    std::unordered_map<int, int> cfgMap;
 
-    CfgMatrix *cfgM;
-    //ACO ACO;
-    int maxIter = 30;
-    int antNo = 2;
-    double rho = 0.5; // Evaporation rate 
-    double alpha = 1; // Phromone exponential parameters 
-    double beta = 1;  // Desirability exponential parameter 
+
+    double rho = 0.5;  // Evaporation rate
+    double alpha = 1;  // Phromone exponential parameters
+    double beta = 1;   // Desirability exponential parameter
 };
 
 #endif  // WCET_CALCULATOR_H

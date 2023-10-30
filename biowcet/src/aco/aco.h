@@ -7,12 +7,11 @@
 #include <vector>
 #include "../cfgmatrix/CfgMatrix.h"
 #include "../aco/aco.h"
+#include <stack>
 
 typedef struct _Ant {
     std::vector<int> tour;
     std::vector<int> wcet;
-    std::vector<int> tourRow;
-    std::vector<int> tourColumn;
     int fitness;
 }Ant;
 
@@ -21,12 +20,18 @@ typedef struct _Colony {
     Ant queen;
 }Colony;
 
-class ACO {
+typedef struct _loop{
+    int ref;
+    int loophead;
+    int iters;
+}loop;
 
+class ACO {
     public:
-    ACO(CfgMatrix graph, int antNo, int maxIter, double alpha, double beta, double rho);
+    ACO(CfgMatrix graph, int antNo, int firstNode, int maxIter, double alpha, double beta, double rho);
     void printAnt(int antNo);
-    uint32_t simulate(bool verbose = false);
+    void simulate(bool verbose = false);
+    uint32_t getResults();
 
     private:
     double mean(CfgMatrix array, int size);
@@ -35,9 +40,11 @@ class ACO {
     void calculateFitness();
     int fitnessFunction(int antNo);
     void updatePhromone();
-    int findQueen();
+    int findQueen(); 
     void printWCEP(Ant a);
     void runColony();
+    void printTau();
+    void printEta();
 
     CfgMatrix graph;
     std::vector<std::vector<double>> tau;
@@ -47,6 +54,7 @@ class ACO {
 
     Colony colony;
     int nodeNo;
+    int firstNode;
     int antNo;
     int maxIter;
     double tau0;

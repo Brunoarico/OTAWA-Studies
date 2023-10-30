@@ -1,14 +1,15 @@
 #include "aco.h"
 
-ACO::ACO(CfgMatrix graph, int antNo, int maxIter, double alpha, double beta, double rho) {
+ACO::ACO(CfgMatrix graph, int antNo, int firstNode, int maxIter, double alpha, double beta, double rho) {
     this->graph = graph;
-    this->nodeNo = graph.getSize();
+    this->nodeNo = graph.getSize()+1;
     this->antNo = antNo;
     this->maxIter = maxIter;
     this->alpha = alpha;
     this->beta = beta;
     this->rho = rho;
     bestFitness = -INFINITY;
+    this->firstNode = firstNode;
 
     wcet.resize(maxIter);
 
@@ -38,18 +39,12 @@ ACO::ACO(CfgMatrix graph, int antNo, int maxIter, double alpha, double beta, dou
         for (int j = 0; j < nodeNo; j++) eta[i][j] = graph.getCycles(i, j);
 
 
-    colony.queen.tour.resize(nodeNo);
-    colony.queen.wcet.resize(nodeNo);
-    colony.queen.tourRow.resize(nodeNo);
-    colony.queen.tourColumn.resize(nodeNo);
+    colony.queen.tour;
+    colony.queen.wcet;
     colony.queen.fitness = 0;
     colony.ant.resize(antNo);
     
     for (int i = 0; i < antNo; i++) {
-        colony.ant[i].tour.resize(nodeNo);
-        colony.ant[i].wcet.resize(nodeNo);
-        colony.ant[i].tourRow.resize(nodeNo);
-        colony.ant[i].tourColumn.resize(nodeNo);
         colony.ant[i].fitness = 0;
     }
 }
@@ -61,92 +56,129 @@ double ACO::mean(CfgMatrix array, int size) {
     return sum / pow(size, 2);
 }
 
-void setToZero(std::vector<int> array) {
-
-}
 
 void ACO::initializeAnts() {
     for (int i = 0; i < antNo; i++) {
-        colony.ant[i].tour.assign(nodeNo, 0);
-        colony.ant[i].wcet.assign(nodeNo, 0);
-        colony.ant[i].tourRow.assign(nodeNo, 0);
-        colony.ant[i].tourColumn.assign(nodeNo, 0);
         colony.ant[i].fitness = 0;
+        colony.ant[i].tour.clear();
+        colony.ant[i].wcet.clear();
     }
+}
+
+
+
+void ACO::printAnt(int antNo){
+    printf("\tAnt: %d\n", antNo);
+    printf("\tTour: ");
+    for (int j = 0; j < colony.ant[antNo].tour.size(); j++) 
+        printf("%d ",  colony.ant[antNo].tour[j]);
+    printf("\n");
+    uint32_t sum = 0;
+    for (int j = 0; j < colony.ant[antNo].wcet.size(); j++) 
+        sum += colony.ant[antNo].wcet[j];
+    printf("\twcet:: %d\n", sum);
+    
 }
 
 int ACO::rouletteWheel(std::vector<double> P) {
     std::vector<double> cumsumP(nodeNo);
     cumsumP[0] = P[0];
 
+    //printf("\ncumsumP: ");
     // Compute cumulative sum
     for (int i = 1; i < nodeNo; ++i) {
         cumsumP[i] = cumsumP[i - 1] + P[i];
+        //printf("%f ", cumsumP[i]);
     }
+    //printf("\n"); 
 
     double r = (double)rand() / RAND_MAX;
     int nextNode = -1;
 
     // Roulette wheel selection
-    for (int i = 0; i < nodeNo; ++i) {
+    for (int i = 0; i < nodeNo; i++) {
         if (r <= cumsumP[i]) {
+            //printf("here:\n");
             nextNode = i;
             break;
         }
     }
+
     return nextNode;
 }
-
-void ACO::printAnt(int antNo){
-    printf("Ant: %d\n", antNo);
-    for (int j = 0; j < nodeNo; j++) {
-        printf("tour[%d]: %d\n", j, colony.ant[antNo].tour[j]);
-        printf("wcet[%d]: %d\n", j, colony.ant[antNo].wcet[j]);
-        printf("tourRow[%d]: %d\n", j, colony.ant[antNo].tourRow[j]);
-        printf("tourColumn[%d]: %d\n", j, colony.ant[antNo].tourColumn[j]);
-    }
-}
-
-
 
 void ACO::runColony() {
     std::vector<double> P_allNodes(nodeNo);
     std::vector<double> P(nodeNo);
-
+    
+    //printf("Nodes: %d\n", nodeNo);
+    //printf("Ants: %d\n", antNo);
+    //graph.printIterations();
     for (int i = 0; i < antNo; ++i) {
         //printf("\nAnt: %d\n", i);
-        int initial_node = 0; // select a random node
-        colony.ant[i].tour[0] = initial_node;
-        colony.ant[i].wcet[0] = 0;
-        colony.ant[i].tourRow[0] = 0;
-        colony.ant[i].tourColumn[0] = 0;
-        int nextNode = 0;
-        while (nextNode != -1) {
+        colony.ant[i].wcet.push_back(0);
+        colony.ant[i].tour.push_back(firstNode);
+        int currentNode = firstNode;
+        std::stack<loop> s;
+        while (true) {
             double sumP = 0;
-            int currentNode = colony.ant[i].tour[nextNode];
-            
-            for (int j = 0; j < nodeNo; ++j) {
-                P_allNodes[j] = pow(tau[currentNode][j], alpha) * pow(eta[currentNode][j], beta);
+            printf("currentNode: %d\n", currentNode);
+    
+            //if something in the stack reduce iterations if pass by the same node
+            if(!s.empty() && currentNode == s.top().ref) { 
+                s.top().iters -= 1;
+                //printf("reducted: %d\n", s.top().iters);
             }
 
-            // Calculate sum of P_allNodes
-            for (int j = 0; j < nodeNo; ++j) sumP += P_allNodes[j];
-            for (int j = 0; j < nodeNo; ++j) P[j] = P_allNodes[j] / sumP;
+            //if pass by a loophead push to stack
+            if(graph.isAloop(currentNode)) {
+                loop l = {currentNode, graph.loopHead(currentNode), graph.getIteration(currentNode)};
+                //printf("Loophead: %d\n", graph.loopHead(currentNode));
+                if(s.empty() || s.top().ref != currentNode) {
+                    //printf("pushEmpty: %d\n", currentNode);
+                    s.push(l);
+                }
+            }
 
-            //print P_allNodes
-            //printf("P_allNodes: ");
-            //for (int j = 0; j < nodeNo; ++j) printf("%f ", P_allNodes[j]);
+            //set node probabilities
+            for (int j = 0; j < nodeNo; ++j) {
+                if(!s.empty() && j == s.top().loophead){
+                    //if iterations are 0 set probability to 0 to that loop 
+                    if(s.top().iters == 0) P_allNodes[j] = 0;
+                    //else set high probability to 1 to that loop
+                    else P_allNodes[j] = pow(tau[currentNode][j], 10) * pow(eta[currentNode][j], 10);
+                }
+                else P_allNodes[j] = pow(tau[currentNode][j], alpha) * pow(eta[currentNode][j], beta);
+                sumP += P_allNodes[j];
+            }
 
-            nextNode = rouletteWheel(P);
+            for (int j = 0; j < nodeNo; ++j) {
+                P[j] = P_allNodes[j] / sumP;
+            }
+
+            if(!s.empty() && s.top().iters == 0 && currentNode == s.top().ref) {
+                    //printf("top: %d\n", s.top().ref); printf("pop: %d\n", currentNode);
+                    s.pop();
+            }
+
+ 
             
-            if(nextNode == -1) break;
+            printf("P_allNodes: "); for (int j = 0; j < nodeNo; ++j) printf("%f ", P_allNodes[j]); printf("\n");
+            printf("P: "); for (int j = 0; j < nodeNo; ++j) printf("%f ", P[j]); printf("\n");
 
-            colony.ant[i].wcet[nextNode] = eta[currentNode][nextNode];
-            colony.ant[i].tour[nextNode] = nextNode;
-            colony.ant[i].tourRow[nextNode] = currentNode;
-            colony.ant[i].tourColumn[currentNode] = nextNode;
+            int nextNode = rouletteWheel(P);
+
+
+            if(nextNode == -1) break;
+            colony.ant[i].wcet.push_back(eta[currentNode][nextNode]);
+            colony.ant[i].tour.push_back(nextNode);
+            currentNode = nextNode;
         }
+        
+        //printWCEP(colony.ant[i]);
+        //printf("End Ant\n");
     }
+    
 }
 
 int ACO::fitnessFunction(int antNo) {
@@ -161,31 +193,37 @@ void ACO::calculateFitness() {
 }
 
 void ACO::printWCEP(Ant a) {
-    printf("WCEP: 0 -> ");
-    int i = 0;
-    printf("%d -> ", a.tourColumn[i]);
-    i = a.tourColumn[i];
-    while(i !=0 ){
-        printf("%d -> ", a.tourColumn[i]);
-        i = a.tourColumn[i];
-    }
+    printf("\nWCEP: ");
+    for (int i = 0; i < a.tour.size(); ++i) printf("%d -> ", a.tour[i]);
+    printf("end\n");
+    printf("WCET: ");
+    int sum = 0;
+    for (int i = 0; i < a.wcet.size(); ++i) sum += a.wcet[i];
+    printf("%d\n", sum);
+    printf("\nPath: ");
+    for (int i = 0; i < a.tour.size(); ++i) printf("%d -> ", a.wcet[i]);
     printf("end\n");
 }
 
-uint32_t ACO::simulate(bool verbose) {
+void ACO::simulate(bool verbose) {
     for (int t = 0; t < maxIter; ++t) {
+        //printf("Initializing ants...\n");
         initializeAnts();
+        //printf("Running colony...\n");
         runColony();
+        //printf("Calculating fitness...\n");
         calculateFitness();
+        //printf("Updating phromone...\n");
         updatePhromone();
-       
+        //printf("Finding queen...\n");
         wcet[t] = findQueen();
+        //printf("Longest length = %d\n", wcet[t]);
+        
         if(verbose) {
             for (int j = 0; j < antNo; ++j){
                 printf("\nAnt #%d: %d\n", j, colony.ant[j].fitness);
                 printWCEP(colony.ant[j]);
                 colony.ant[j].fitness = 0;
-                colony.ant[j].tourColumn.clear();
             }
             printf("\nIteration #%d: Longest length = %d\n", t + 1, wcet[t]);
             printf("---------------------------------------------------\n");
@@ -196,6 +234,11 @@ uint32_t ACO::simulate(bool verbose) {
         printf("Longest length = %d\n", colony.queen.fitness);
         printWCEP(colony.queen);
     }
+    printf("End ACO\n");
+    
+}
+
+uint32_t ACO::getResults() {
     return colony.queen.fitness;
 }
 
@@ -203,7 +246,7 @@ void ACO::updatePhromone() {
     int i, j;
     int currentNode, nextNode;
     for (i = 0; i < antNo; ++i) {
-        for (j = 0; j < nodeNo - 1; ++j) {
+        for (j = 0; j < colony.ant[i].tour.size()-1; ++j) {
             currentNode = colony.ant[i].tour[j];
             nextNode = colony.ant[i].tour[j + 1];
 
@@ -227,10 +270,30 @@ int ACO::findQueen() {
         }
     }
     
+    
     if(maxVal > colony.queen.fitness) {
         colony.queen.fitness = maxVal;
-        for (int j = 0; j < nodeNo; j++)
-            colony.queen.tourColumn[j] = colony.ant[maxIndex].tourColumn[j];
+        colony.queen.tour.resize(colony.ant[maxIndex].tour.size());
+        for (int j = 0; j < colony.ant[maxIndex].tour.size(); j++)
+            colony.queen.tour[j] = colony.ant[maxIndex].tour[j];
     }
     return maxVal;
+}
+
+void ACO::printTau() {
+    printf("Tau:\n");
+    for (int i = 0; i < nodeNo; ++i) {
+        for (int j = 0; j < nodeNo; ++j) printf("%f ", tau[i][j]);
+        printf("\n");
+    }
+    printf("\n");
+}
+
+void ACO::printEta() {
+    printf("Eta:\n");
+    for (int i = 0; i < nodeNo; ++i) {
+        for (int j = 0; j < nodeNo; ++j) printf("%f ", eta[i][j]);
+        printf("\n");
+    }
+    printf("\n");
 }

@@ -1,7 +1,5 @@
-#include "ACO_class/aco.h"
 #include <iostream>
 #include <string.h>
-#include <vector>
 
 void printMatrix(int **matrix, int row, int collumn)
 {
@@ -24,31 +22,31 @@ int main() {
     //                     {0, 0, 0, 0, 0}, 
     //                     {0, 0, 30, 0, 10}, 
     //                     {0, 0, 30, 0, 0}}; // No loops
-    std::vector<std::vector<int>> matrix = {{0, 55, 0, 0, 0, 0, 0, 0, 0}, 
-                                            {0, 0, 0, 0, 0, 0, 20, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 30, 0, 0, 0, 60},
-                                            {0, 0, 0, 0, 0, 20, 0, 20, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 20, 55, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0}}; // Binary Search
+    int matrix[9][9] = {{0, 55, 0, 0, 0, 0, 0, 0, 0}, 
+                        {0, 0, 0, 0, 0, 0, 20, 0, 0},
+                        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 30, 0, 0, 0, 60},
+                        {0, 0, 0, 0, 0, 20, 0, 20, 0},
+                        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                        {0, 0, 20, 55, 0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0, 0, 0, 0, 0}}; // Binary Search
 
-    std::vector<std::vector<int>> matrixLoops ={{0, 0, 0, 0, 0, 0, 0, 0, 0}, 
-                                                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                                {0, 0, 0, 0, 0, 0, 20, 0, 0},
-                                                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                                {0, 0, 0, 0, 0, 0, 20, 0, 0},
-                                                {0, 0, 0, 0, 0, 0, 20, 0, 0}}; // Binary Search
+    int matrixLoops[9][9] =    {{0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+                                {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                {0, 0, 0, 0, 0, 0, 20, 0, 0},
+                                {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                {0, 0, 0, 0, 0, 0, 20, 0, 0},
+                                {0, 0, 0, 0, 0, 0, 20, 0, 0}}; // Binary Search
 
 
 
     //Get loops
     //Get number of blocks
-    int size = matrix.size();
+    int size = sizeof(matrix[0]) /  sizeof(int);
     int loopBacks = 0;
     printf("Number of blocks: %d\n", size);
 
@@ -108,6 +106,7 @@ int main() {
     memset(loopArrays, 0, sizeof(loopArrays));
     
     int i, j, count = 0;
+   
     for (i = 0; i < loopBacks; i++)
     {
         for (j = 0; j < i; j++)   
@@ -120,7 +119,6 @@ int main() {
         if (i == j)
         {
             loopArrays[count][matrixLoopBacks[i][1]] = 2;
-            
         }
     }
 
@@ -149,16 +147,17 @@ int main() {
         int loopArraysAux[loops][size];
         memcpy(loopArraysAux, loopArrays, sizeof(loopArraysAux));
 
+        int compare = 1;
         while (1)
         {
             memcpy(loopArrays, loopArraysAux, sizeof(loopArraysAux));
             for (int i = 0; i < size; i++)
             {
-                if (loopArraysAux[k][i] != 0 && loopArraysAux[k][i] != 2)
+                if (loopArraysAux[k][i] != 0)
                 {
                     for (int j = 0; j < size; j++)
                     {
-                        if (matrix[j][i] != 0)
+                        if (matrix[i][j] != 0)
                         {
                             if (loopArraysAux[k][j] == 0)
                             {
@@ -185,29 +184,17 @@ int main() {
     for (int i = 0; i < loops; i++)
     {
         int loopSize = 0;
-        int startBlock = 0;
         //get the number of blocks in loop
         for (int j = 0; j < size; j++)
         {
             if (loopArrays[i][j] != 0)
             {
                 loopSize++;
-                if (loopArrays[i][j] == 2)
-                {
-                    startBlock = loopSize - 1;
-                }
             }
         }
-        printf("Loopsize: %d\n", loopSize);
-
-        std::vector<std::vector<int>> internalLoopMatrix;
-        internalLoopMatrix.resize(loopSize);
-        for (int i = 0; i < loopSize; i++) {
-            internalLoopMatrix[i].resize(loopSize);
-        }
-
-        int count1 = 0;
-        int count2 = 0;
+        int internalLoopMatrix[loopSize][loopSize];
+        memset(internalLoopMatrix, 0, sizeof(internalLoopMatrix));
+        int count1, count2 = 0;
         for (int j = 0; j < size; j++)
         {
             if (loopArrays[i][j] != 0)
@@ -216,69 +203,42 @@ int main() {
                 {
                     if (loopArrays[i][k] != 0)
                     {
-                        internalLoopMatrix[count1][count2] = matrix[j][k] + matrixLoops[j][k];
+                        internalLoopMatrix[count1][count2] = matrix[j][k];
                         count2++;
+
                     }
                 }
                 count2 = 0;
                 count1++;
             }
         }
-
-        int maxIter = 30;
-        int antNo = 2;
-        double rho = 0.5; // Evaporation rate 
-        double alpha = 1; // Phromone exponential parameters 
-        double beta = 1;  // Desirability exponential parameter 
-        ACO ACO(internalLoopMatrix, loopSize, startBlock, antNo, maxIter, alpha, beta, rho);
-        ACO.simulate();
-        int loopWcet = ACO.getResults();
-        
-        std::vector<std::vector<int>> matrixAux;
-        int newSize = size - loopSize + 1;
-        matrixAux.resize(newSize);
-        for (int i = 0; i < newSize; i++) {
-            matrixAux[i].resize(newSize);
-        }
-
-        count1 = 0;
-        count2 = 0;
-        for (int j = 0; j < size; j++)
-        {
-            if (loopArrays[i][j] == 0 || loopArrays[i][j] == 2)
-            {
-                for (int k = 0; k < size; k++)
-                {
-                    if (loopArrays[i][k] == 0 || loopArrays[i][k] == 2)
-                    {
-                        matrixAux[count1][count2] = matrix[j][k];
-                        if(loopArrays[i][j] == 2 && matrix[j][k] != 0)
-                        {
-                            matrixAux[count1][count2] += loopWcet;
-                        }
-                        count2++;
-                    }
-                }
-                
-                count2 = 0;
-                count1++;
-            }
-        }
-        size = newSize;
-        matrix.resize(newSize);
-        matrix = matrixAux;
-        
-
     }
-    int maxIter = 30;
-    int antNo = 2;
-    double rho = 0.5; // Evaporation rate 
-    double alpha = 1; // Phromone exponential parameters 
-    double beta = 1;  // Desirability exponential parameter 
-    ACO ACO_final(matrix, size, 0, antNo, maxIter, alpha, beta, rho);
-    ACO_final.simulate();
-    int wcet = ACO_final.getResults();
-    printf("WCET: %d\n", wcet);
-     
+    
+
+    //While loops exists
+    // while (solvedLoops != loops)
+    // {
+    //     for (int i = 0; i < loopBacks; i++)
+    //     {
+
+    //         //Check if there is a nested loop inside
+    //         //Check if it was already solved
+    //     }
+        
+
+    // //     //Check if there is a nested loop inside
+    // }
+    
+        //Cluster loops
+
+            //Identify loop matrix
+
+            //Input loop matrix in bioinspired algorithm
+
+            //Create a new block to represent the loop matrix
+
+            //Generate new matrix clusterized
+
+            
     return 0;
 }

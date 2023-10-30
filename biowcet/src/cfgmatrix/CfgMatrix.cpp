@@ -8,6 +8,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <cstring>
 
 #include "SparseMatrix.h"
 
@@ -33,6 +34,10 @@ void CfgMatrix::setLoop(int nodeA, int nodeB, int cycles) {
     adjMatrixLoop.setCycle(nodeA, nodeB, cycles);
 }
 
+void CfgMatrix::setPriority(int priority) {
+    this->priority = priority;
+}
+
 /**
  * @brief Sets the number of iterations for a given node.
  *
@@ -49,10 +54,12 @@ void CfgMatrix::setIteration(int node, int iterations) {
  * @param node The node to set the name for.
  * @param name The name to set for the node.
  */
-void CfgMatrix::setFuncName(int node, std::string name) {
-    printf("set\n");
-    printf("Node %d = %s\n", node, name.c_str());
+void CfgMatrix::setFuncCallName(int node, std::string name) {
     adjMatrixTotal.setName(node, name);
+}
+
+void CfgMatrix::setMyFunc(std::string name) {
+    this->myFuckName = name;
 }
 
 /**
@@ -76,6 +83,14 @@ int CfgMatrix::getOuts(int node) {
     return adjMatrixTotal.getOuts(node);
 }
 
+int CfgMatrix::getMyHashName() {
+    std::hash<std::string> hasher;
+    return -1 * std::abs(int(hasher(myFuckName)));
+}
+
+std::string CfgMatrix::getMyName() {
+    return myFuckName;
+}
 
 
 /**
@@ -98,6 +113,10 @@ std::string CfgMatrix::getBlockName(int node) {
     return adjMatrixTotal.getName(node);
 }
 
+int CfgMatrix::getPriority() {
+    return priority;
+}
+
 /**
  * @brief Gets the hash value of the name of a given node.
  *
@@ -106,7 +125,6 @@ std::string CfgMatrix::getBlockName(int node) {
  */
 int CfgMatrix::getBlockNameHash(int node) {
     std::hash<std::string> hasher;
-    printf("Hash of (%d) %s = %d\n", node, getBlockName(node).c_str(), int(hasher(getBlockName(node))));
     return -1 * std::abs(int(hasher(getBlockName(node))));
 }
 
@@ -124,6 +142,18 @@ int CfgMatrix::getIteration(int node) {
     return 0;
 }
 
+int CfgMatrix::isAloop(int node) {
+    int loops = 0;
+    for (int i =0; i< getSize(); i++){
+        if (adjMatrixLoop.getCycle(i, node) != 0) {
+            loops++;
+            break;
+        }
+    }
+    return loops;
+}
+
+
 /**
  * @brief Gets all cycles starting from a given node.
  *
@@ -134,7 +164,7 @@ std::vector<std::vector<int>> CfgMatrix::get_cycles_from_node(int start_node) {
     std::vector<std::vector<int>> cycles;
     std::vector<int> path;
     int num_nodes = adjMatrixTotal.size();
-
+    
     dfs_cycles(start_node, start_node, path, cycles);
 
     return cycles;
@@ -183,20 +213,48 @@ void CfgMatrix::printOuts() {
 /**
  * @brief Prints all cycles starting from nodes with non-zero number of iterations.
  */
-void CfgMatrix::print_all_cycles() {
+void CfgMatrix::printAllLoops() {
     std::vector<std::vector<int>> cycles;
     for (int start_node = 0; start_node < adjMatrixTotal.size(); ++start_node) {
-        if (getIteration(start_node)) {
+        if (isAloop(start_node)) {
             cycles = get_cycles_from_node(start_node);
             std::cout << "Cycles Found:" << std::endl;
             for (const std::vector<int>& cycle : cycles) {
+                
                 for (int node : cycle) {
-                    std::cout << node << " ";
+                    std::cout << node << " " ;
                 }
-                std::cout << std::endl;
+                int deps = checkNeastedLoops(cycle);
+                if(deps == -1) std::cout << " (invalid)"<< std::endl;
+                else std::cout << " deps: " << deps << std::endl;
             }
         }
     }
+}
+
+/**
+ * @brief Finds the head of the loop that contains the given start node.
+ *
+ * @param start_node The node to start the search from.
+ * @return The head of the loop that contains the given start node, or -1 if the node is not part of a loop.
+ */
+int CfgMatrix::findLoopHead(int start_node) {
+    std::vector<std::vector<int>> cycles;
+    if (isAloop(start_node)) {
+        cycles = get_cycles_from_node(start_node);
+        for (const std::vector<int>& cycle : cycles) {
+            int deps = checkNeastedLoops(cycle);
+            if(deps > -1) return cycle[1];
+        }
+        return -1;
+    }
+    else return -1;
+}
+
+
+int CfgMatrix::loopHead(int node) {
+    if(getIteration(node) < 0) return -1;
+    else return findLoopHead(node);
 }
 
 /**
@@ -243,6 +301,21 @@ void CfgMatrix::dfs_cycles(int node, int start_node, std::vector<int>& path, std
             }
         }
     }
-
     path.pop_back();
 }
+
+int CfgMatrix::checkNeastedLoops(std::vector<int> loop) {
+    int dependency = 0;
+    for (int i = 1; i < loop.size(); i++) {
+        if(isAloop(loop[i])) {
+            if(loop[i] <= loop[0]) //invalid dependency
+                return -1; 
+            if (loop[i]) 
+                dependency++;
+        }
+    }
+    return dependency;
+}
+
+
+

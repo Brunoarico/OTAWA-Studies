@@ -50,8 +50,8 @@ void WCETCalculatorBio::calculateWCET() {
 
     // Set the entry function and script path properties
     TASK_ENTRY(props) = entry;
+    
     script::PATH(props) = path;
-
     // Load the ELF file and run the script
     script::Script *scr = new script::Script();
     otawa::WorkSpace *ws = MANAGER.load(this->elfPath, props);
@@ -59,8 +59,22 @@ void WCETCalculatorBio::calculateWCET() {
 
     // Convert CFG information to a matrix
     cfg2Matrix(ws);
-    ACO ACO(*cfgM, antNo, maxIter, alpha, beta, rho);
-    wcet = ACO.simulate();
+    CfgMatrix c = pq.top();
+    int i = 0;
+    while (!pq.empty() && i < 2) {
+        CfgMatrix c = pq.top();
+        int maxIter = 1;//pow(c.getSize(), 2);
+        int antNo = 1;//10;
+        printf("Function: %s, size %lu, hash %d, prior: %d\n", c.getMyName().c_str(), c.getSize(), c.getMyHashName(), c.getPriority());
+        if (c.getPriority() > 0) replaceDependencies(&c);
+
+        ACO aco(c, antNo, 0, maxIter, alpha, beta, rho);
+        aco.simulate();
+        wcet = aco.getResults();
+        cfgMap[c.getMyHashName()] = wcet;
+        pq.pop();   
+    }
+
 }
 
 
@@ -114,37 +128,44 @@ uint32_t WCETCalculatorBio::blockTime(WorkSpace *ws, Block *b) {
  * @param ws The WorkSpace pointer.
  */
 void WCETCalculatorBio::cfg2Matrix(WorkSpace *ws) {
-    cfgM = new CfgMatrix();
+    
     string dir = ws->workDir();
     std::string s = dir.asSysString();
     size_t lastSlashPos = s.find_last_of('/');
+
     std::string result = s.substr(0, lastSlashPos);
-
     for (auto g : **otawa::INVOLVED_CFGS(ws)) {
-
-        cout << "Function " << g << io::endl;
+        CfgMatrix *cfgM = new CfgMatrix();
+        cout << "Function " << g->name() << io::endl;
+        cfgM->setMyFunc(g->name().asSysString());
+        int calls = 0;
 
         for (auto v : *g) {
             if (v->isCall()) {
                 SynthBlock *sb = v->toSynth();
-                cfgM->setFuncName(v->index(), sb->callee()->name().asSysString());
+                cfgM->setFuncCallName(v->index(), sb->callee()->name().asSysString());
             }
 
             for (auto w : SUCCS(v)) {
                 if (w->isBasic()) {
                     ot::time time = blockTime(ws, w);
+                    //ot::time time2 = ipet::TIME(w);
+                    //printf("ipet=s %ld, myMethod = %ld\n", time2, time);
                     if (time > 0)
                         cfgM->setConv(v->index(), w->index(), time);
                     else
                         cfgM->setConv(v->index(), w->index(), 1);
-                } else if (w->isCall()) {
+                } 
+                else if (w->isCall()) {
+                    calls++;
                     std::string funcn = w->toSynth()->callee()->name().asSysString();
-                    cfgM->setFuncName(w->index(), funcn);
+                    cfgM->setFuncCallName(w->index(), funcn);
                     cfgM->setConv(v->index(), w->index(), cfgM->getBlockNameHash(w->index()));
                 }
             }
 
             if (LOOP_HEADER(v)) {
+                
                 std::unordered_set<int> exclusionSet;
                 for (auto e : ENTRY_EDGES(v)) {
                     exclusionSet.insert(e->source()->index());
@@ -158,22 +179,36 @@ void WCETCalculatorBio::cfg2Matrix(WorkSpace *ws) {
                 }
             }
         }
-        
+        cfgM->setPriority(calls);
+        pq.push(*cfgM);
 
-        // You can uncomment and use these functions to print or export data.
+        //printf("Printing size: %ld\n", cfgM->getSize());
+        //printf("Printing loops: %d\n", cfgM->getLoops());
+        //printf("Printing loopbacks: %d\n", cfgM->getLoopBacks());
+        //cfgM->findLoopPaths();
+
         cfgM->printCycles();
         // cfgM.printFunctions();
         // cfgM.printIterations();
-        // cfgM.print_all_cycles();
+        //cfgM->printAllLoops();
         // cfgM.printOuts();
-        // cfgM.exportCSVs(g->name().asSysString());
-        // cfgM.exportDots(g->name().asSysString());
-
+        //cfgM.exportCSVs(g->name().asSysString());
+        cfgM->exportDots(g->name().asSysString());
     }
+}
+
+void WCETCalculatorBio::replaceDependencies (CfgMatrix *c) {
+    for (int i = 0; i< c->getSize(); i++){
+        for (int j = 0; j< c->getSize(); j++){
+            int value = c->getCycles(i, j);
+            if(value < 0) //isfunc
+                c->setConv(i, j, cfgMap[value]);
+        }
+    }
+
 }
 
 // ToDo
 uint32_t WCETCalculatorBio::getWCET() {
-    
     return wcet;
 }

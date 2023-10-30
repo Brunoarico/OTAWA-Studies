@@ -22,11 +22,10 @@ typedef struct _Colony {
 class ACO {
 
     public:
-    ACO(std::vector<std::vector<int>> graph, int nodeNo, int firstNode, int antNo, int maxIter, double alpha, double beta, double rho);
+    ACO(std::vector<std::vector<int>> graph, int nodeNo, int antNo, int maxIter, double alpha, double beta, double rho);
     void runColony();
     void printAnt(int antNo);
     void simulate();
-    int getResults();
 
     private:
     double mean(std::vector<std::vector<int>> array, int size);
@@ -45,7 +44,6 @@ class ACO {
 
     Colony colony;
     int nodeNo;
-    int firstNode;
     int antNo;
     int maxIter;
     double tau0;

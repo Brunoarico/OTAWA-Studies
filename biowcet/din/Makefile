@@ -43,6 +43,8 @@ all: $(BIN) $(ELF_OTAWA)
 clean:
 	rm -rf $(OUTDIR)
 	rm -rf ./src/main.c
+	rm -rf ./png
+	rm -rf ./dot
 
 $(OUTDIR)/%.o: $(SRCDIR)/%.c | $(OUTDIR)
 	

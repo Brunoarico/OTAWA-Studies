@@ -1,25 +1,28 @@
 
 int main()
 {
-	int a = 1;
-	int b = 2;
-	int c = 3;
-	int d = 4;
-# 27 "src/main.c"
-	if(a == 1)
-# 27 "src/main.c"
+	int i = 0;
+	int sum = 0;
+# 23 "src/main.c"
+	for(i = 0; i < 10; i++)
+# 23 "src/main.c"
 	{
-# 28 "src/main.c"
-		b = 2;
-# 29 "src/main.c"
-		if(c == 3)
-# 29 "src/main.c"
+# 24 "src/main.c"
+		if(i % 2 == 0)
+# 24 "src/main.c"
 		{
-# 30 "src/main.c"
-			d = 4;
+# 25 "src/main.c"
+			sum += i;
+		}
+		else
+# 26 "src/main.c"
+# 26 "src/main.c"
+		{
+# 27 "src/main.c"
+			sum += i * 2;
 		}
 	}
-# 36 "src/main.c"
+# 33 "src/main.c"
 	return 0;
 }
 

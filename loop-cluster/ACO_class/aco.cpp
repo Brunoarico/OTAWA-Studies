@@ -1,6 +1,6 @@
 #include "aco.h"
 
-ACO::ACO(std::vector<std::vector<int>> graph, int nodeNo, int firstNode, int antNo, int maxIter, double alpha, double beta, double rho) {
+ACO::ACO(std::vector<std::vector<int>> graph, int nodeNo, int antNo, int maxIter, double alpha, double beta, double rho) {
     this->graph = graph;
     this->nodeNo = nodeNo;
     this->antNo = antNo;
@@ -8,7 +8,6 @@ ACO::ACO(std::vector<std::vector<int>> graph, int nodeNo, int firstNode, int ant
     this->alpha = alpha;
     this->beta = beta;
     this->rho = rho;
-    this->firstNode = firstNode;
     bestFitness = -INFINITY;
 
     wcet.resize(maxIter);
@@ -116,7 +115,7 @@ void ACO::runColony() {
 
     for (int i = 0; i < antNo; ++i) {
         //printf("\nAnt: %d\n", i);
-        int initial_node = this->firstNode; // select a random node
+        int initial_node = 0; // select a random node
         colony.ant[i].tour[0] = initial_node;
         colony.ant[i].wcet[0] = 0;
         colony.ant[i].tourRow[0] = 0;
@@ -126,7 +125,6 @@ void ACO::runColony() {
             double sumP = 0;
             int currentNode = colony.ant[i].tour[nextNode];
             
-
             for (int j = 0; j < nodeNo; ++j) {
                 P_allNodes[j] = pow(tau[currentNode][j], alpha) * pow(eta[currentNode][j], beta);
             }
@@ -147,9 +145,6 @@ void ACO::runColony() {
             colony.ant[i].tour[nextNode] = nextNode;
             colony.ant[i].tourRow[nextNode] = currentNode;
             colony.ant[i].tourColumn[currentNode] = nextNode;
-
-            if (nextNode == this->firstNode) break;
-
         }
     }
 }
@@ -199,10 +194,6 @@ void ACO::simulate() {
     printf("Longest length = %d\n", colony.queen.fitness);
     printWCEP(colony.queen);
 
-}
-
-int ACO::getResults() {
-    return colony.queen.fitness;
 }
 
 void ACO::updatePhromone() {
