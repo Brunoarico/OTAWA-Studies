@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<processor class="otawa::hard::Processor"  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+	<arch>arm</arch>
+	<model>cortex-m3</model>
+	<frequency>48000000</frequency>
+
+	<stages>
+		<!-- fetch, decode and execute -->
+		<!-- 2 cycle memory access -->
+		<stage id="FI">
+			<name>FI</name>
+			<width>2</width>
+			<type>FETCH</type>
+		</stage>
+		<stage id="DI">
+			<name>DI</name>
+			<width>1</width>
+			<type>LAZY</type>
+		</stage>
+
+		<stage id="EX">
+			<name>EX</name>
+			<type>EXEC</type>
+			<width>10</width>
+			<ordered>true</ordered>
+			<mem>true</mem>
+			<fus>
+				<fu id="LS">
+					<name>LS</name>
+					<width>1</width>
+					<latency>2</latency>
+					<mem>true</mem>	
+				</fu>
+			</fus>
+			<dispatch>
+				<inst>
+					<!-- perform memory access -->
+					<type>IS_MEM</type>
+					<fu ref="LS"/>
+				</inst>
+				<inst>
+					<!-- load data from memory -->
+					<type>IS_LOAD</type>
+					<fu ref="LS"/>
+				</inst>
+				<inst>
+					<!-- store data to memory -->
+					<type>IS_STORE</type>
+					<fu ref="LS"/>
+				</inst>
+				<inst>
+					<!-- multiple accesses to memory-->
+					<type>IS_MULTI</type>
+					<fu ref="LS"/>
+				</inst>
+				<inst>
+					<!-- atomic access to memory, in case of parallel access to memory-->
+					<type>IS_ATOMIC</type>
+					<fu ref="LS"/>
+				</inst>
+			</dispatch>
+		</stage>
+		<stage id="CM">
+			<name>CM</name>
+			<type>COMMIT</type>
+			<width>1</width>
+			<latency>0</latency>
+		</stage>
+
+	</stages>
+	<queues>
+		<queue>
+			<name>FETCH_QUEUE</name>
+			<size>1</size>
+			<input ref="FI"/>
+			<output ref="DI"/>
+		</queue>
+		<queue>
+			<name>DECODE_QUEUE</name>
+			<size>1</size>
+			<input ref="DI"/>
+			<output ref="EX"/>
+		</queue>
+		<queue>
+			<name>EXEC_QUEUE</name>
+			<size>1</size>
+			<input ref="EX"/>
+			<output ref="CM"/>
+		</queue>
+	</queues>
+
+</processor>

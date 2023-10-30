@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<otawa-script
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+<name>cortex-m3</name>
+
+<id>
+	<arch>arm</arch>
+</id>
+
+<platform>
+	<xi:include href="cortex_m3/pipeline.xml"/>
+	<xi:include href="cortex_m3/memory.xml"/>
+	<xi:include href="cortex_m3/cache.xml"/>
+</platform>
+
+<script>
+	<step processor="otawa::Virtualizer"/>
+
+	<!-- timing analysis -->
+	<step require="otawa::etime::EDGE_TIME_FEATURE"/>
+	<step require="otawa::ipet::WCET_FEATURE"/>
+
+	<!-- outputs -->
+
+	<step processor="otawa::BBRatioDisplayer"/>
+</script>
+
+</otawa-script>
+
+

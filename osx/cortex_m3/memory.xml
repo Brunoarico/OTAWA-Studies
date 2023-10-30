@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<memory xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+	<banks>
+		<bank>
+			<name>ON-CHIP NON-VOLATILE MEMORY</name>
+			<address>0x00000000</address>
+			<size>500000000</size>
+			<type>ROM</type>
+			<on_chip>true</on_chip>
+			<latency>1</latency>
+			<cachable>true</cachable>
+		</bank>
+		<bank>
+			<name>SRAM</name>
+			<address>0x20000000</address>
+			<size>500000000</size>
+			<latency>1</latency>
+			<type>SPM</type>
+			<on_chip>true</on_chip>
+			<cachable>true</cachable>
+		</bank>
+		<bank>
+			<name>External RAM</name>
+			<address>0x60000000</address>
+			<size>1000000000</size>
+			<latency>1</latency>
+			<type>ROM</type>
+			<on_chip>false</on_chip>
+			<cachable>true</cachable>
+		</bank>
+	</banks>
+</memory>
