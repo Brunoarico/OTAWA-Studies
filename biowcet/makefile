@@ -19,7 +19,7 @@ TEST_TARGET_LUDCMP = $(TEST_FOLDER)/ludcmp/
 
 #MICROARCH	      = trivial
 #MICROARCH	      = xmc4500
-MICROARCH	      = 1
+MICROARCH	      = 4
 
 # Configuration
 FLAGSA          = $(shell otawa-config --cflags)
