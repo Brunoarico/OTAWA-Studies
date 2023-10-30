@@ -52,22 +52,22 @@ clean: remove_o
 	@rm -rf $(PROGRAM) *~ core.* *.lo .libs csv dot png 
 
 if: $(PROGRAM)
-	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_IF)/main.c -d
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_IF)/main.c 
 
 bs: $(PROGRAM)
-	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_BS)/main.c -d
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_BS)/main.c 
 
 bsort100: $(PROGRAM)
-	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_BS100)/main.c -d
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_BS100)/main.c
 
 forif: $(PROGRAM)
-	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_FORIF)/main.c -d
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_FORIF)/main.c 
 
 func: $(PROGRAM)
-	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_FUNC)/main.c -d
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_FUNC)/main.c
 
 ludcmp: $(PROGRAM)
-	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_LUDCMP)/main.c -d
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_LUDCMP)/main.c
 
 erro: $(PROGRAM)
 	./$(PROGRAM) 
