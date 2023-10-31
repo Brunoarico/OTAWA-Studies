@@ -7,6 +7,7 @@
 #include <vector>
 #include "../cfgmatrix/CfgMatrix.h"
 #include "../aco/aco.h"
+#include "../utils/utilities.h"
 #include <stack>
 
 typedef struct _Ant {
@@ -45,6 +46,7 @@ class ACO {
     void runColony();
     void printTau();
     void printEta();
+    void selectNextNode(std::stack<loop> s, int currentNode, std::vector<double> *P);
 
     CfgMatrix graph;
     std::vector<std::vector<double>> tau;

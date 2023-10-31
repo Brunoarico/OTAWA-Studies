@@ -51,7 +51,11 @@ class CfgMatrix {
     void printAllLoops();                                             // imprime todos os ciclos do cfg
     int loopHead(int node);                                           // devolve o no que e cabeca de um loop
     bool operator<(const CfgMatrix& other) const {
-        return this->priority > other.priority;
+        if (priority != other.priority) {
+            return priority < other.priority; // Ordenar por tamanho se forem diferentes
+        } else {
+            return myFuckName < other.myFuckName; // Ordenar por nome se os tamanhos forem iguais
+        }
     }
 };
 

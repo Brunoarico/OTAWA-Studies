@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include "../utils/utilities.h"
 
 class SparseMatrix {
    private:

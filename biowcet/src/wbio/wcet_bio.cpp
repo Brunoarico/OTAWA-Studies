@@ -45,8 +45,9 @@ void WCETCalculatorBio::calculateWCET() {
             }
         }
         if (!found)
-            throw elm::option::OptionException(_ << "cannot find script " << script);
+            printError("Architecture description file not found");
     }
+    else printError("Architecture description file not found");
 
     // Set the entry function and script path properties
     TASK_ENTRY(props) = entry;
@@ -59,20 +60,21 @@ void WCETCalculatorBio::calculateWCET() {
 
     // Convert CFG information to a matrix
     cfg2Matrix(ws);
-    CfgMatrix c = pq.top();
-    int i = 0;
-    while (!pq.empty() && i < 2) {
-        CfgMatrix c = pq.top();
-        int maxIter = 1;//pow(c.getSize(), 2);
-        int antNo = 1;//10;
-        printf("Function: %s, size %lu, hash %d, prior: %d\n", c.getMyName().c_str(), c.getSize(), c.getMyHashName(), c.getPriority());
-        if (c.getPriority() > 0) replaceDependencies(&c);
-
-        ACO aco(c, antNo, 0, maxIter, alpha, beta, rho);
-        aco.simulate();
-        wcet = aco.getResults();
-        cfgMap[c.getMyHashName()] = wcet;
-        pq.pop();   
+    while (!pq.empty()) {
+        CfgMatrix c = pq.front();
+        pq.pop();
+        int maxIter = pow(c.getSize(), 0.2);
+        int antNo = 20;
+        if (c.getPriority() > 0 && !replaceDependencies(&c)) {
+            pq.push(c);
+        }
+        else{
+            c.printCycles();
+            ACO aco(c, antNo, 0, maxIter, alpha, beta, rho);
+            aco.simulate();
+            wcet = aco.getResults();
+            cfgMap[c.getMyHashName()] = wcet; 
+        }
     }
 
 }
@@ -128,7 +130,8 @@ uint32_t WCETCalculatorBio::blockTime(WorkSpace *ws, Block *b) {
  * @param ws The WorkSpace pointer.
  */
 void WCETCalculatorBio::cfg2Matrix(WorkSpace *ws) {
-    
+
+    std::set<CfgMatrix> mySet;
     string dir = ws->workDir();
     std::string s = dir.asSysString();
     size_t lastSlashPos = s.find_last_of('/');
@@ -136,7 +139,6 @@ void WCETCalculatorBio::cfg2Matrix(WorkSpace *ws) {
     std::string result = s.substr(0, lastSlashPos);
     for (auto g : **otawa::INVOLVED_CFGS(ws)) {
         CfgMatrix *cfgM = new CfgMatrix();
-        cout << "Function " << g->name() << io::endl;
         cfgM->setMyFunc(g->name().asSysString());
         int calls = 0;
 
@@ -149,7 +151,7 @@ void WCETCalculatorBio::cfg2Matrix(WorkSpace *ws) {
             for (auto w : SUCCS(v)) {
                 if (w->isBasic()) {
                     ot::time time = blockTime(ws, w);
-                    //ot::time time2 = ipet::TIME(w);
+                    //ot::time time2 = ipet::TIME(w->edgeTo(v));
                     //printf("ipet=s %ld, myMethod = %ld\n", time2, time);
                     if (time > 0)
                         cfgM->setConv(v->index(), w->index(), time);
@@ -173,6 +175,8 @@ void WCETCalculatorBio::cfg2Matrix(WorkSpace *ws) {
                 for (auto e : BACK_EDGES(v)) {
                     if (exclusionSet.find(e->source()->index()) == exclusionSet.end()) {
                         ot::time time = blockTime(ws, e->sink());
+                        //ot::time time2 = ipet::TIME(e);
+                        //printf("ipet=s %ld, myMethod = %ld\n", time2, time);
                         cfgM->setLoop(e->source()->index(), v->index(), time);
                         if (MAX_ITERATION(v) > 0) cfgM->setIteration(v->index(), MAX_ITERATION(v));
                     }
@@ -180,14 +184,15 @@ void WCETCalculatorBio::cfg2Matrix(WorkSpace *ws) {
             }
         }
         cfgM->setPriority(calls);
-        pq.push(*cfgM);
+        //printf("vFunction: %s, deps: %d\n", cfgM->getMyName().c_str(), calls);
+        mySet.insert(*cfgM);
 
         //printf("Printing size: %ld\n", cfgM->getSize());
         //printf("Printing loops: %d\n", cfgM->getLoops());
         //printf("Printing loopbacks: %d\n", cfgM->getLoopBacks());
         //cfgM->findLoopPaths();
 
-        cfgM->printCycles();
+        //cfgM->printCycles();
         // cfgM.printFunctions();
         // cfgM.printIterations();
         //cfgM->printAllLoops();
@@ -195,20 +200,42 @@ void WCETCalculatorBio::cfg2Matrix(WorkSpace *ws) {
         //cfgM.exportCSVs(g->name().asSysString());
         cfgM->exportDots(g->name().asSysString());
     }
+    
+    for (const CfgMatrix& elem : mySet) pq.push(elem);
+    
+
 }
 
-void WCETCalculatorBio::replaceDependencies (CfgMatrix *c) {
+/**
+ * @brief Replaces the dependencies in the Control Flow Graph (CFG) matrix with their corresponding function names.
+ *
+ * This function replaces the dependencies in the CFG matrix with their corresponding function names using the cfgMap.
+ * It iterates through the matrix and checks if the value is negative, indicating a function call.
+ * If it is a function call, it replaces the value with the corresponding function name from the cfgMap.
+ *
+ * @param c The CfgMatrix pointer.
+ */
+bool WCETCalculatorBio::replaceDependencies (CfgMatrix *c) {
     for (int i = 0; i< c->getSize(); i++){
         for (int j = 0; j< c->getSize(); j++){
             int value = c->getCycles(i, j);
-            if(value < 0) //isfunc
-                c->setConv(i, j, cfgMap[value]);
+            if(value < 0) {//isfunc
+                if(cfgMap.count(value) > 0) //issolved
+                    c->setConv(i, j, cfgMap[value]);
+                else return false;
+            }
         }
     }
+    return true;
 
 }
 
-// ToDo
+
+/**
+ * @brief Returns the Worst Case Execution Time (WCET) calculated by the calculateWCET() function.
+ *
+ * @return The WCET value.
+ */
 uint32_t WCETCalculatorBio::getWCET() {
     return wcet;
 }

@@ -66,8 +66,22 @@ forif: $(PROGRAM)
 func: $(PROGRAM)
 	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_FUNC)/main.c
 
-ludcmp: $(PROGRAM)
-	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_LUDCMP)/main.c
+ifd: $(PROGRAM)
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_IF)/main.c -d
+
+bsd: $(PROGRAM)
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_BS)/main.c -d
+
+bsort100d: $(PROGRAM)
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_BS100)/main.c -d
+
+forifd: $(PROGRAM)
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_FORIF)/main.c -d
+
+funcd: $(PROGRAM)
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_FUNC)/main.c -d
 
 erro: $(PROGRAM)
 	./$(PROGRAM) 
+
+runAll: ifd bsd bsort100d forifd funcd

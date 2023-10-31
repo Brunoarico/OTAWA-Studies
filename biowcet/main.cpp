@@ -4,19 +4,34 @@
 #include <unistd.h>
 
 #include <boost/asio.hpp>
+#include <libgen.h>
 #include <csignal>
+#include <cstdlib>
 #include <iostream>
 #include <thread>
+#include <chrono>
 
 #include "src/utils/utilities.h"
 #include "src/wbio/wcet_bio.h"
 #include "src/wdyn/wcet_dyn.h"
 #include "src/wipet/wcet_ipet.h"
 
-#define DEBUG 1
+
+const char *asciiArt =
+    " _______   ______   ______   __       __   ______   ________  ________ \n"
+    "/       \\ /      | /      \\ /  |  _  /  | /      \\ /        |/        |\n"
+    "$$$$$$$  |$$$$$$/ /$$$$$$  |$$ | / \\ $$ |/$$$$$$  |$$$$$$$$/ $$$$$$$$/ \n"
+    "$$ |__$$ |  $$ |  $$ |  $$ |$$ |/$  \\$$ |$$ |  $$ |$$ |__       $$ |   \n"
+    "$$    $$<   $$ |  $$ |  $$ |$$ /$$$  $$ |$$ |      $$    |      $$ |   \n"
+    "$$$$$$$  |  $$ |  $$ |  $$ |$$ $$/$$ $$ |$$ |   __ $$$$$/       $$ |   \n"
+    "$$ |__$$ | _$$ |_ $$ \\__$$ |$$$$/  $$$$ |$$ \\__/  |$$ |_____    $$ |   \n"
+    "$$    $$/ / $$   |$$    $$/ $$$/    $$$ |$$    $$/ $$       |   $$ |   \n"
+    "$$$$$$/  $$$$$$/  $$$$$$/  $$/      $$/  $$$$$$/  $$$$$$$$/    $$/    \n"
+    "                                                                       \n";
 
 // System Utilitaries
 #define MAKE "make"
+#define REALPATH "realpath "
 
 // Scripts
 #define DEBUG_FILE "/hwdebug.py"
@@ -28,13 +43,27 @@
 #define BUILD_FOLDER "/build"
 #define ELF_OTAWA_FOLDER "/build/main_otawa.elf"
 #define ELF_FOLDER "/build/main.elf"
+#define RESULT_FILE "/results.txt"
+
+//bool VERBOSE = false;
 
 /**
  * Shows the usage of the program.
  * @param programName The name of the program.
  */
 void showUsage(const char* programName) {
-    printf("Uso: %s -s archPath -p elfPath [-f function]\n", programName);
+    //printf("Usage: %s -s [archPath] -p [elfPath] [-f function]\n", programName);
+    printf("Usage: %s -s archPath -p cFile [-d] [-v] [-h]\n", programName);
+    printf("FLAGS:\n");
+    printf("\t-s\t\tPath to the architecture description file\n");
+    printf("\t-p\t\tPath to the .c file\n");
+    printf("\t-d\t\tEnable dynamic analysis\n");
+    printf("\t-v\t\tEnable verbose mode\n");
+    printf("\t-h\t\tShow this help message\n");
+    printf("EXAMPLES:\n");
+    printf("\t%s -s trivial -p /test_files/if/main.c\n", programName);
+    printf("\t%s -s trivial -p /test_files/if/main.c -v \n", programName);
+    printf("\t%s -s trivial -p /test_files/if/main.c -v -d\n", programName);
 }
 
 /**
@@ -45,7 +74,7 @@ void showUsage(const char* programName) {
 void compile() {
     printInfo("Compiling...");
     if (directoryChange(getFolder(DINAMIC_FOLDER)))
-        executeAndLog(MAKE, DEBUG);
+        executeAndLog(MAKE);
     else {
         printError("Error in directory change");
         exit(1);
@@ -61,7 +90,7 @@ void clearDir() {
     printInfo("Cleaning directory");
     if (directoryChange(getFolder(DINAMIC_FOLDER))) {
         std::string cmd = MAKE + std::string(" clean");
-        executeAndLog(cmd, DEBUG);
+        executeAndLog(cmd);
     } else
         exit(1);
 }
@@ -84,6 +113,34 @@ void genff() {
     }
 }
 
+std::string absolutePath(std::string path) {
+    return executeAndLog(REALPATH + path);
+}
+
+/**
+ * Writes the results of the WCET analysis to a file.
+ * 
+ * @param dir The directory where the results file will be saved.
+ * @param wceti The WCET value obtained by the IPET analysis.
+ * @param wcetb The WCET value obtained by the BIO analysis.
+ * @param wcetd The WCET value obtained by the dynamic analysis.
+ */
+void toFile(std::string dir, std::string entry, uint32_t wceti, uint32_t wcetb, uint32_t wcetd, bool dyn) {
+    std::string outname = dir + RESULT_FILE;
+    printInfo("Writing results to " + outname);
+    FILE* outfile = fopen(outname.c_str(), "w");
+
+
+    if(wceti >= 0) fprintf(outfile, "WCET_IPET[%s] = %d cycles\n", entry.c_str(), wceti);
+
+    if(wcetb >= 0) fprintf(outfile, "WCET_BIO[%s] = %d cycles\n", entry.c_str(), wcetb);
+
+    if(wcetd >= 0 && dyn) fprintf(outfile, "WCET_DYNAMIC[%s] = %d cycles\n", entry.c_str(), wcetd);
+
+    fclose(outfile);
+}
+
+
 /**
  * The main function of the program.
  * 
@@ -95,9 +152,11 @@ int main(int argc, char* argv[]) {
     std::string scriptPath;
     std::string entry = "main";
     std::string cPath;
+    std::string resolvedPath;
     bool dyn = false;
-    bool verbose = false;
-    bool help = false;
+    char* dir;
+    std::chrono::high_resolution_clock::time_point startI, endI, startB, endB, startD, endD;
+    std::chrono::duration<double, std::milli> elapsedD, elapsedI, elapsedB;
 
 
     uint32_t wcet_d = -1;
@@ -105,7 +164,8 @@ int main(int argc, char* argv[]) {
     uint32_t wcet_b = -1;
 
     int option;
-    while ((option = getopt(argc, argv, "s:p:d")) != -1) {
+    
+    while ((option = getopt(argc, argv, "s:p:vdh")) != -1) {
         switch (option) {
             case 's':
                 scriptPath = optarg;
@@ -116,45 +176,80 @@ int main(int argc, char* argv[]) {
             case 'd':
                 dyn = true;
                 break;
+            case 'v':
+                setVerbose(true);
+                break;
+            case 'h':
+                showUsage(argv[0]);
+                return 0;
             default:
                 showUsage(argv[0]);
                 return 1;
         }
     }
-
+    printf("%s\n",asciiArt);
     clearDir();
     copyToDir(cPath, DEST_FOLDER);
+    resolvedPath = absolutePath(cPath).c_str();
+    dir = dirname(&resolvedPath[0]);
     compile();
     genff();
 
+
     WCETCalculator wcetIpet(scriptPath, entry, getFolder(ELF_OTAWA_FOLDER));
+    printInfo("Calculating WCET using IPET...", true);
+    startI = std::chrono::high_resolution_clock::now();
     wcetIpet.calculateWCET();
+    endI = std::chrono::high_resolution_clock::now();
     wcet_i = wcetIpet.getWCET();
+    elapsedI = endI - startI;
 
     WCETCalculatorBio wcetBio(scriptPath, entry, getFolder(ELF_OTAWA_FOLDER));
+    printInfo("Calculating WCET using ACO...", true);
+    startB = std::chrono::high_resolution_clock::now();
     wcetBio.calculateWCET();
+    endB = std::chrono::high_resolution_clock::now();
     wcet_b = wcetBio.getWCET();
+    elapsedB = endB - startB;
 
     if (dyn) {
         WCETCalculatorDyn wcetDyn(DEBUG_FILE, ELF_FOLDER);
+        printInfo("Calculating Execution Time using the Hardware...", true);
+        startD = std::chrono::high_resolution_clock::now();
         wcetDyn.calculateWCET();
+        endD = std::chrono::high_resolution_clock::now();
         wcet_d = wcetDyn.getWCET();
+        elapsedD = endD - startD;
     }
+   
+    
+    
 
     if (wcet_i == -1)
         printError("No WCET_IPET computed");
-    else
+    else{
         printResult("WCET_IPET[" + std::string(entry) + "] = " + std::to_string(wcet_i) + " cycles");
+        printInfo("IPET consumed " + std::to_string(elapsedI.count()) + " ms");
+    }
 
     if (wcet_b == -1)
         printError("No WCET_BIO computed");
-    else
+    else{
         printResult("WCET_BIO[" + std::string(entry) + "] = " + std::to_string(wcet_b) + " cycles");
+        printInfo("BIO consumed " + std::to_string(elapsedB.count()) + " ms");
+    }
 
-    if (wcet_d == -1)
-        printError("No WCET_DYNAMIC computed");
-    else
-        printResult("WCET_DYNAMIC[" + std::string(entry) + "] = " + std::to_string(wcet_d) + " cycles");
+
+    if(dyn) {
+        if (wcet_d == -1)
+            printError("No WCET_DYNAMIC computed");
+        else{
+            printResult("WCET_DYNAMIC[" + std::string(entry) + "] = " + std::to_string(wcet_d) + " cycles");
+            printInfo("DYNAMIC consumed " + std::to_string(elapsedD.count()) + " ms");
+        }
+    }
+
+    toFile(dir, entry, wcet_i, wcet_b, wcet_d, dyn);
 
     return 0;
 }

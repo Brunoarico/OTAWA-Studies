@@ -6,7 +6,7 @@
 #include <otawa/ipet/WCETComputation.h>
 #include <otawa/ipet/features.h>
 #include <otawa/script/Script.h>
-
+#include "../utils/utilities.h"
 #include <iostream>
 
 class WCETCalculator {

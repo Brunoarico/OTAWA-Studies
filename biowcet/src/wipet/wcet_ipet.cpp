@@ -41,8 +41,9 @@ void WCETCalculator::calculateWCET() {
                 }
             }
             if (!found)
-                throw elm::option::OptionException(_ << "cannot find script " << script);
+                printError("Architecture description file not found");
         }
+        else printError("Architecture description file not found");
         TASK_ENTRY(props) = entry;
         script::PATH(props) = path;
         script::Script *scr = new script::Script();

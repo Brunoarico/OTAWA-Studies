@@ -14,7 +14,7 @@ WCETCalculatorDyn::WCETCalculatorDyn(const std::string scriptPath, const std::st
 void WCETCalculatorDyn::flash() {
     printInfo("Flashing in hardware...");
     std::string cmd = std::string(STFLASH) + " write " + getFolder(BIN_FOLDER) + " 0x8000000";
-    executeAndLog(cmd, DEBUG);
+    executeAndLog(cmd);
 }
 
 /**
@@ -24,7 +24,7 @@ void WCETCalculatorDyn::flash() {
 void WCETCalculatorDyn::startOpenocd() {
     printInfo("Starting OpenOCD...");
     std::string comandoOpenOCD = std::string(OPENOCD) + " -f " + getFolder(OPENOCD_CONFIG_FILE);
-    executeAndLog(comandoOpenOCD.c_str(), DEBUG, false);
+    executeAndLog(comandoOpenOCD.c_str(), false);
 }
 
 /**
@@ -33,7 +33,7 @@ void WCETCalculatorDyn::startOpenocd() {
  */
 void WCETCalculatorDyn::endOpenocd() {
     std::string comandoOpenOCD = std::string(KILLALL) + " " + std::string(OPENOCD);
-    executeAndLog(comandoOpenOCD.c_str(), DEBUG, false);
+    executeAndLog(comandoOpenOCD.c_str(), false);
 }
 
 /**
@@ -61,7 +61,7 @@ uint32_t WCETCalculatorDyn::findWcetWord(const std::string& texto, const std::st
 uint32_t WCETCalculatorDyn::runGDB() {
     printInfo("Running Dynamic mesure [it may take a time, go have a coffee]...");
     std::string cdm = std::string(GDB) + " -q -x " + getFolder(scriptPath) + " " + getFolder(elfPath);
-    std::string out = executeAndLog(cdm, DEBUG);
+    std::string out = executeAndLog(cdm);
     return findWcetWord(out, KEY_WORD_PARSE);
 }
 

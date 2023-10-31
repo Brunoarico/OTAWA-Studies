@@ -177,7 +177,7 @@ void SparseMatrix::generateGraphImage(const std::string& file) const {
     std::ofstream dotFile(dotDir + file);
 
     if (!dotFile.is_open()) {
-        std::cout << "Error opening dot file." << std::endl;
+        printError("Error opening dot file.\n");
         return;
     }
 
@@ -188,7 +188,6 @@ void SparseMatrix::generateGraphImage(const std::string& file) const {
                 dotFile << "   \"" + std::to_string(row) + ":" + func[row] + "\" -> "
                         << "\"" + std::to_string(col) + ":" + func[col] + "\""
                         << " [label=" << matrix[row][col].value << "];" << std::endl;
-                // std::cout << row <<" " << col << " " << matrix[row][col].value << std::endl;
             }
         }
     }
@@ -197,10 +196,7 @@ void SparseMatrix::generateGraphImage(const std::string& file) const {
 
     // Generate the PNG image using Graphviz
     std::string command = "dot -Tpng " + dotDir + file + " -o " + pngDir + file.substr(0, file.size() - 4) + ".png";
-    std::cout << command << std::endl;
     system(command.c_str());
-
-    std::cout << "Graph image generated." << std::endl;
 }
 
 /**
@@ -248,7 +244,7 @@ void SparseMatrix::exportToCSV(const std::string& filename) {
     std::ofstream csvFile(csvDir + filename);
 
     if (!csvFile.is_open()) {
-        std::cerr << "Error to open CSV file to write." << std::endl;
+        printError("Error to open CSV file to write.\n");
         return;
     }
 
@@ -273,10 +269,10 @@ void SparseMatrix::importFromCSV(const std::string& filename) {
     std::ifstream csvFile(filename);
 
     if (!csvFile.is_open()) {
-        std::cerr << "Error in opening CSV file." << std::endl;
+        printError("Error in opening CSV file.\n");
         return;
     } else {
-        std::cout << "CSV file open with success." << std::endl;
+        //std::cout << "CSV file open with success." << std::endl;
     }
 
     int value1, value2, value3;

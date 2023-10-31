@@ -24,6 +24,8 @@
 #include <queue>
 #include <unordered_map>
 #include <unordered_set>
+#include <set>
+#include <algorithm>
 #include <vector>
 
 #include "../aco/aco.h"
@@ -38,7 +40,7 @@ class WCETCalculatorBio {
     uint32_t getWCET();
 
    private:
-    void replaceDependencies(CfgMatrix *c);
+    bool replaceDependencies(CfgMatrix *c);
     uint32_t blockTime(WorkSpace *ws, Block *b);
     void cfg2Matrix(WorkSpace *ws);
     elm::string scriptPath;
@@ -46,7 +48,7 @@ class WCETCalculatorBio {
     elm::string elfPath;
     uint32_t wcet;
     WorkSpace *ws;
-    std::priority_queue<CfgMatrix, std::vector<CfgMatrix>> pq;
+    std::queue<CfgMatrix> pq;
     std::unordered_map<int, int> cfgMap;
 
 

@@ -1,5 +1,5 @@
 import gdb
-import sys
+import tqdm
 
 n_measures = 10
 
@@ -32,7 +32,8 @@ def main():
     gdb.execute('target remote localhost:3333')
     breakp = findLineCycles()
     major = 0
-    for i in range(0, n_measures):
+    #for i in range(0, n_measures):
+    for i in tqdm.tqdm(range(0, n_measures)):
         a = gdb.execute('monitor reset halt', to_string=True)
         b = gdb.execute(f'break {breakp}', to_string=True)
         c = gdb.execute('c',to_string=True)

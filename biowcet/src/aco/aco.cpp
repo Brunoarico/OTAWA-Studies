@@ -107,10 +107,27 @@ int ACO::rouletteWheel(std::vector<double> P) {
     return nextNode;
 }
 
-void ACO::runColony() {
+void ACO::selectNextNode(std::stack<loop> s, int currentNode, std::vector<double> *P) {
     std::vector<double> P_allNodes(nodeNo);
+    double sumP = 0;
+    for (int j = 0; j < nodeNo; ++j) {
+        if(!s.empty() && j == s.top().loophead){
+            //if iterations are 0 set probability to 0 to that loop 
+            if(s.top().iters == 0) P_allNodes[j] = 0;
+            //else set high probability to 1 to that loop
+            else P_allNodes[j] = pow(tau[currentNode][j], 10) * pow(eta[currentNode][j], 10);
+        }
+        else P_allNodes[j] = pow(tau[currentNode][j], alpha) * pow(eta[currentNode][j], beta);
+        sumP += P_allNodes[j];
+    }
+
+    for (int j = 0; j < nodeNo; ++j) {
+        (*P)[j] = P_allNodes[j] / sumP;
+    }
+}
+
+void ACO::runColony() {
     std::vector<double> P(nodeNo);
-    
     //printf("Nodes: %d\n", nodeNo);
     //printf("Ants: %d\n", antNo);
     //graph.printIterations();
@@ -121,8 +138,8 @@ void ACO::runColony() {
         int currentNode = firstNode;
         std::stack<loop> s;
         while (true) {
-            double sumP = 0;
-            printf("currentNode: %d\n", currentNode);
+            
+            //printf("currentNode: %d\n", currentNode);
     
             //if something in the stack reduce iterations if pass by the same node
             if(!s.empty() && currentNode == s.top().ref) { 
@@ -141,20 +158,8 @@ void ACO::runColony() {
             }
 
             //set node probabilities
-            for (int j = 0; j < nodeNo; ++j) {
-                if(!s.empty() && j == s.top().loophead){
-                    //if iterations are 0 set probability to 0 to that loop 
-                    if(s.top().iters == 0) P_allNodes[j] = 0;
-                    //else set high probability to 1 to that loop
-                    else P_allNodes[j] = pow(tau[currentNode][j], 10) * pow(eta[currentNode][j], 10);
-                }
-                else P_allNodes[j] = pow(tau[currentNode][j], alpha) * pow(eta[currentNode][j], beta);
-                sumP += P_allNodes[j];
-            }
-
-            for (int j = 0; j < nodeNo; ++j) {
-                P[j] = P_allNodes[j] / sumP;
-            }
+            selectNextNode(s, currentNode, &P);
+            
 
             if(!s.empty() && s.top().iters == 0 && currentNode == s.top().ref) {
                     //printf("top: %d\n", s.top().ref); printf("pop: %d\n", currentNode);
@@ -163,8 +168,8 @@ void ACO::runColony() {
 
  
             
-            printf("P_allNodes: "); for (int j = 0; j < nodeNo; ++j) printf("%f ", P_allNodes[j]); printf("\n");
-            printf("P: "); for (int j = 0; j < nodeNo; ++j) printf("%f ", P[j]); printf("\n");
+            //printf("P_allNodes: "); for (int j = 0; j < nodeNo; ++j) printf("%f ", P_allNodes[j]); printf("\n");
+            //printf("P: "); for (int j = 0; j < nodeNo; ++j) printf("%f ", P[j]); printf("\n");
 
             int nextNode = rouletteWheel(P);
 
@@ -218,7 +223,7 @@ void ACO::simulate(bool verbose) {
         //printf("Finding queen...\n");
         wcet[t] = findQueen();
         //printf("Longest length = %d\n", wcet[t]);
-        
+        updateProgressBar(t, maxIter);
         if(verbose) {
             for (int j = 0; j < antNo; ++j){
                 printf("\nAnt #%d: %d\n", j, colony.ant[j].fitness);
@@ -234,7 +239,6 @@ void ACO::simulate(bool verbose) {
         printf("Longest length = %d\n", colony.queen.fitness);
         printWCEP(colony.queen);
     }
-    printf("End ACO\n");
     
 }
 
