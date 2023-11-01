@@ -1,16 +1,9 @@
 #include <gtest/gtest.h>
 #include "gen_ff_function.h"
-#include <elm/option/StringList.h>
-#include <elm/sys/System.h>
 #include "/home/OTAWA-Studies/biowcet/src/wipet/wcet_ipet.h"
 #include "/home/OTAWA-Studies/biowcet/src/wbio/wcet_bio.h"
 #include "/home/OTAWA-Studies/biowcet/src/wdyn/wcet_dyn.h"
-#include <getopt.h>
-#include <unistd.h>
-#include <boost/asio.hpp>
-#include <csignal>
-#include <iostream>
-#include <thread>
+
 #define DEBUG_FILE "/hwdebug.py"
 #define ELF_FOLDER "/build/main.elf"
 // #include "/src/wipet/wcet_ipet.h"
