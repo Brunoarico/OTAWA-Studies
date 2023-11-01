@@ -49,6 +49,9 @@
         "streambuf": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "*.ipp": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp"
     }
 }

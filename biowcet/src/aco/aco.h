@@ -41,6 +41,7 @@ class ACO {
     void calculateFitness();
     int fitnessFunction(int antNo);
     void updatePhromone();
+    int sumNextNodes(int node);
     int findQueen(); 
     void printWCEP(Ant a);
     void runColony();
@@ -64,6 +65,7 @@ class ACO {
     double beta;
     double rho;
     double bestFitness;
+    FILE *f;
 };
 
 

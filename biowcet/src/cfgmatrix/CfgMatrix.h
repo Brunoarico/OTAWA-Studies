@@ -13,7 +13,7 @@ class CfgMatrix {
     std::vector<int> dependencies;
     std::string myFuckName;
     int priority;
-
+    int maxCycle = 0;
 
     std::map<unsigned int, int> iterations;
     std::vector<std::vector<int>> matrixLoopBacks;
@@ -33,12 +33,14 @@ class CfgMatrix {
     std::string getBlockName(int node);   // devolve o nome de um bloco caso seja funcao
     int getCycles(int nodeA, int nodeB);  // devolve a quantidade de ciclos entre dois blocos
     int getOuts(int node);                // devolve a quantidade de saidas de um bloco
+    int getSumLine(int node);             // devolve a soma de uma linha da matriz
     int getBlockNameHash(int node);       // devolve o hash do nome de um bloco
     size_t getSize();                     // devolve o tamanho da matriz (quantidade de blocos)
     std::string getMyName();              // devolve o nome da funcao
     int getMyHashName();                  // devolve o hash do nome da funcao
     int getPriority();                    // devolve a prioridade da funcao
-    int isAloop(int node);
+    int getMaxCycle();                    // devolve o valor do maior BB
+    int isAloop(int node);               // devolve se um bloco e um loop
 
     void exportCSVs(std::string funcname);  // exporta os csvs relativos ao cfg
     void exportDots(std::string funcname);  // exporta o dot file relativo ao cfg

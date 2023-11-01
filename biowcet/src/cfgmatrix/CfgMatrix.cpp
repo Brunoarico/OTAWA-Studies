@@ -21,6 +21,7 @@
  * @param cycles The number of cycles between the two nodes.
  */
 void CfgMatrix::setConv(int nodeA, int nodeB, int cycles) {
+    if(cycles > maxCycle) maxCycle = cycles;
     adjMatrixTotal.setCycle(nodeA, nodeB, cycles);
 }
 
@@ -32,12 +33,14 @@ void CfgMatrix::setConv(int nodeA, int nodeB, int cycles) {
  * @param cycles The number of cycles between the two nodes.
  */
 void CfgMatrix::setLoop(int nodeA, int nodeB, int cycles) {
+    if(cycles > maxCycle) maxCycle = cycles;
     adjMatrixLoop.setCycle(nodeA, nodeB, cycles);
 }
 
 void CfgMatrix::setPriority(int priority) {
     this->priority = priority;
 }
+
 
 /**
  * @brief Sets the number of iterations for a given node.
@@ -84,6 +87,7 @@ int CfgMatrix::getOuts(int node) {
     return adjMatrixTotal.getOuts(node);
 }
 
+
 int CfgMatrix::getMyHashName() {
     std::hash<std::string> hasher;
     return -1 * std::abs(int(hasher(myFuckName)));
@@ -114,6 +118,10 @@ std::string CfgMatrix::getBlockName(int node) {
 
 int CfgMatrix::getPriority() {
     return priority;
+}
+
+int CfgMatrix::getMaxCycle() {
+    return maxCycle;
 }
 
 /**

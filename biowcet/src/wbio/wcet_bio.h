@@ -51,8 +51,6 @@ class WCETCalculatorBio {
     std::queue<CfgMatrix> pq;
     std::unordered_map<int, int> cfgMap;
 
-
-    double rho = 0.5;  // Evaporation rate
     double alpha = 1;  // Phromone exponential parameters
     double beta = 1;   // Desirability exponential parameter
 };

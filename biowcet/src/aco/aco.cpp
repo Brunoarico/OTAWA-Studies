@@ -22,22 +22,23 @@ ACO::ACO(CfgMatrix graph, int antNo, int firstNode, int maxIter, double alpha, d
         matriz_resultante[i] = graph.getCycles(i, randomIndex); // Seleciona o elemento correspondente ao índice aleatório
     }
 
-    tau0 = 10 * 1 / (nodeNo * mean(graph, nodeNo)); 
+    //tau0 = 10 * 1 / (nodeNo * mean(graph, nodeNo)); 
+    //tau0 = 1 / (mean(graph, nodeNo)); 
+    tau0 = 1;
 
     tau.resize(nodeNo);
     for (int i = 0; i < nodeNo; i++) tau[i].resize(nodeNo); 
 
-    //initialize tau with tau0
-    for (int i = 0; i < nodeNo; i++) 
-        for (int j = 0; j < nodeNo; j++) tau[i][j] = tau0;
-
     eta.resize(nodeNo);
     for (int i = 0; i < nodeNo; i++) eta[i].resize(nodeNo);
-
-    //initialize eta with graph values
-    for (int i = 0; i < nodeNo; i++) 
-        for (int j = 0; j < nodeNo; j++) eta[i][j] = graph.getCycles(i, j);
-
+    for (int i = 0; i < nodeNo; i++) {
+        int sum = 0;
+        for (int j = 0; j < nodeNo; j++) sum += graph.getCycles(i, j);
+        for (int j = 0; j < nodeNo; j++) {
+            eta[i][j] = float(graph.getCycles(i, j));
+            if(eta[i][j]) tau[i][j] = tau0;
+        }
+    }
 
     colony.queen.tour;
     colony.queen.wcet;
@@ -47,6 +48,9 @@ ACO::ACO(CfgMatrix graph, int antNo, int firstNode, int maxIter, double alpha, d
     for (int i = 0; i < antNo; i++) {
         colony.ant[i].fitness = 0;
     }
+    
+    //printTau();
+    //printEta();
 }
 
 double ACO::mean(CfgMatrix array, int size) {
@@ -64,8 +68,6 @@ void ACO::initializeAnts() {
         colony.ant[i].wcet.clear();
     }
 }
-
-
 
 void ACO::printAnt(int antNo){
     printf("\tAnt: %d\n", antNo);
@@ -107,6 +109,17 @@ int ACO::rouletteWheel(std::vector<double> P) {
     return nextNode;
 }
 
+//return sum of all values in line node of matrix eta
+int ACO::sumNextNodes(int node) {
+    int sum = 0;
+    int n =0;
+    for (int i = 0; i < eta.size(); ++i) {
+        if(i >0) n++;
+        sum += eta[node][i];
+    }
+    return sum/n;
+}
+
 void ACO::selectNextNode(std::stack<loop> s, int currentNode, std::vector<double> *P) {
     std::vector<double> P_allNodes(nodeNo);
     double sumP = 0;
@@ -115,75 +128,58 @@ void ACO::selectNextNode(std::stack<loop> s, int currentNode, std::vector<double
             //if iterations are 0 set probability to 0 to that loop 
             if(s.top().iters == 0) P_allNodes[j] = 0;
             //else set high probability to 1 to that loop
-            else P_allNodes[j] = pow(tau[currentNode][j], 10) * pow(eta[currentNode][j], 10);
+            else {
+                P_allNodes[j] = pow(eta[currentNode][j], 30);
+            }
         }
-        else P_allNodes[j] = pow(tau[currentNode][j], alpha) * pow(eta[currentNode][j], beta);
+        else P_allNodes[j] = pow(tau[currentNode][j], alpha) * pow((eta[currentNode][j] + sumNextNodes(j))/2, beta);
         sumP += P_allNodes[j];
     }
 
-    for (int j = 0; j < nodeNo; ++j) {
-        (*P)[j] = P_allNodes[j] / sumP;
-    }
+    for (int j = 0; j < nodeNo; ++j)  (*P)[j] = P_allNodes[j] / sumP;
 }
 
 void ACO::runColony() {
     std::vector<double> P(nodeNo);
-    //printf("Nodes: %d\n", nodeNo);
-    //printf("Ants: %d\n", antNo);
-    //graph.printIterations();
+
     for (int i = 0; i < antNo; ++i) {
-        //printf("\nAnt: %d\n", i);
         colony.ant[i].wcet.push_back(0);
         colony.ant[i].tour.push_back(firstNode);
         int currentNode = firstNode;
         std::stack<loop> s;
         while (true) {
-            
-            //printf("currentNode: %d\n", currentNode);
-    
-            //if something in the stack reduce iterations if pass by the same node
             if(!s.empty() && currentNode == s.top().ref) { 
                 s.top().iters -= 1;
-                //printf("reducted: %d\n", s.top().iters);
             }
 
             //if pass by a loophead push to stack
             if(graph.isAloop(currentNode)) {
                 loop l = {currentNode, graph.loopHead(currentNode), graph.getIteration(currentNode)};
-                //printf("Loophead: %d\n", graph.loopHead(currentNode));
                 if(s.empty() || s.top().ref != currentNode) {
-                    //printf("pushEmpty: %d\n", currentNode);
                     s.push(l);
                 }
             }
 
             //set node probabilities
             selectNextNode(s, currentNode, &P);
-            
-
-            if(!s.empty() && s.top().iters == 0 && currentNode == s.top().ref) {
-                    //printf("top: %d\n", s.top().ref); printf("pop: %d\n", currentNode);
-                    s.pop();
-            }
-
- 
-            
-            //printf("P_allNodes: "); for (int j = 0; j < nodeNo; ++j) printf("%f ", P_allNodes[j]); printf("\n");
-            //printf("P: "); for (int j = 0; j < nodeNo; ++j) printf("%f ", P[j]); printf("\n");
 
             int nextNode = rouletteWheel(P);
 
+            if(!s.empty() && s.top().iters == 0 && currentNode == s.top().ref) {
+                    s.pop();
+            }
 
             if(nextNode == -1) break;
-            colony.ant[i].wcet.push_back(eta[currentNode][nextNode]);
+            colony.ant[i].wcet.push_back(graph.getCycles(currentNode, nextNode));
             colony.ant[i].tour.push_back(nextNode);
             currentNode = nextNode;
         }
-        
-        //printWCEP(colony.ant[i]);
-        //printf("End Ant\n");
+        for (int j = 0; j < colony.ant[i].tour.size(); ++j) {
+            fprintf(f, "%d", colony.ant[i].tour[j]);
+            if(j < colony.ant[i].tour.size()-1) fprintf(f, "->");
+        }
+        fprintf(f, "\n");
     }
-    
 }
 
 int ACO::fitnessFunction(int antNo) {
@@ -194,7 +190,11 @@ int ACO::fitnessFunction(int antNo) {
 }
 
 void ACO::calculateFitness() {
-    for (int i = 0; i < antNo; ++i) colony.ant[i].fitness = fitnessFunction(i);
+    float maxFitness = -INFINITY;
+    for (int i = 0; i < antNo; ++i) {
+        colony.ant[i].fitness = fitnessFunction(i);
+        if(maxFitness < colony.ant[i].fitness) maxFitness = colony.ant[i].fitness;
+    }
 }
 
 void ACO::printWCEP(Ant a) {
@@ -206,40 +206,27 @@ void ACO::printWCEP(Ant a) {
     for (int i = 0; i < a.wcet.size(); ++i) sum += a.wcet[i];
     printf("%d\n", sum);
     printf("\nPath: ");
-    for (int i = 0; i < a.tour.size(); ++i) printf("%d -> ", a.wcet[i]);
+    for (int i = 0; i < a.tour.size(); ++i) {
+        printf("%d ", a.wcet[i]);
+        if(i < a.tour.size()-1) printf("-> ");
+    }
     printf("end\n");
 }
 
 void ACO::simulate(bool verbose) {
+    std::string funcName = graph.getMyName();
+    std::string path = "./build/paths_" +funcName+ ".txt";
+    f = fopen(path.c_str(), "w");
     for (int t = 0; t < maxIter; ++t) {
-        //printf("Initializing ants...\n");
         initializeAnts();
-        //printf("Running colony...\n");
         runColony();
-        //printf("Calculating fitness...\n");
         calculateFitness();
-        //printf("Updating phromone...\n");
         updatePhromone();
-        //printf("Finding queen...\n");
         wcet[t] = findQueen();
-        //printf("Longest length = %d\n", wcet[t]);
         updateProgressBar(t, maxIter);
-        if(verbose) {
-            for (int j = 0; j < antNo; ++j){
-                printf("\nAnt #%d: %d\n", j, colony.ant[j].fitness);
-                printWCEP(colony.ant[j]);
-                colony.ant[j].fitness = 0;
-            }
-            printf("\nIteration #%d: Longest length = %d\n", t + 1, wcet[t]);
-            printf("---------------------------------------------------\n");
-        }
+        //printf("WCET: %d\n", wcet[t]);
     }
-    if(verbose) {
-        printf("Results:\n");
-        printf("Longest length = %d\n", colony.queen.fitness);
-        printWCEP(colony.queen);
-    }
-    
+    fclose(f);
 }
 
 uint32_t ACO::getResults() {
@@ -253,11 +240,8 @@ void ACO::updatePhromone() {
         for (j = 0; j < colony.ant[i].tour.size()-1; ++j) {
             currentNode = colony.ant[i].tour[j];
             nextNode = colony.ant[i].tour[j + 1];
-
-            tau[currentNode][nextNode] += 1.0 / colony.ant[i].fitness;
-            tau[nextNode][currentNode] += 1.0 / colony.ant[i].fitness;
-
-            //printf("tau[%d][%d]: %f\n", currentNode, nextNode, tau[currentNode][nextNode]);
+            if(tau[nextNode-1][currentNode+1]) tau[nextNode-1][currentNode+1] -= 1.0 / colony.ant[i].fitness;
+            //if(tau[nextNode][currentNode]) tau[nextNode][currentNode] += 1.0 / colony.ant[i].fitness;
         }
     }
     for (int i = 0; i < nodeNo; ++i) 
