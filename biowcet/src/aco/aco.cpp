@@ -22,9 +22,9 @@ ACO::ACO(CfgMatrix graph, int antNo, int firstNode, int maxIter, double alpha, d
         matriz_resultante[i] = graph.getCycles(i, randomIndex); // Seleciona o elemento correspondente ao índice aleatório
     }
 
-    //tau0 = 10 * 1 / (nodeNo * mean(graph, nodeNo)); 
+    tau0 = 10 * 1 / (nodeNo * mean(graph, nodeNo)); 
     //tau0 = 1 / (mean(graph, nodeNo)); 
-    tau0 = 1;
+    //tau0 = 1;
 
     tau.resize(nodeNo);
     for (int i = 0; i < nodeNo; i++) tau[i].resize(nodeNo); 
