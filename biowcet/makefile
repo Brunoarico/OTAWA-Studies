@@ -8,6 +8,7 @@ SOURCES += src/wbio/wcet_bio.cpp
 SOURCES += src/wdyn/wcet_dyn.cpp
 SOURCES += src/utils/utilities.cpp
 SOURCES += src/aco/aco.cpp
+SOURCES += src/cfgGen/cfgGen.cpp
 
 TEST_FOLDER        = test_files
 TEST_TARGET_BS     = $(TEST_FOLDER)/bs/
@@ -46,7 +47,7 @@ $(PROGRAM): $(OBJECTS)
 	$(CXX) $(FLAGSA) $(CXXFLAGS) $(CFLAGS) -c $< -o $@ 
 
 remove_o:
-	@rm -rf src/cfgmatrix/*.o  src/wipet/*.o src/wbio/*.o src/wdyn/*.o *.o src/utils/*.o src/aco/*.o
+	@rm -rf src/cfgmatrix/*.o  src/wipet/*.o src/wbio/*.o src/wdyn/*.o *.o src/utils/*.o src/aco/*.o src/cfgGen/*.o
 
 clean: remove_o
 	@rm -rf $(PROGRAM) *~ core.* *.lo .libs csv dot png 

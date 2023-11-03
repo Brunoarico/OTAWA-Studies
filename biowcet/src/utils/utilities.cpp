@@ -15,7 +15,7 @@ void printError(std::string msg) {
  * @param msg The informational message to print.
  */
 void printInfo(std::string msg, bool force) {
-    if(VERBOSE || force) printf("\033[0;33m[INFO]:\033[0m %s\n", msg.c_str());
+    if (VERBOSE || force) printf("\033[0;33m[INFO]:\033[0m %s\n", msg.c_str());
 }
 
 /**
@@ -38,18 +38,20 @@ int getTerminalWidth() {
  */
 void updateProgressBar(int progress, int total) {
     int barWidth = getTerminalWidth() - 10;
-    int percent = (progress*100)/total;
+    int percent = (progress * 100) / total;
 
     printf("%3d %% |", percent);
-    int pos = barWidth * percent/100;
+    int pos = barWidth * percent / 100;
     for (int i = 0; i < barWidth; ++i) {
-        if (i <= pos) printf(u8"\u2588");  // Caractere de quadrado branco Unicode
-        else printf(" ");
+        if (i <= pos)
+            printf(u8"\u2588");  // Caractere de quadrado branco Unicode
+        else
+            printf(" ");
     }
     printf("|\n");
-    printf("\x1b[1A");; // Move o cursor para a linha anterior
-    printf("\x1b[2K"); // Limpa a linha
-
+    printf("\x1b[1A");
+    ;                   // Move o cursor para a linha anterior
+    printf("\x1b[2K");  // Limpa a linha
 }
 
 /**
@@ -66,14 +68,14 @@ std::string execute(std::string cmd, bool getError) {
     cmd.append(" 2>&1");
     stream = popen(cmd.c_str(), "r");
     if (stream) {
-        while(fgets(buffer, max_buffer, stream) != NULL) {
-                if(strstr(buffer, "%|")) {
-                    std::cout << buffer;
-                    std::cout << "\x1b[1A"; // Move o cursor para a linha anterior
-                    std::cout << "\x1b[2K"; // Limpa a linha
-                }
-                data.append(buffer);
+        while (fgets(buffer, max_buffer, stream) != NULL) {
+            if (strstr(buffer, "%|")) {
+                std::cout << buffer;
+                std::cout << "\x1b[1A";  // Move o cursor para a linha anterior
+                std::cout << "\x1b[2K";  // Limpa a linha
             }
+            data.append(buffer);
+        }
         /*while (!feof(stream))
             if (fgets(buffer, max_buffer, stream) != NULL) {
                 data.append(buffer);

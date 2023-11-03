@@ -1,7 +1,6 @@
 #ifndef ACO_H
 #define ACO_H
-#include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
 #include <cmath>
 #include <time.h>
 #include <vector>
@@ -41,6 +40,7 @@ class ACO {
     void calculateFitness();
     int fitnessFunction(int antNo);
     void updatePhromone();
+    int sumNextNodes(int node);
     int findQueen(); 
     void printWCEP(Ant a);
     void runColony();
@@ -64,6 +64,7 @@ class ACO {
     double beta;
     double rho;
     double bestFitness;
+    FILE *f;
 };
 
 
