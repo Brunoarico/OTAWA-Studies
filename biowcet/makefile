@@ -47,7 +47,7 @@ $(PROGRAM): $(OBJECTS)
 	$(CXX) $(FLAGSA) $(CXXFLAGS) $(CFLAGS) -c $< -o $@ 
 
 remove_o:
-	@rm -rf src/cfgmatrix/*.o  src/wipet/*.o src/wbio/*.o src/wdyn/*.o *.o src/utils/*.o src/aco/*.o
+	@rm -rf src/cfgmatrix/*.o  src/wipet/*.o src/wbio/*.o src/wdyn/*.o *.o src/utils/*.o src/aco/*.o src/cfgGen/*.o
 
 clean: remove_o
 	@rm -rf $(PROGRAM) *~ core.* *.lo .libs csv dot png 

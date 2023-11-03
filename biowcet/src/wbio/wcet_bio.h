@@ -1,17 +1,15 @@
 #ifndef WCET_BIO_H
 #define WCET_BIO_H
 
+#include <algorithm>
 #include <iostream>
 #include <queue>
-#include <unordered_map>
-#include <unordered_set>
 #include <set>
-#include <algorithm>
+#include <unordered_map>
 #include <vector>
 
 #include "../aco/aco.h"
 #include "../cfgmatrix/CfgMatrix.h"
-
 
 class WCETCalculatorBio {
    public:

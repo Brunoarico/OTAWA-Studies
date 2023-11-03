@@ -1,13 +1,9 @@
 #include "CfgMatrix.h"
 
 #include <algorithm>
-#include <cmath>
-#include <cstring>
 #include <fstream>
-#include <functional>
 #include <iostream>
 #include <map>
-#include <string>
 #include <vector>
 
 #include "../utils/utilities.h"
@@ -21,7 +17,7 @@
  * @param cycles The number of cycles between the two nodes.
  */
 void CfgMatrix::setConv(int nodeA, int nodeB, int cycles) {
-    if(cycles > maxCycle) maxCycle = cycles;
+    if (cycles > maxCycle) maxCycle = cycles;
     adjMatrixTotal.setCycle(nodeA, nodeB, cycles);
 }
 
@@ -33,14 +29,13 @@ void CfgMatrix::setConv(int nodeA, int nodeB, int cycles) {
  * @param cycles The number of cycles between the two nodes.
  */
 void CfgMatrix::setLoop(int nodeA, int nodeB, int cycles) {
-    if(cycles > maxCycle) maxCycle = cycles;
+    if (cycles > maxCycle) maxCycle = cycles;
     adjMatrixLoop.setCycle(nodeA, nodeB, cycles);
 }
 
 void CfgMatrix::setPriority(int priority) {
     this->priority = priority;
 }
-
 
 /**
  * @brief Sets the number of iterations for a given node.
@@ -86,7 +81,6 @@ int CfgMatrix::getCycles(int nodeA, int nodeB) {
 int CfgMatrix::getOuts(int node) {
     return adjMatrixTotal.getOuts(node);
 }
-
 
 int CfgMatrix::getMyHashName() {
     std::hash<std::string> hasher;
@@ -180,7 +174,7 @@ std::vector<std::vector<int>> CfgMatrix::get_cycles_from_node(int start_node) {
  * @brief Prints all cycles in the control flow graph.
  */
 void CfgMatrix::printCycles() {
-    if(getVerbose()) {
+    if (getVerbose()) {
         printf("---Conventional---\n");
         SparseMatrix adjMatrixConv = adjMatrixTotal.subtract(adjMatrixLoop);
         adjMatrixConv.printCycles();
@@ -198,7 +192,7 @@ void CfgMatrix::printCycles() {
  */
 void CfgMatrix::printFunctions() {
     for (int i = 0; i < adjMatrixTotal.size(); ++i) {
-        if(getVerbose()) printf("Node(%d) = %s\n", i, adjMatrixTotal.getName(i).c_str());
+        if (getVerbose()) printf("Node(%d) = %s\n", i, adjMatrixTotal.getName(i).c_str());
     }
 }
 
@@ -207,7 +201,7 @@ void CfgMatrix::printFunctions() {
  */
 void CfgMatrix::printIterations() {
     for (auto it = iterations.begin(); it != iterations.end(); ++it) {
-        if(getVerbose()) printf("Iterations of node %d: %d\n", it->first, it->second);
+        if (getVerbose()) printf("Iterations of node %d: %d\n", it->first, it->second);
     }
 }
 
@@ -216,7 +210,7 @@ void CfgMatrix::printIterations() {
  */
 void CfgMatrix::printOuts() {
     for (int i = 0; i < adjMatrixTotal.size(); ++i) {
-        if(getVerbose())printf("Outs(%d) = %d\n", i, adjMatrixTotal.getOuts(i));
+        if (getVerbose()) printf("Outs(%d) = %d\n", i, adjMatrixTotal.getOuts(i));
     }
 }
 
@@ -228,14 +222,16 @@ void CfgMatrix::printAllLoops() {
     for (int start_node = 0; start_node < adjMatrixTotal.size(); ++start_node) {
         if (isAloop(start_node)) {
             cycles = get_cycles_from_node(start_node);
-            if(getVerbose()) printf("Cycles Found:\n");
+            if (getVerbose()) printf("Cycles Found:\n");
             for (const std::vector<int>& cycle : cycles) {
-                for (int node : cycle) if(getVerbose()) printf("%d ", node);
+                for (int node : cycle)
+                    if (getVerbose()) printf("%d ", node);
                 int deps = checkNeastedLoops(cycle);
                 if (deps == -1)
-                    if(getVerbose()) printf(" (invalid)\n");
-                else
-                    if(getVerbose()) printf(" (deps: %d)\n", deps);
+                    if (getVerbose())
+                        printf(" (invalid)\n");
+                    else if (getVerbose())
+                        printf(" (deps: %d)\n", deps);
             }
         }
     }

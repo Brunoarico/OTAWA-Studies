@@ -3,31 +3,19 @@
 
 #include <elm/option/StringList.h>
 #include <elm/sys/System.h>
-#include <otawa/app/Application.h>
-#include <otawa/cfg/features.h>
 #include <otawa/etime/features.h>
-#include <otawa/events/features.h>
 #include <otawa/flowfact/FlowFactLoader.h>
-#include <otawa/hard/Processor.h>
-#include <otawa/ilp.h>
 #include <otawa/ilp/System.h>
-#include <otawa/ipet/BasicObjectFunctionBuilder.h>
-#include <otawa/ipet/WCETComputation.h>
 #include <otawa/ipet/features.h>
 #include <otawa/script/Script.h>
-#include <otawa/stats/BBStatCollector.h>
-#include <otawa/stats/StatInfo.h>
-#include <otawa/util/BBRatioDisplayer.h>
 
 #include <iostream>
-#include <unordered_map>
-#include <unordered_set>
 #include <set>
-#include <algorithm>
+#include <unordered_set>
 #include <vector>
 
-#include "../utils/utilities.h"
 #include "../cfgmatrix/CfgMatrix.h"
+#include "../utils/utilities.h"
 
 class cfgGen {
    public:

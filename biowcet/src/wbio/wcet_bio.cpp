@@ -1,12 +1,11 @@
 #include "wcet_bio.h"
 
-
 /**
  * @brief Constructor for the WCETCalculatorBio class.
  *
- * Initializes the WorkSpace pointer.
+ * This constructor initializes the cfgSet member variable with the provided set of Control Flow Graph (CFG) matrices.
  *
- * @param ws The WorkSpace pointer.
+ * @param cfgSet The set of CFG matrices.
  */
 WCETCalculatorBio::WCETCalculatorBio(std::set<CfgMatrix> cfgSet) {
     this->cfgSet = cfgSet;
@@ -25,23 +24,20 @@ void WCETCalculatorBio::calculateWCET() {
     while (!pq.empty()) {
         CfgMatrix c = pq.front();
         pq.pop();
-        int maxIter = 3;//pow(c.getSize(), 0.5);
+        int maxIter = 3;  // pow(c.getSize(), 0.5);
         int antNo = 10;
         float rho = 0.1;
         if (c.getPriority() > 0 && !replaceDependencies(&c)) {
             pq.push(c);
-        }
-        else{
+        } else {
             c.printCycles();
             ACO aco(c, antNo, 0, maxIter, alpha, beta, rho);
             aco.simulate();
             wcet = aco.getResults();
-            cfgMap[c.getMyHashName()] = wcet; 
+            cfgMap[c.getMyHashName()] = wcet;
         }
     }
-
 }
-
 
 /**
  * @brief Replaces the dependencies in the Control Flow Graph (CFG) matrix with their corresponding function names.
@@ -52,21 +48,20 @@ void WCETCalculatorBio::calculateWCET() {
  *
  * @param c The CfgMatrix pointer.
  */
-bool WCETCalculatorBio::replaceDependencies (CfgMatrix *c) {
-    for (int i = 0; i< c->getSize(); i++){
-        for (int j = 0; j< c->getSize(); j++){
+bool WCETCalculatorBio::replaceDependencies(CfgMatrix* c) {
+    for (int i = 0; i < c->getSize(); i++) {
+        for (int j = 0; j < c->getSize(); j++) {
             int value = c->getCycles(i, j);
-            if(value < 0) {//isfunc
-                if(cfgMap.count(value) > 0) //issolved
+            if (value < 0) {                  // isfunc
+                if (cfgMap.count(value) > 0)  // issolved
                     c->setConv(i, j, cfgMap[value]);
-                else return false;
+                else
+                    return false;
             }
         }
     }
     return true;
-
 }
-
 
 /**
  * @brief Returns the Worst Case Execution Time (WCET) calculated by the calculateWCET() function.

@@ -5,10 +5,10 @@
 #include <elm/sys/System.h>
 #include <otawa/ipet/WCETComputation.h>
 #include <otawa/ipet/features.h>
-#include <otawa/script/Script.h>
+
+#include <iostream>
 
 #include "../utils/utilities.h"
-#include <iostream>
 
 class WCETCalculator {
    public:

@@ -1,7 +1,6 @@
 #ifndef ACO_H
 #define ACO_H
-#include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
 #include <cmath>
 #include <time.h>
 #include <vector>

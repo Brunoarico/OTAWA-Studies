@@ -1,9 +1,12 @@
 #ifndef SPARSEMATRIX_H
 #define SPARSEMATRIX_H
 
+#include <fstream>
+#include <iostream>
 #include <map>
 #include <string>
 #include <vector>
+
 #include "../utils/utilities.h"
 
 class SparseMatrix {
