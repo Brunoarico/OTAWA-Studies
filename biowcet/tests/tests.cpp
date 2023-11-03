@@ -29,10 +29,31 @@ TEST(WcetIipetTrivialTest, WcetIpetcalc)
    ASSERT_TRUE(wcet_it);
 }
 
+TEST(WcetIipetTrivialXmcTest, WcetIpetXmccalc)
+{
+   uint32_t wcet_it = -1;
+   WCETCalculator wcetIpet("xmc4500", "main", "/root/OTAWA-Studies/biowcet/din/build/main_otawa.elf");
+   wcetIpet.calculateWCET();
+   wcet_it = wcetIpet.getWCET();
+
+   ASSERT_TRUE(wcet_it);
+}
+
 TEST(WcetBioTest, WcetBiocalc)
 {
    uint32_t wcet_b = -1;
    WCETCalculatorBio wcetBio("trivial", "main", "/root/OTAWA-Studies/biowcet/din/build/main_otawa.elf");
+   wcetBio.calculateWCET();
+   wcet_b = wcetBio.getWCET();
+   // std::cout << wcet_b << "\n";
+   ASSERT_TRUE(wcet_b);
+}
+
+
+TEST(WcetBioXmcTest, WcetBioXmccalc)
+{
+   uint32_t wcet_b = -1;
+   WCETCalculatorBio wcetBio("xmc4500", "main", "/root/OTAWA-Studies/biowcet/din/build/main_otawa.elf");
    wcetBio.calculateWCET();
    wcet_b = wcetBio.getWCET();
    // std::cout << wcet_b << "\n";
