@@ -15,6 +15,7 @@
 #include "src/wbio/wcet_bio.h"
 #include "src/wdyn/wcet_dyn.h"
 #include "src/wipet/wcet_ipet.h"
+#include "src/cfgGen/cfgGen.h"
 
 
 const char *asciiArt =
@@ -155,6 +156,7 @@ int main(int argc, char* argv[]) {
     std::string resolvedPath;
     bool dyn = false;
     char* dir;
+    otawa::WorkSpace *ws;
     std::chrono::high_resolution_clock::time_point startI, endI, startB, endB, startD, endD;
     std::chrono::duration<double, std::milli> elapsedD, elapsedI, elapsedB;
 
@@ -195,8 +197,9 @@ int main(int argc, char* argv[]) {
     compile();
     genff();
 
+    cfgGen otawaInstance(scriptPath, entry, getFolder(ELF_OTAWA_FOLDER));
 
-    WCETCalculator wcetIpet(scriptPath, entry, getFolder(ELF_OTAWA_FOLDER));
+    WCETCalculator wcetIpet(otawaInstance.workspaceGenerator());
     printInfo("Calculating WCET using IPET...", true);
     startI = std::chrono::high_resolution_clock::now();
     wcetIpet.calculateWCET();
@@ -204,7 +207,7 @@ int main(int argc, char* argv[]) {
     wcet_i = wcetIpet.getWCET();
     elapsedI = endI - startI;
 
-    WCETCalculatorBio wcetBio(scriptPath, entry, getFolder(ELF_OTAWA_FOLDER));
+    WCETCalculatorBio wcetBio(otawaInstance.cfg2Matrix());
     printInfo("Calculating WCET using ACO...", true);
     startB = std::chrono::high_resolution_clock::now();
     wcetBio.calculateWCET();

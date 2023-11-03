@@ -1,25 +1,63 @@
 
-int main()
+void bubbleSort(int arr[])
 {
-	int a = 1;
-	int b = 2;
-	int c = 3;
-	int d = 4;
-# 27 "src/main.c"
-	if(a == 1)
-# 27 "src/main.c"
+	int temp;
+	int i, j;
+# 18 "src/main.c"
+	for(i = 0; i < 100 - 1; i++)
+# 18 "src/main.c"
 	{
-# 28 "src/main.c"
-		b = 2;
-# 29 "src/main.c"
-		if(c == 3)
-# 29 "src/main.c"
+# 19 "src/main.c"
+		for(j = 0; j < 100 - i - 1; j++)
+# 19 "src/main.c"
 		{
-# 30 "src/main.c"
-			d = 4;
+# 20 "src/main.c"
+			if(arr[j] > arr[j + 1])
+# 20 "src/main.c"
+			{
+# 21 "src/main.c"
+				temp = arr[j];
+# 22 "src/main.c"
+				arr[j] = arr[j + 1];
+# 23 "src/main.c"
+				arr[j + 1] = temp;
+			}
 		}
 	}
-# 36 "src/main.c"
+}
+
+void generateArray(int *arr_0)
+{
+	int i_0;
+# 32 "src/main.c"
+	for(i_0 = 0; i_0 < 100; i_0++)
+# 32 "src/main.c"
+	{
+# 33 "src/main.c"
+		arr_0[i_0] = i_0;
+	}
+}
+
+void generateArrayInvert(int *arr_1)
+{
+	int i_1;
+# 39 "src/main.c"
+	for(i_1 = 0; i_1 < 100; i_1++)
+# 39 "src/main.c"
+	{
+# 40 "src/main.c"
+		arr_1[100 - i_1 - 1] = i_1;
+	}
+}
+
+int main(void )
+{
+	int arr_2[100];
+# 50 "src/main.c"
+	generateArrayInvert(arr_2);
+# 51 "src/main.c"
+	bubbleSort(arr_2);
+# 56 "src/main.c"
 	return 0;
 }
 

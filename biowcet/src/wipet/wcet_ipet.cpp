@@ -3,17 +3,14 @@
 using namespace otawa;
 using namespace elm::option;
 
+
 /**
- * @brief Constructor for the WCETCalculator class.
+ * @brief Constructs a WCETCalculator object with the given WorkSpace.
  * 
- * @param scriptPath The path to the script file.
- * @param entryFunction The name of the entry function.
- * @param elfPath The path to the ELF file.
+ * @param ws The WorkSpace object to use for calculating the WCET.
  */
-WCETCalculator::WCETCalculator(const std::string scriptPath, const std::string entryFunction, const std::string elfPath) {
-        this->scriptPath = elm::string(scriptPath.c_str());
-        this->entryFunction = elm::string(entryFunction.c_str());
-        this->elfPath = elm::string(elfPath.c_str());
+WCETCalculator::WCETCalculator(otawa::WorkSpace *ws) {
+    this->ws = ws;
 }
 
 /**
@@ -22,7 +19,7 @@ WCETCalculator::WCETCalculator(const std::string scriptPath, const std::string e
  * @throws elm::option::OptionException if the script file cannot be found.
  */
 void WCETCalculator::calculateWCET() {
-        elm::Path path = this->scriptPath;
+        /*elm::Path path = this->scriptPath;
         elm::string script = this->scriptPath;
         elm::string entry = this->entryFunction;
         PropList props;
@@ -48,7 +45,7 @@ void WCETCalculator::calculateWCET() {
         script::PATH(props) = path;
         script::Script *scr = new script::Script();
         otawa::WorkSpace *ws = MANAGER.load(this->elfPath, props);
-        ws->run(scr, props);
+        ws->run(scr, props);*/
         wcet = ipet::WCET(ws);
 }
 

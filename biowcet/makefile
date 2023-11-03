@@ -8,6 +8,7 @@ SOURCES += src/wbio/wcet_bio.cpp
 SOURCES += src/wdyn/wcet_dyn.cpp
 SOURCES += src/utils/utilities.cpp
 SOURCES += src/aco/aco.cpp
+SOURCES += src/cfgGen/cfgGen.cpp
 
 TEST_FOLDER        = test_files
 TEST_TARGET_BS     = $(TEST_FOLDER)/bs/
