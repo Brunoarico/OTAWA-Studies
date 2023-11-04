@@ -1,13 +1,14 @@
 PROGRAM         = unit_test
 SOURCES         = tests.cpp
 
-SOURCES += /home/OTAWA-Studies/biowcet/src/cfgmatrix/CfgMatrix.cpp
-SOURCES += /home/OTAWA-Studies/biowcet/src/cfgmatrix/SparseMatrix.cpp
-SOURCES += /home/OTAWA-Studies/biowcet/src/wipet/wcet_ipet.cpp
-SOURCES += /home/OTAWA-Studies/biowcet/src/wbio/wcet_bio.cpp
-SOURCES += /home/OTAWA-Studies/biowcet/src/wdyn/wcet_dyn.cpp
-SOURCES += /home/OTAWA-Studies/biowcet/src/utils/utilities.cpp
-SOURCES += /home/OTAWA-Studies/biowcet/src/aco/aco.cpp
+SOURCES += ../src/cfgmatrix/CfgMatrix.cpp
+SOURCES += ../src/cfgmatrix/SparseMatrix.cpp
+SOURCES += ../src/wipet/wcet_ipet.cpp
+SOURCES += ../src/wbio/wcet_bio.cpp
+SOURCES += ../src/wdyn/wcet_dyn.cpp
+SOURCES += ../src/utils/utilities.cpp
+SOURCES += ../src/aco/aco.cpp
+SOURCES += ../src/cfgGen/cfgGen.cpp
 
 MICROARCH	      = trivial
 
