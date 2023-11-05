@@ -12,18 +12,15 @@
 <platform>
 	<xi:include href="cortex_m3/pipeline.xml"/>
 	<xi:include href="cortex_m3/memory.xml"/>
-	<xi:include href="cortex_m3/cache.xml"/>
 </platform>
 
 <script>
-	<step processor="otawa::Virtualizer"/>
 	<step require="otawa::hard::PROCESSOR_FEATURE"/>
-	
+	<step require="otawa::REDUCED_LOOPS_FEATURE"/>
+	<step require="otawa::VIRTUALIZED_CFG_FEATURE"/>
 	<step processor="otawa::BasicGraphBBTime"/>
-
-	<step processor="otawa::CAT2ConstraintBuilder"/> 
-
-	<!-- WCET analysis using BasicGraphBBTime and pipeline.xml-->
+	<step require="otawa::etime::EDGE_TIME_FEATURE"/>
+	<config name="otawa::etime::RECORD_TIME" value="true"/>
 	<step require="otawa::ipet::WCET_FEATURE"/>
 </script>
 

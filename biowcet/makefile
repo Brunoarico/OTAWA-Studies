@@ -16,11 +16,12 @@ TEST_TARGET_BS100  = $(TEST_FOLDER)/bsort100/
 TEST_TARGET_IF     = $(TEST_FOLDER)/if/
 TEST_TARGET_FORIF  = $(TEST_FOLDER)/forif/
 TEST_TARGET_FUNC   = $(TEST_FOLDER)/func/
-TEST_TARGET_LUDCMP = $(TEST_FOLDER)/ludcmp/
+TEST_TARGET_MATMUL = $(TEST_FOLDER)/matmul/
+TEST_TARGET_FIR = $(TEST_FOLDER)/fir/
+TEST_TARGET_LOTFUNC = $(TEST_FOLDER)/lotFunc/
+TEST_TARGET_NEASTED = $(TEST_FOLDER)/neasted/
 
-#MICROARCH	      = trivial
-#MICROARCH	      = xmc4500
-MICROARCH	      = 4
+MICROARCH	      = m3
 
 # Configuration
 FLAGSA          = $(shell otawa-config --cflags)
@@ -37,7 +38,7 @@ LD              = libtool --mode=link --tag=CXX g++
 OBJECTS         = $(SOURCES:.cpp=.o)
 
 # Rules
-all: $(PROGRAM) remove_o
+all: $(PROGRAM) 
 	export LD_LIBRARY_PATH=$(LIBDIR):$(LIBDIR)/otawa/otawa
 
 $(PROGRAM): $(OBJECTS)
@@ -67,6 +68,18 @@ forif: $(PROGRAM)
 func: $(PROGRAM)
 	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_FUNC)/main.c
 
+matmul: $(PROGRAM)
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_MATMUL)/main.c
+
+fir:
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_FIR)/main.c  
+
+neasted:
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_NEASTED)/main.c  
+
+lotfunc:
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_LOTFUNC)/main.c  
+
 ifd: $(PROGRAM)
 	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_IF)/main.c -d
 
@@ -82,7 +95,18 @@ forifd: $(PROGRAM)
 funcd: $(PROGRAM)
 	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_FUNC)/main.c -d
 
-erro: $(PROGRAM)
-	./$(PROGRAM) 
+matmuld: $(PROGRAM)
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_MATMUL)/main.c -d 
 
-runAll: ifd bsd bsort100d forifd funcd
+fird:
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_FIR)/main.c -d
+
+neastedd:
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_NEASTED)/main.c -d
+
+lotfuncd:
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_LOTFUNC)/main.c -d 
+
+runAll: if bs bsort100 forif func matmul fir neasted lotfunc
+
+runAlld: ifd bsd bsort100d forifd funcd matmuld fird neastedd lotfuncd

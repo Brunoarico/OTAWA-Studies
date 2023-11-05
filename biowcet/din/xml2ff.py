@@ -34,7 +34,15 @@ def set_ff(filename, iterations):
                 else:
                     lines_with_values.append(line)
             else:
-                lines_with_values.append(line)
+                if line.strip().startswith('loop'):
+                    parentesis = re.search(r'\((.*?)\)', line)
+                    func = re.search(r'"(.*?)"', line)
+                    print("Insira as iteraçoes maximas de {} em {}: ".format(func.group(1),parentesis.group(1)))
+                    value = input()
+                    line = line.replace('?', value)
+                    lines_with_values.append(line)
+                else:
+                    lines_with_values.append(line)
         
         for line in lines_with_values:
             complete_file.write(line + '\n')
