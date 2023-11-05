@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "gen_ff_function.h"
+#include "aux_functions.cpp"
 #include <elm/option/StringList.h>
 #include <elm/sys/System.h>
 #include "../src/cfgGen/cfgGen.h"
@@ -8,8 +8,9 @@
 #include "../src/wdyn/wcet_dyn.h"
 
 
-#define DEBUG_FILE "/hwdebug.py"
-#define ELF_FOLDER "/home/OTAWA-Studies/biowcet/din/build/main.elf"
+#define DEBUG_FILE "../din/hwdebug.py"
+#define ELF_FOLDER "../din/build/main.elf"
+#define ELF_OTAWA_FOLDER "../din/build/main_otawa.elf"
 
 
 // testes responsável por gerar o arquivo  .elf e .ff de testes do OTAWA
@@ -28,10 +29,11 @@ TEST(GenffTest, GenFF)
 TEST(WcetIipetTrivialTest, WcetIpetcalc)
 {
    uint32_t wcet_it = -1;
-   cfgGen otawaInstance("trivial", "main", "/root/OTAWA-Studies/biowcet/din/build/main_otawa.elf");
+   cfgGen otawaInstance("trivial", "main", ELF_OTAWA_FOLDER);
    WCETCalculator wcetIpet(otawaInstance.workspaceGenerator());
    wcetIpet.calculateWCET();
    wcet_it = wcetIpet.getWCET();
+   std::cout << wcet_it << "\n";
    ASSERT_TRUE(wcet_it);
 }
 
@@ -43,10 +45,11 @@ TEST(WcetIipetTrivialTest, WcetIpetcalc)
 TEST(WcetIipetXmcTest, WcetIpetXmccalc)
 {
    uint32_t wcet_it = -1;
-   cfgGen otawaInstance("trivial", "main", "/root/OTAWA-Studies/biowcet/din/build/main_otawa.elf");
+   cfgGen otawaInstance("trivial", "main", ELF_OTAWA_FOLDER);
    WCETCalculator wcetIpet(otawaInstance.workspaceGenerator());
    wcetIpet.calculateWCET();
    wcet_it = wcetIpet.getWCET();
+   std::cout << wcet_it << "\n";
    ASSERT_TRUE(wcet_it);
 }
 
@@ -76,10 +79,12 @@ TEST(WcetBioXmcTest, WcetBioXmccalc)
 {
    otawa::WorkSpace *ws;
    uint32_t wcet_b = -1;
-   cfgGen otawaInstance("xmc4500", "main", "/root/OTAWA-Studies/biowcet/din/build/main_otawa.elf");
+   cfgGen otawaInstance("xmc4500", "main", ELF_OTAWA_FOLDER);
+   otawaInstance.workspaceGenerator();
    WCETCalculatorBio wcetBio(otawaInstance.cfg2Matrix());
    wcetBio.calculateWCET();
    wcet_b = wcetBio.getWCET();
+   std::cout << wcet_b << "\n";
    ASSERT_TRUE(wcet_b);
 }
 
