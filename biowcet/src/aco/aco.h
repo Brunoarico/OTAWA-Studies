@@ -4,6 +4,7 @@
 #include <cmath>
 #include <time.h>
 #include <vector>
+#include <thread>
 #include "../cfgmatrix/CfgMatrix.h"
 #include "../aco/aco.h"
 #include "../utils/utilities.h"
@@ -38,6 +39,7 @@ class ACO {
     void initializeAnts();
     int rouletteWheel(std::vector<double> P);
     void calculateFitness();
+    void antsRun(int antNo);
     int fitnessFunction(int antNo);
     void updatePhromone();
     int sumNextNodes(int node);

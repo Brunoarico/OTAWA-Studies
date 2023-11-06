@@ -149,6 +149,47 @@ void ACO::selectNextNode(std::stack<loop> s, int currentNode, std::vector<double
     for (int j = 0; j < nodeNo; ++j) (*P)[j] = P_allNodes[j] / sumP;
 }
 
+void ACO::antsRun(int antNo)
+{
+    std::vector<double> P(nodeNo);
+    colony.ant[antNo].wcet.push_back(0);
+    colony.ant[antNo].tour.push_back(firstNode);
+    int currentNode = firstNode;
+    std::stack<loop> s;
+    while (true) {
+        if (!s.empty() && currentNode == s.top().ref) {
+            s.top().iters -= 1;
+        }
+
+        // if pass by a loophead push to stack
+        if (graph.isAloop(currentNode)) {
+            loop l = {currentNode, graph.loopHead(currentNode), graph.getIteration(currentNode)};
+            if (s.empty() || s.top().ref != currentNode) {
+                s.push(l);
+            }
+        }
+
+        // set node probabilities
+        selectNextNode(s, currentNode, &P);
+
+        int nextNode = rouletteWheel(P);
+
+        if (!s.empty() && s.top().iters == 0 && currentNode == s.top().ref) {
+            s.pop();
+        }
+
+        if (nextNode == -1) break;
+        colony.ant[antNo].wcet.push_back(graph.getCycles(currentNode, nextNode));
+        colony.ant[antNo].tour.push_back(nextNode);
+        currentNode = nextNode;
+    }
+    for (int j = 0; j < colony.ant[antNo].tour.size(); ++j) {
+        fprintf(fp, "%d", colony.ant[antNo].tour[j]);
+        if (j < colony.ant[antNo].tour.size() - 1) fprintf(fp, "->");
+    }
+    fprintf(fp, "\n");
+}
+
 /**
  * @brief Runs the Ant Colony Optimization algorithm for a given number of iterations.
  *
@@ -158,49 +199,12 @@ void ACO::selectNextNode(std::stack<loop> s, int currentNode, std::vector<double
  */
 void ACO::runColony() {
     std::vector<double> P(nodeNo);
-
+    std::vector<std::thread> threads;
     for (int i = 0; i < antNo; ++i) {
-        colony.ant[i].wcet.push_back(0);
-        colony.ant[i].tour.push_back(firstNode);
-        int currentNode = firstNode;
-        std::stack<loop> s;
-        while (true) {
-            //printf("%d\n",currentNode);
-            if (!s.empty() && currentNode == s.top().ref) {
-                s.top().iters -= 1;
-            }
-
-            // if pass by a loophead push to stack
-            if (graph.isAloop(currentNode)) {
-                loop l = {currentNode, graph.loopHead(currentNode), graph.getIteration(currentNode)};
-                if (s.empty() || s.top().ref != currentNode) {
-                    s.push(l);
-                }
-            }
-
-            // set node probabilities
-            selectNextNode(s, currentNode, &P);
-
-            int nextNode = rouletteWheel(P);
-
-            if (!s.empty() && s.top().iters == 0 && currentNode == s.top().ref) {
-                s.pop();
-            }
-
-            if (nextNode == -1) break;
-            colony.ant[i].wcet.push_back(graph.getCycles(currentNode, nextNode));
-            colony.ant[i].tour.push_back(nextNode);
-            currentNode = nextNode;
-        }
-        for (int j = 0; j < colony.ant[i].tour.size(); ++j) {
-            fprintf(fp, "%d", colony.ant[i].tour[j]);
-            if (j < colony.ant[i].tour.size() - 1) fprintf(fp, "->");
-        }
-        fprintf(fp, "\n");
-        //int sum = 0;
-        //for (int j = 0; j < colony.ant[i].wcet.size(); ++j) sum += colony.ant[i].wcet[j];
-        //printf("%d\n", sum);
+        threads.push_back(std::thread(&ACO::antsRun, this, i));
     }
+    for (auto& t : threads)
+    t.join();
 }
 
 /**
