@@ -12,45 +12,27 @@ ACO::ACO(CfgMatrix graph, int antNo, int firstNode, int maxIter, double alpha, d
     this->firstNode = firstNode;
 
     wcet.resize(maxIter);
-
-    srand(time(NULL));
-
-    matriz_resultante.resize(nodeNo);
-
-    for (int i = 0; i < nodeNo; ++i) {
-        int randomIndex = rand() % nodeNo;                       // Gera um índice aleatório de 0 a 15
-        matriz_resultante[i] = graph.getCycles(i, randomIndex);  // Seleciona o elemento correspondente ao índice aleatório
-    }
-
-    tau0 = 10 * 1 / (nodeNo * mean(graph, nodeNo));
-    // tau0 = 1 / (mean(graph, nodeNo));
-    // tau0 = 1;
-
     tau.resize(nodeNo);
-    for (int i = 0; i < nodeNo; i++) tau[i].resize(nodeNo);
-
     eta.resize(nodeNo);
-    for (int i = 0; i < nodeNo; i++) eta[i].resize(nodeNo);
-    for (int i = 0; i < nodeNo; i++) {
-        int sum = 0;
-        for (int j = 0; j < nodeNo; j++) sum += graph.getCycles(i, j);
-        for (int j = 0; j < nodeNo; j++) {
-            eta[i][j] = float(graph.getCycles(i, j));
-            if (eta[i][j]) tau[i][j] = tau0;
-        }
-    }
 
     colony.queen.tour;
     colony.queen.wcet;
     colony.queen.fitness = 0;
     colony.ant.resize(antNo);
 
-    for (int i = 0; i < antNo; i++) {
-        colony.ant[i].fitness = 0;
-    }
+    tau0 = 10 * 1 / (nodeNo * mean(graph, nodeNo));
+    //tau0 = 1 / (mean(graph, nodeNo));
+    //tau0 = 1;
 
-    // printTau();
-    // printEta();
+    for (int i = 0; i < nodeNo; i++) {
+        tau[i].resize(nodeNo);
+        eta[i].resize(nodeNo);
+        colony.ant[i].fitness = 0;
+        for (int j = 0; j < nodeNo; j++) {
+            eta[i][j] = float(graph.getCycles(i, j));
+            if (eta[i][j]) tau[i][j] = tau0;
+        }
+    }
 }
 
 double ACO::mean(CfgMatrix array, int size) {
@@ -160,7 +142,7 @@ void ACO::selectNextNode(std::stack<loop> s, int currentNode, std::vector<double
                 P_allNodes[j] = pow(eta[currentNode][j], 30);
             }
         } else
-            P_allNodes[j] = pow(tau[currentNode][j], alpha) * pow((eta[currentNode][j] + sumNextNodes(j)) / 2, beta);
+            P_allNodes[j] = pow(tau[currentNode][j], alpha) * pow((eta[currentNode][j] + 3*sumNextNodes(j)) / 4, beta);
         sumP += P_allNodes[j];
     }
 
@@ -183,6 +165,7 @@ void ACO::runColony() {
         int currentNode = firstNode;
         std::stack<loop> s;
         while (true) {
+            //printf("%d\n",currentNode);
             if (!s.empty() && currentNode == s.top().ref) {
                 s.top().iters -= 1;
             }
@@ -210,10 +193,13 @@ void ACO::runColony() {
             currentNode = nextNode;
         }
         for (int j = 0; j < colony.ant[i].tour.size(); ++j) {
-            fprintf(f, "%d", colony.ant[i].tour[j]);
-            if (j < colony.ant[i].tour.size() - 1) fprintf(f, "->");
+            fprintf(fp, "%d", colony.ant[i].tour[j]);
+            if (j < colony.ant[i].tour.size() - 1) fprintf(fp, "->");
         }
-        fprintf(f, "\n");
+        fprintf(fp, "\n");
+        //int sum = 0;
+        //for (int j = 0; j < colony.ant[i].wcet.size(); ++j) sum += colony.ant[i].wcet[j];
+        //printf("%d\n", sum);
     }
 }
 
@@ -283,7 +269,7 @@ void ACO::printWCEP(Ant a) {
 void ACO::simulate(bool verbose) {
     std::string funcName = graph.getMyName();
     std::string path = "./build/paths_" + funcName + ".txt";
-    f = fopen(path.c_str(), "w");
+    fp = fopen(path.c_str(), "w");
     for (int t = 0; t < maxIter; ++t) {
         initializeAnts();
         runColony();
@@ -291,9 +277,8 @@ void ACO::simulate(bool verbose) {
         updatePhromone();
         wcet[t] = findQueen();
         updateProgressBar(t, maxIter);
-        // printf("WCET: %d\n", wcet[t]);
     }
-    fclose(f);
+    fclose(fp);
 }
 
 uint32_t ACO::getResults() {
@@ -311,16 +296,19 @@ uint32_t ACO::getResults() {
 void ACO::updatePhromone() {
     int i, j;
     int currentNode, nextNode;
+    long int mean = 0;
+    for (i = 0; i < antNo; ++i) mean += colony.ant[i].fitness;
+    mean /= antNo;
     for (i = 0; i < antNo; ++i) {
         for (j = 0; j < colony.ant[i].tour.size() - 1; ++j) {
             currentNode = colony.ant[i].tour[j];
             nextNode = colony.ant[i].tour[j + 1];
-            if (tau[nextNode - 1][currentNode + 1]) tau[nextNode - 1][currentNode + 1] -= 1.0 / colony.ant[i].fitness;
+            if (tau[nextNode - 1][currentNode + 1]) tau[nextNode - 1][currentNode + 1] += mean/colony.ant[i].fitness;
             // if(tau[nextNode][currentNode]) tau[nextNode][currentNode] += 1.0 / colony.ant[i].fitness;
         }
     }
     for (int i = 0; i < nodeNo; ++i)
-        for (int j = 0; j < nodeNo; ++j) tau[i][j] *= (1 - rho);
+        for (int j = 0; j < nodeNo; ++j) tau[i][j] *= (1.0 - rho);
 }
 
 /**

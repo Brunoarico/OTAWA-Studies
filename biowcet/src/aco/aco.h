@@ -64,7 +64,7 @@ class ACO {
     double beta;
     double rho;
     double bestFitness;
-    FILE *f;
+    FILE *fp;
 };
 
 

@@ -45,10 +45,9 @@ otawa::WorkSpace *cfgGen::workspaceGenerator() {
 /**
  * @brief Calculates the execution time of a basic block.
  *
- * This function calculates the execution time of a basic block using the Integer Linear Programming (ILP) model.
- * It computes the low time and high times of the block and returns the maximum value between them.
+ * This function calculates the execution time of a basic block.
+ * It computes the high times of the block.
  *
- * @param ws The WorkSpace pointer.
  * @param b The Block pointer.
  * @return The execution time of the basic block.
  */
@@ -59,23 +58,22 @@ uint32_t cfgGen::blockTime(otawa::Block *b) {
     b->toBasic()->basicPreds(ps);
 
     ot::time t2 = 0;
-    
+    ot::time t1;
+    std::vector<int> time;
 
     for (auto p : ps){
         if(!b->isCall())
             if (p.snd->hasProp(otawa::etime::LTS_TIME)) {
                 // compute low time
                 int lt = otawa::etime::LTS_TIME(p.snd);
-                int lc = sys->valueOf(ipet::VAR(p.snd));
-                if(lc) t2 += lt;
-                // compute high times
-                for (auto c : otawa::etime::HTS_CONFIG.all(p.snd)) {
-                    int ht = c.fst;
-                    int hc = sys->valueOf(c.snd);
-                }
+                //if (t2 > lt) t2 = lt;
+                time.push_back(lt);
             }
     }
-    ot::time t1 = ipet::TIME(b);
+    int sum = std::accumulate(time.begin(), time.end(), 0);
+
+    t2 = sum / time.size();
+    t1 = ipet::TIME(b);
 
     if (t2 > 0)
         return t2;
@@ -148,6 +146,4 @@ std::set<CfgMatrix> cfgGen::cfg2Matrix() {
     }
     
     return mySet;
-    
-
 }

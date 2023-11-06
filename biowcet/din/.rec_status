@@ -1,12 +1,5 @@
-funcao1 : without
-funcao2 : without
-funcao3 : without
-funcao4 : without
-funcao5 : without
-funcao6 : without
-funcao7 : without
-funcao8 : without
-funcao9 : without
-funcao10 : without
+bubbleSort : without
+generateArray : without
+generateArrayInvert : without
 main : without
 Application is : not recursive

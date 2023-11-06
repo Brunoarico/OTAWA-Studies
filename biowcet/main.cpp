@@ -233,14 +233,14 @@ int main(int argc, char* argv[]) {
         printError("No WCET_IPET computed");
     else{
         printResult("WCET_IPET[" + std::string(entry) + "] = " + std::to_string(wcet_i) + " cycles");
-        printInfo("IPET consumed " + std::to_string(elapsedI.count()) + " ms");
+        printInfo("IPET consumed " + std::to_string(elapsedI.count()) + " ms", true);
     }
 
     if (wcet_b == -1)
         printError("No WCET_BIO computed");
     else{
         printResult("WCET_BIO[" + std::string(entry) + "] = " + std::to_string(wcet_b) + " cycles");
-        printInfo("BIO consumed " + std::to_string(elapsedB.count()) + " ms");
+        printInfo("BIO consumed " + std::to_string(elapsedB.count()) + " ms", true);
     }
 
 
@@ -249,7 +249,7 @@ int main(int argc, char* argv[]) {
             printError("No WCET_DYNAMIC computed");
         else{
             printResult("WCET_DYNAMIC[" + std::string(entry) + "] = " + std::to_string(wcet_d) + " cycles");
-            printInfo("DYNAMIC consumed " + std::to_string(elapsedD.count()) + " ms");
+            printInfo("DYNAMIC consumed " + std::to_string(elapsedD.count()) + " ms", true);
         }
     }
 

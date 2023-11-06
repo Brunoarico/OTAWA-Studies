@@ -13,6 +13,7 @@
 #include <set>
 #include <unordered_set>
 #include <vector>
+#include <numeric>
 
 #include "../cfgmatrix/CfgMatrix.h"
 #include "../utils/utilities.h"
