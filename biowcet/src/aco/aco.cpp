@@ -20,8 +20,8 @@ ACO::ACO(CfgMatrix graph, int antNo, int firstNode, int maxIter, double alpha, d
     colony.queen.fitness = 0;
     colony.ant.resize(antNo);
 
-    tau0 = 10 * 1 / (nodeNo * mean(graph, nodeNo));
-    //tau0 = 1 / (mean(graph, nodeNo));
+    //tau0 = 10 * 1 / (nodeNo * mean(graph, nodeNo));
+    tau0 = 1 / (mean(graph, nodeNo));
     //tau0 = 1;
 
     for (int i = 0; i < nodeNo; i++) {
@@ -188,6 +188,9 @@ void ACO::antsRun(int antNo)
         if (j < colony.ant[antNo].tour.size() - 1) fprintf(fp, "->");
     }
     fprintf(fp, "\n");
+    int sum = 0;
+    for (int j = 0; j < colony.ant[antNo].wcet.size(); ++j) sum += colony.ant[antNo].wcet[j];
+    fprintf(fw,"%d\n", sum);
 }
 
 /**
@@ -273,15 +276,23 @@ void ACO::printWCEP(Ant a) {
 void ACO::simulate(bool verbose) {
     std::string funcName = graph.getMyName();
     std::string path = "./build/paths_" + funcName + ".txt";
+    std::string pathw = "./build/wcets_" + funcName + ".txt";
     fp = fopen(path.c_str(), "w");
+    fw = fopen(pathw.c_str(), "w");
+    printf("Running ACO for %d iterations...\n", maxIter);
     for (int t = 0; t < maxIter; ++t) {
         initializeAnts();
+        
         runColony();
+        
         calculateFitness();
+        
         updatePhromone();
         wcet[t] = findQueen();
+        printf("Iteration: %d\n", t);
         updateProgressBar(t, maxIter);
     }
+    fclose(fw);
     fclose(fp);
 }
 
@@ -307,7 +318,7 @@ void ACO::updatePhromone() {
         for (j = 0; j < colony.ant[i].tour.size() - 1; ++j) {
             currentNode = colony.ant[i].tour[j];
             nextNode = colony.ant[i].tour[j + 1];
-            if (tau[nextNode - 1][currentNode + 1]) tau[nextNode - 1][currentNode + 1] += mean/colony.ant[i].fitness;
+            if (tau[nextNode - 1][currentNode + 1]) tau[nextNode - 1][currentNode + 1] -= 1./colony.ant[i].fitness;
             // if(tau[nextNode][currentNode]) tau[nextNode][currentNode] += 1.0 / colony.ant[i].fitness;
         }
     }

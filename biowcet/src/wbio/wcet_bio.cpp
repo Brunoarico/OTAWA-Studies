@@ -21,12 +21,14 @@ WCETCalculatorBio::WCETCalculatorBio(std::set<CfgMatrix> cfgSet) {
  */
 void WCETCalculatorBio::calculateWCET() {
     for (const CfgMatrix& elem : cfgSet) pq.push(elem);
+    
     while (!pq.empty()) {
         CfgMatrix c = pq.front();
         pq.pop();
-        int maxIter = pow(c.getSize(), 0.5);
+        
+        int maxIter = 30;//pow(c.getSize(), );
         int antNo = 10;
-        float rho = 0.5;
+        float rho = 0.1;
         if (c.getPriority() > 0 && !replaceDependencies(&c)) {
             pq.push(c);
         } else {
@@ -37,6 +39,7 @@ void WCETCalculatorBio::calculateWCET() {
             cfgMap[c.getMyHashName()] = wcet;
         }
     }
+    
 }
 
 /**

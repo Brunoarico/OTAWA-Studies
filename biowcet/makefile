@@ -20,6 +20,7 @@ TEST_TARGET_MATMUL = $(TEST_FOLDER)/matmul/
 TEST_TARGET_FIR = $(TEST_FOLDER)/fir/
 TEST_TARGET_LOTFUNC = $(TEST_FOLDER)/lotFunc/
 TEST_TARGET_NEASTED = $(TEST_FOLDER)/neasted/
+TEST_TARGET_NOP = $(TEST_FOLDER)/nop/
 
 MICROARCH	      = m3
 
@@ -78,7 +79,10 @@ neasted:
 	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_NEASTED)/main.c  
 
 lotfunc:
-	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_LOTFUNC)/main.c  
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_LOTFUNC)/main.c 
+
+nop:
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_NOP)/main.c   
 
 ifd: $(PROGRAM)
 	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_IF)/main.c -d
@@ -107,6 +111,9 @@ neastedd:
 lotfuncd:
 	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_LOTFUNC)/main.c -d 
 
-runAll: if bs bsort100 forif func matmul fir neasted lotfunc
+nopd:
+	./$(PROGRAM) -s $(MICROARCH) -p $(TEST_TARGET_NOP)/main.c -d  
 
-runAlld: ifd bsd bsort100d forifd funcd matmuld fird neastedd lotfuncd
+runAll: nop if bs bsort100 forif func matmul fir neasted lotfunc
+
+runAlld: nopd ifd bsd bsort100d forifd funcd matmuld fird neastedd lotfuncd
