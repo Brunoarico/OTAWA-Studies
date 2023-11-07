@@ -7,6 +7,7 @@ cfgGen::cfgGen(const std::string scriptPath, const std::string entryFunction, co
         this->scriptPath = elm::string(scriptPath.c_str());
         this->entryFunction = elm::string(entryFunction.c_str());
         this->elfPath = elm::string(elfPath.c_str());
+        
 }
 
 otawa::WorkSpace *cfgGen::workspaceGenerator() {
@@ -14,6 +15,7 @@ otawa::WorkSpace *cfgGen::workspaceGenerator() {
     elm::string script = this->scriptPath;
     elm::string entry = this->entryFunction;
     PropList props;
+
 
     if (!path.exists() && !path.isAbsolute()) {
         elm::Path file = script;
@@ -43,10 +45,9 @@ otawa::WorkSpace *cfgGen::workspaceGenerator() {
 /**
  * @brief Calculates the execution time of a basic block.
  *
- * This function calculates the execution time of a basic block using the Integer Linear Programming (ILP) model.
- * It computes the low time and high times of the block and returns the maximum value between them.
+ * This function calculates the execution time of a basic block.
+ * It computes the high times of the block.
  *
- * @param ws The WorkSpace pointer.
  * @param b The Block pointer.
  * @return The execution time of the basic block.
  */
@@ -55,23 +56,25 @@ uint32_t cfgGen::blockTime(otawa::Block *b) {
     sys = ipet::SYSTEM(ws);
     BasicBlock::basic_preds_t ps;
     b->toBasic()->basicPreds(ps);
+
     ot::time t2 = 0;
+    ot::time t1;
+    std::vector<int> time;
 
-    for (auto p : ps)
-        if (p.snd->hasProp(otawa::etime::LTS_TIME)) {
-            // compute low time
-            int lt = otawa::etime::LTS_TIME(p.snd);
-            int lc = sys->valueOf(ipet::VAR(p.snd));
-            t2 += lc * lt;
-
-            // compute high times
-            for (auto c : otawa::etime::HTS_CONFIG.all(p.snd)) {
-                int ht = c.fst;
-                int hc = sys->valueOf(c.snd);
-                t2 += hc * ht;
+    for (auto p : ps){
+        if(!b->isCall())
+            if (p.snd->hasProp(otawa::etime::LTS_TIME)) {
+                // compute low time
+                int lt = otawa::etime::LTS_TIME(p.snd);
+                //if (t2 > lt) t2 = lt;
+                time.push_back(lt);
             }
-        }
-    ot::time t1 = ipet::TIME(b);
+    }
+    int sum = std::accumulate(time.begin(), time.end(), 0);
+
+    t2 = sum / time.size();
+    t1 = ipet::TIME(b);
+
     if (t2 > 0)
         return t2;
     else if (t1 > 0)
@@ -109,8 +112,6 @@ std::set<CfgMatrix> cfgGen::cfg2Matrix() {
             for (auto w : SUCCS(v)) {
                 if (w->isBasic()) {
                     ot::time time = blockTime(w);
-                    //ot::time time2 = ipet::TIME(w->edgeTo(v));
-                    //printf("ipet=s %ld, myMethod = %ld\n", time2, time);
                     if (time > 0)
                         cfgM->setConv(v->index(), w->index(), time);
                     else
@@ -133,8 +134,6 @@ std::set<CfgMatrix> cfgGen::cfg2Matrix() {
                 for (auto e : BACK_EDGES(v)) {
                     if (exclusionSet.find(e->source()->index()) == exclusionSet.end()) {
                         ot::time time = blockTime(e->sink());
-                        //ot::time time2 = ipet::TIME(e);
-                        //printf("ipet=s %ld, myMethod = %ld\n", time2, time);
                         cfgM->setLoop(e->source()->index(), v->index(), time);
                         if (MAX_ITERATION(v) > 0) cfgM->setIteration(v->index(), MAX_ITERATION(v));
                     }
@@ -142,12 +141,9 @@ std::set<CfgMatrix> cfgGen::cfg2Matrix() {
             }
         }
         cfgM->setPriority(calls);
-        //printf("vFunction: %s, deps: %d\n", cfgM->getMyName().c_str(), calls);
         mySet.insert(*cfgM);
         cfgM->exportDots(g->name().asSysString());
     }
     
     return mySet;
-    
-
 }

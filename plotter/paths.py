@@ -49,6 +49,7 @@ def contar_passagens(sequencia_caminhos):
 
 def gerar_cores_gradiente(valor, valor_maximo, valor_minimo):
     if(valor_maximo == valor_minimo):
+        print("equal")
         return 'black'
     # Normaliza o valor dentro da faixa de 0 a 1
     valor = np.log(valor + 1)
@@ -87,7 +88,7 @@ for edge in G.edges(data=True):
     #print(edge)
     edge_weights[(edge[0], edge[1])] = edge[2]['label']
     if((edge[0], edge[1]) not in resultado):
-        ecolors[(edge[0], edge[1])] = 'white'
+        ecolors[(edge[0], edge[1])] = 'black'
     else:
         ecolors[(edge[0], edge[1])] = gerar_cores_gradiente(resultado[(edge[0], edge[1])], emax, emin)
         #print(colors[(edge[0], edge[1])], resultado[(edge[0], edge[1])], emax, emin)
