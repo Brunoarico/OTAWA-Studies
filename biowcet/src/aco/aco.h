@@ -10,6 +10,8 @@
 #include "../utils/utilities.h"
 #include <stack>
 
+#define PLOTTER
+
 typedef struct _Ant {
     std::vector<int> tour;
     std::vector<int> wcet;
@@ -66,8 +68,12 @@ class ACO {
     double beta;
     double rho;
     double bestFitness;
+    float error = 0.1;
+    #ifdef PLOTTER
     FILE *fp;
     FILE *fw;
+    FILE *fq;
+    #endif
 };
 
 

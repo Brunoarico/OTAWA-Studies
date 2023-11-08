@@ -74,18 +74,11 @@ debug: $(ELF)
 	$(OCD) -f stlink_bluepill.cfg &
 	$(GDB) -q -x hwdebug.py $<
 
-test: flash debug
 
 kill_openocd:
 	@if pgrep -x "openocd" > /dev/null; then \
 		pkill openocd; \
 	fi
 
-otawa: $(ELF_OTAWA)
-	./xml2ff.py 
-	owcet -s xmc4500 $(ELF_OTAWA)
-
 $(OUTDIR):
 	mkdir -p $@
-
-wcet: flash debug otawa
