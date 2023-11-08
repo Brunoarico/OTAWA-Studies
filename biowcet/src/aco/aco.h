@@ -10,7 +10,7 @@
 #include "../utils/utilities.h"
 #include <stack>
 
-#define PLOTTER
+//#define PLOTTER
 
 typedef struct _Ant {
     std::vector<int> tour;
