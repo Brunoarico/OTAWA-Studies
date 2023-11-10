@@ -295,9 +295,7 @@ void ACO::simulate(bool verbose) {
         updatePhromone();
         wcet[t] = findQueen();
         updateProgressBar(t, maxIter);
-        if(wcet[t]) float variation = std::abs(wcet[t] - wcet[t-1])/std::abs(wcet[t]);
-        else break;
-        //if(t > 0 && variation < error) break;
+        if(t > 0 && std::abs(wcet[t] - wcet[t-1]) < error) break;
     }
     #ifdef PLOTTER
     for (int j = 0; j < colony.queen.tour.size(); ++j) {
