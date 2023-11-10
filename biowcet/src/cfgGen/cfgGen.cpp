@@ -140,6 +140,7 @@ std::set<CfgMatrix> cfgGen::cfg2Matrix() {
                 }
             }
         }
+        
         cfgM->setPriority(calls);
         mySet.insert(*cfgM);
         cfgM->exportDots(g->name().asSysString());
