@@ -167,6 +167,11 @@ int main(int argc, char* argv[]) {
     uint32_t wcet_b = -1;
 
     int option;
+
+    if (argc == 1) {
+        showUsage(argv[0]);
+        return 0; 
+    }
     
     while ((option = getopt(argc, argv, "s:p:vdh")) != -1) {
         switch (option) {

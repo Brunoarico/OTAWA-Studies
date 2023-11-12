@@ -26,9 +26,9 @@ void WCETCalculatorBio::calculateWCET() {
         CfgMatrix c = pq.front();
         pq.pop();
         
-        int maxIter = 30;//pow(c.getSize(), );
+        int maxIter = 30;
         int antNo = 10;
-        float rho = 0.1;
+        float rho = 0.8;
         if (c.getPriority() > 0 && !replaceDependencies(&c)) {
             pq.push(c);
         } else {

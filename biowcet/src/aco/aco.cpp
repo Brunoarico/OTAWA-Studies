@@ -1,5 +1,7 @@
 #include "aco.h"
 
+
+
 ACO::ACO(CfgMatrix graph, int antNo, int firstNode, int maxIter, double alpha, double beta, double rho) {
     this->graph = graph;
     this->nodeNo = graph.getSize() + 1;
@@ -183,6 +185,7 @@ void ACO::antsRun(int antNo)
         colony.ant[antNo].tour.push_back(nextNode);
         currentNode = nextNode;
     }
+    #ifdef PLOTTER
     for (int j = 0; j < colony.ant[antNo].tour.size(); ++j) {
         fprintf(fp, "%d", colony.ant[antNo].tour[j]);
         if (j < colony.ant[antNo].tour.size() - 1) fprintf(fp, "->");
@@ -191,6 +194,7 @@ void ACO::antsRun(int antNo)
     int sum = 0;
     for (int j = 0; j < colony.ant[antNo].wcet.size(); ++j) sum += colony.ant[antNo].wcet[j];
     fprintf(fw,"%d\n", sum);
+    #endif
 }
 
 /**
@@ -275,25 +279,33 @@ void ACO::printWCEP(Ant a) {
  */
 void ACO::simulate(bool verbose) {
     std::string funcName = graph.getMyName();
+    #ifdef PLOTTER
     std::string path = "./build/paths_" + funcName + ".txt";
     std::string pathw = "./build/wcets_" + funcName + ".txt";
+    std::string pathq = "./build/path_queen_" + funcName + ".txt";
     fp = fopen(path.c_str(), "w");
     fw = fopen(pathw.c_str(), "w");
-    printf("Running ACO for %d iterations...\n", maxIter);
+    fq = fopen(pathq.c_str(), "w");
+    #endif
+
     for (int t = 0; t < maxIter; ++t) {
         initializeAnts();
-        
         runColony();
-        
         calculateFitness();
-        
         updatePhromone();
         wcet[t] = findQueen();
-        printf("Iteration: %d\n", t);
         updateProgressBar(t, maxIter);
+        if(t > 0 && std::abs(wcet[t] - wcet[t-1]) < error) break;
+    }
+    #ifdef PLOTTER
+    for (int j = 0; j < colony.queen.tour.size(); ++j) {
+        fprintf(fq, "%d", colony.queen.tour[j]);
+        if (j < colony.queen.tour.size() - 1) fprintf(fq, "->");
     }
     fclose(fw);
     fclose(fp);
+    fclose(fq);
+    #endif
 }
 
 uint32_t ACO::getResults() {

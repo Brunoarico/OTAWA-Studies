@@ -127,7 +127,7 @@ plt.colorbar(sm, label='N° de passagens')
 
 handles_dict = {patches.Patch(color='white', label=f'{edge[0]} -> {edge[1]} = {value}') for edge, value in resultado.items()}
 
-ax.legend(handles=handles_dict,title='N° de Passagens')
+#ax.legend(handles=handles_dict,title='N° de Passagens')
 nx.draw(G, pos, with_labels=True, node_size=1900, font_weight='bold', edge_labels=edge_weights, width=2, arrows=True, edge_color=[ecolors[edge] for edge in G.edges()], node_color=[ncolors[node] for node in G.nodes()], ax=ax)
 nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_weights, ax=ax)
 plt.show()

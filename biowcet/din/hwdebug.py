@@ -47,6 +47,6 @@ def main():
 
 if __name__ == '__main__':
     main()
-    print('Wcet_Dynamic: ', mean(measure))
+    print('Wcet_Dynamic: ', max(measure))
     gdb.execute('quit')
     
