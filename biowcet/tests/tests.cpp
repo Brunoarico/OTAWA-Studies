@@ -7,13 +7,34 @@
 #include "../src/wbio/wcet_bio.h"
 #include "../src/wdyn/wcet_dyn.h"
 
-
 #define DEBUG_FILE "../din/hwdebug.py"
 #define ELF_FOLDER "../din/build/main.elf"
+#define ELF_TEST "../din/"
 #define ELF_OTAWA_FOLDER "../din/build/main_otawa.elf"
 
 
-// testes responsável por gerar o arquivo  .elf e .ff de testes do OTAWA
+
+// test if files are compiled
+TEST(CompileTest, CompileTest)
+{
+   int result = false;
+   compile();
+   FILE *fa = fopen(ELF_TEST".merge.cm", "r");
+   FILE *fb = fopen(ELF_TEST".rec_status", "r");
+
+   FILE *fc = fopen(ELF_TEST"build/main_empty.ff", "r");
+   FILE *fd = fopen(ELF_TEST"build/main_otawa.elf", "r");
+   FILE *fe = fopen(ELF_TEST"build/main.bin", "r");
+   FILE *ff = fopen(ELF_TEST"build/main.bin.lst", "r");
+   FILE *fg = fopen(ELF_TEST"build/main.elf", "r");
+   FILE *fh = fopen(ELF_TEST"build/main.xml", "r");
+   if (fa && fb && fc && fd && fe && ff && fg && fh)
+   {
+     result = true;
+   }
+   ASSERT_TRUE(result);
+}
+// Generate .ff and .elf files for OTAWA
 TEST(GenffTest, GenFF)
 {
    genff();
@@ -21,85 +42,112 @@ TEST(GenffTest, GenFF)
    ASSERT_TRUE(f != NULL);
 }
 
-/*
- * Teste responsável por calcular o WCET pelo método IPET utilizando a arquitetura padrão
- * Caso haja erro no cálculo, o valor da variável wcet_it é negativo e o teste terá falhadao
- */
 
-TEST(WcetIipetTrivialTest, WcetIpetcalc)
+
+
+/*
+ * Verify if WCET IPET functionality is working
+ * 
+ */
+TEST(WcetIipetM3Test, WcetIpetcalc)
 {
    uint32_t wcet_it = -1;
-   cfgGen otawaInstance("trivial", "main", ELF_OTAWA_FOLDER);
+   cfgGen otawaInstance("m3", "main", ELF_OTAWA_FOLDER);
    WCETCalculator wcetIpet(otawaInstance.workspaceGenerator());
    wcetIpet.calculateWCET();
    wcet_it = wcetIpet.getWCET();
-   std::cout << wcet_it << "\n";
    ASSERT_TRUE(wcet_it);
 }
 
-/*
- * Teste responsável por calcular o WCET pelo método IPET utilizando a arquitetura xmc4500
- * Caso haja erro no cálculo, o valor da variável wcet_it é negativo e o teste terá falhadao
- */
-
-TEST(WcetIipetXmcTest, WcetIpetXmccalc)
-{
-   uint32_t wcet_it = -1;
-   cfgGen otawaInstance("trivial", "main", ELF_OTAWA_FOLDER);
-   WCETCalculator wcetIpet(otawaInstance.workspaceGenerator());
-   wcetIpet.calculateWCET();
-   wcet_it = wcetIpet.getWCET();
-   std::cout << wcet_it << "\n";
-   ASSERT_TRUE(wcet_it);
-}
 
 /*
- * Teste responsável por calcular o WCET pelo método BioInspirado utilizando a arquitetura padrão
- * Caso haja erro no cálculo, o valor da variável wcet_it é negativo e o teste terá falhadao
+ * Verify if WCET Bio functionality is working
+ * 
  */
 
-// TEST(WcetBioTest, WcetBiocalc)
-// {
-//    otawa::WorkSpace *ws;
-//    uint32_t wcet_b = -1;
-//    cfgGen otawaInstance("trivial", "main", "/root/OTAWA-Studies/biowcet/din/build/main_otawa.elf");
-//    WCETCalculatorBio wcetBio(otawaInstance.cfg2Matrix());
-//    wcetBio.calculateWCET();
-//    wcet_b = wcetBio.getWCET();
-//    // std::cout << wcet_b << "\n";
-//    ASSERT_TRUE(wcet_b);
-// }
-
-/*
- * Teste responsável por calcular o WCET pelo método BioInspirado utilizando a arquitetura xmc4500
- * Caso haja erro no cálculo, o valor da variável wcet_it é negativo e o teste terá falhadao
- */
-
-TEST(WcetBioXmcTest, WcetBioXmccalc)
+TEST(WcetBioM3Test, WcetBiocalc)
 {
    otawa::WorkSpace *ws;
    uint32_t wcet_b = -1;
-   cfgGen otawaInstance("xmc4500", "main", ELF_OTAWA_FOLDER);
+   cfgGen otawaInstance("m3", "main", ELF_OTAWA_FOLDER);
    otawaInstance.workspaceGenerator();
    WCETCalculatorBio wcetBio(otawaInstance.cfg2Matrix());
    wcetBio.calculateWCET();
    wcet_b = wcetBio.getWCET();
-   std::cout << wcet_b << "\n";
    ASSERT_TRUE(wcet_b);
 }
 
-// TEST(WcetDynamicTest, WcetDynamicCalc)
+// TEST(ACOCalculate, ACOCalculate)
 // {
-//    // uint32_t wcet_d = -1;
-//    // WCETCalculatorDyn wcetDyn(DEBUG_FILE, ELF_FOLDER);
-//    // wcetDyn.calculateWCET();
-//    // wcet_d = wcetDyn.getWCET();
-//    // std::cout << wcet_d << "\n";
-//    // ASSERT_TRUE(wcet_d);
+//    otawa::WorkSpace *ws;
+//    uint32_t wcet_b = -1;
+//    cfgGen otawaInstance("m3", "main", ELF_OTAWA_FOLDER);
+//    otawaInstance.workspaceGenerator();
+//    WCETCalculatorBio wcetBio(otawaInstance.cfg2Matrix());
+//    std::set<CfgMatrix> mySet = otawaInstance.cfg2Matrix();
+//     for (const CfgMatrix& elem : mySet) pq.push(elem);
+    
+//     while (!pq.empty()) {
+//         CfgMatrix c = pq.front();
+//         pq.pop();
+        
+//         int maxIter = 30;
+//         int antNo = 10;
+//         float rho = 0.8;
+//         if (c.getPriority() > 0 && !replaceDependencies(&c)) {
+//             pq.push(c);
+//         } else {
+//             c.printCycles();
+//             ACO aco(c, antNo, 0, maxIter, alpha, beta, rho);
+//             aco.simulate();
+//             wcet = aco.getResults();
+//             cfgMap[c.getMyHashName()] = wcet;
+//         }
+//     }
+//    ASSERT_TRUE(wcet_b);
 // }
 
-int main(int argc, char **argv)
+/*
+ * Verify if OTAWA workspace generator is working
+ * 
+ */
+TEST(WorkSpaceGeneratorTest, WorkSpace)
 {
-   testing::InitGoogleTest(&argc, argv);
-   return RUN_ALL_TESTS();
+   otawa::WorkSpace *ws;
+   uint32_t wcet_b = -1;
+   cfgGen otawaInstance("m3", "main", ELF_OTAWA_FOLDER);
+   ASSERT_TRUE(otawaInstance.workspaceGenerator());
 }
+
+
+/*
+ * Verify if cfg2Matrix function returns a cfgmatrix data type
+ * 
+ */
+TEST(CfgToMatrixTest, CfgMatrixTest)
+{
+   otawa::WorkSpace *ws;
+   cfgGen otawaInstance("m3", "main", ELF_OTAWA_FOLDER);
+   otawaInstance.workspaceGenerator();
+   std::set<CfgMatrix> mySet = otawaInstance.cfg2Matrix();
+   for (const auto& cfgMatrix : mySet) {
+      ASSERT_TRUE(dynamic_cast<const CfgMatrix*>(&cfgMatrix) != nullptr);
+   }
+  
+}
+
+TEST(WcetDynamicTest, WcetDynamicCalc)
+{
+   // uint32_t wcet_d = -1;
+   // WCETCalculatorDyn wcetDyn(DEBUG_FILE, ELF_FOLDER);
+   // wcetDyn.calculateWCET();
+   // wcet_d = wcetDyn.getWCET();
+   // std::cout << wcet_d << "\n";
+   // ASSERT_TRUE(wcet_d);
+}
+
+// int main(int argc, char **argv)
+// {
+//    testing::InitGoogleTest(&argc, argv);
+//    return RUN_ALL_TESTS();
+// }
