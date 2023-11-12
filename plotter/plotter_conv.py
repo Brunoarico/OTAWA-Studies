@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import matplotlib.pyplot as plt
 import sys
 
@@ -5,7 +7,8 @@ def plotar_grafico(nome_arquivo):
     with open(nome_arquivo, 'r') as arquivo:
         # Lendo os valores do arquivo e removendo espaços em branco e quebras de linha
         valores = [int(line.strip()) for line in arquivo.readlines()]
-
+        for i in range(0, len(valores),1):
+            plt.axvline(x=i, color='red', linestyle='dashed', linewidth=1)
         # Plotando os valores em um gráfico de linha
         plt.plot(valores)
         plt.title('WCETS')
