@@ -28,7 +28,7 @@ void WCETCalculatorBio::calculateWCET() {
         
         int maxIter = 30;
         int antNo = 10;
-        float rho = 0.8;
+        float rho = 0.5;
         if (c.getPriority() > 0 && !replaceDependencies(&c)) {
             pq.push(c);
         } else {

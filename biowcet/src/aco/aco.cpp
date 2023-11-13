@@ -144,7 +144,7 @@ void ACO::selectNextNode(std::stack<loop> s, int currentNode, std::vector<double
                 P_allNodes[j] = pow(eta[currentNode][j], 30);
             }
         } else
-            P_allNodes[j] = pow(tau[currentNode][j], alpha) * pow((eta[currentNode][j] + 3*sumNextNodes(j)) / 4, beta);
+            P_allNodes[j] = pow(tau[currentNode][j], alpha) * pow((eta[currentNode][j] + sumNextNodes(j)) / 2, beta);
         sumP += P_allNodes[j];
     }
 
@@ -287,6 +287,8 @@ void ACO::simulate(bool verbose) {
     fw = fopen(pathw.c_str(), "w");
     fq = fopen(pathq.c_str(), "w");
     #endif
+    int count = 0;
+    int lim = 3;
 
     for (int t = 0; t < maxIter; ++t) {
         initializeAnts();
@@ -295,7 +297,9 @@ void ACO::simulate(bool verbose) {
         updatePhromone();
         wcet[t] = findQueen();
         updateProgressBar(t, maxIter);
-        if(t > 0 && std::abs(wcet[t] - wcet[t-1]) < error) break;
+        if(t > 0 && wcet[t] >= colony.queen.fitness && std::abs(wcet[t] - wcet[t-1]) < error) count++;
+        else count = 0;
+        if(count == 3) break;
     }
     #ifdef PLOTTER
     for (int j = 0; j < colony.queen.tour.size(); ++j) {

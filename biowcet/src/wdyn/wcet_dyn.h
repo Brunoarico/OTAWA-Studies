@@ -34,6 +34,7 @@ class WCETCalculatorDyn {
     uint32_t runGDB();
     uint32_t findWcetWord(const std::string& texto, const std::string& substring);
     uint32_t wcet;
+    uint32_t offset = 23; // Offset include by the instrumentation
     std::string scriptPath;
     std::string elfPath;
 };

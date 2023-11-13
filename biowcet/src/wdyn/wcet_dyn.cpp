@@ -82,5 +82,5 @@ void WCETCalculatorDyn::calculateWCET() {
  * @return The dynamic WCET value of the program in cpu cycles.
  */
 uint32_t WCETCalculatorDyn::getWCET() {
-    return wcet;
+    return wcet-offset;
 }

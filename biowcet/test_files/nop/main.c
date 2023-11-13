@@ -7,7 +7,7 @@ int main () {
     setupCronometer();
     uint32_t start = startCronometer();
 #endif
-    ;
+    __asm("nop");
 #ifdef CRON
     uint32_t cycles = stopCronometer(start);
 #endif

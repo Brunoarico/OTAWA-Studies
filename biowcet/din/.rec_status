@@ -1,5 +1,2 @@
-bubbleSort : without
-generateArray : without
-generateArrayInvert : without
 main : without
 Application is : not recursive
