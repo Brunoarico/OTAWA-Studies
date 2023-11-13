@@ -173,7 +173,6 @@ TEST(CFGPrintCyclesTest, CFGPrintCycles)
 TEST(WorkSpaceGeneratorTest, WorkSpace)
 {
    otawa::WorkSpace *ws;
-   uint32_t wcet_b = -1;
    cfgGen otawaInstance("m3", "main", ELF_OTAWA_FOLDER);
    ASSERT_TRUE(otawaInstance.workspaceGenerator());
 }
@@ -209,12 +208,12 @@ TEST(WriteOutputTest, WriteOutput)
 
 TEST(WcetDynamicTest, WcetDynamicCalc)
 {
-   // uint32_t wcet_d = -1;
-   // WCETCalculatorDyn wcetDyn(DEBUG_FILE, ELF_FOLDER);
-   // wcetDyn.calculateWCET();
-   // wcet_d = wcetDyn.getWCET();
-   // std::cout << wcet_d << "\n";
-   // ASSERT_TRUE(wcet_d);
+   uint32_t wcet_d = -1;
+   WCETCalculatorDyn wcetDyn(DEBUG_FILE, ELF_FOLDER);
+   wcetDyn.calculateWCET();
+   wcet_d = wcetDyn.getWCET();
+   std::cout << wcet_d << "\n";
+   ASSERT_TRUE(wcet_d);
 }
 
 // int main(int argc, char **argv)
