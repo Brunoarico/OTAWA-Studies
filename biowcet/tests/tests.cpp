@@ -14,24 +14,26 @@
 #define ELF_OTAWA_FOLDER "../din/build/main_otawa.elf"
 
 // test if files are compiled
-// TEST(CompileTest, CompileTest)
-// {
-//    int result = false;
-//    compile();
-//    FILE *fa = fopen(ELF_TEST ".merge.cm", "r");
-//    FILE *fb = fopen(ELF_TEST ".rec_status", "r");
-//    FILE *fc = fopen(ELF_TEST "build/main_empty.ff", "r");
-//    FILE *fd = fopen(ELF_TEST "build/main_otawa.elf", "r");
-//    FILE *fe = fopen(ELF_TEST "build/main.bin", "r");
-//    FILE *ff = fopen(ELF_TEST "build/main.bin.lst", "r");
-//    FILE *fg = fopen(ELF_TEST "build/main.elf", "r");
-//    FILE *fh = fopen(ELF_TEST "build/main.xml", "r");
-//    if (fa && fb && fc && fd && fe && ff && fg && fh)
-//    {
-//       result = true;
-//    }
-//    ASSERT_TRUE(result);
-// }
+TEST(CompileTest, CompileTest)
+{
+   int result = false;
+   compile();
+   FILE *fa = fopen(ELF_TEST ".merge.cm", "r");
+   FILE *fb = fopen(ELF_TEST ".rec_status", "r");
+   FILE *fc = fopen(ELF_TEST "build/main_empty.ff", "r");
+   FILE *fd = fopen(ELF_TEST "build/main_otawa.elf", "r");
+   FILE *fe = fopen(ELF_TEST "build/main.bin", "r");
+   FILE *ff = fopen(ELF_TEST "build/main.bin.lst", "r");
+   FILE *fg = fopen(ELF_TEST "build/main.elf", "r");
+   FILE *fh = fopen(ELF_TEST "build/main.xml", "r");
+   if (fa && fb && fc && fd && fe && ff && fg && fh)
+   {
+      result = true;
+   }
+   ASSERT_TRUE(result);
+}
+
+
 // Generate .ff and .elf files for OTAWA
 TEST(GenffTest, GenFF)
 {
