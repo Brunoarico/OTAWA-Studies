@@ -1,4 +1,14 @@
 *.o
 *.d
-.cpp
+*.txt
+*.pdf
+*.png
+*.dot
 .eld
+build
+png
+dot
+unit_test
+.merge.cm
+.rec_status
+.vscode
