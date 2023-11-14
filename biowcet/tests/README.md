@@ -19,6 +19,4 @@ Executar comando make para rodar o makefile.
 ---------------------------------------------------
 
 ./unit_test
-
-Obs: provável que seja necessário alterar alguns path de include e no makefile. Eu apanho um pouco nessas linkagens e acabei colocando o pullpath
 ---------------------------------------------------
