@@ -4,6 +4,7 @@
 *.pdf
 *.png
 *.dot
+*.sh
 .eld
 build
 png
@@ -12,3 +13,4 @@ unit_test
 .merge.cm
 .rec_status
 .vscode
+
