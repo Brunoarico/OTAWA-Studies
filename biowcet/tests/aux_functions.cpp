@@ -11,7 +11,6 @@
 
 void genff()
 {
-    printf("Smart Generating of ff file...");
     std::string command = std::string(TO_FF) + " " + std::string(BUILD_FOLDER);
     FILE *in = popen(command.c_str(), "r");
     if (!in)
@@ -64,15 +63,6 @@ void toFile(std::string dir, std::string entry, uint32_t wceti, uint32_t wcetb, 
     fclose(outfile);
 }
 
-void copyToDir(std::string source, std::string dest) {
-    char cwd[256];
-    getcwd(cwd, 256);
-    std::string newDir = cwd + std::string("/..");
-    if (chdir(newDir.c_str()) == 0) {
-        std::string cwd_str = std::string(cwd);
-        std::string cmd = CP + std::string(" '") + source + std::string("' '") + cwd_str + dest + std::string("'");
-        executeAndLog(cmd.c_str());
-    }
-}
+
 
 

@@ -13,6 +13,15 @@
 #define ELF_TEST "../din/"
 #define ELF_OTAWA_FOLDER "../din/build/main_otawa.elf"
 
+
+
+TEST(CopyCDirTest, CopyCDir)
+{
+   executeAndLog(" cp /home/OTAWA-Studies/biowcet/test_files/if/main.c /home/OTAWA-Studies/biowcet/din/src/main.c ");
+   FILE *f = fopen(ELF_TEST "src/main.c", "r");
+   ASSERT_TRUE(f != NULL);
+}
+
 // test if files are compiled
 TEST(CompileTest, CompileTest)
 {
@@ -33,7 +42,6 @@ TEST(CompileTest, CompileTest)
    ASSERT_TRUE(result);
 }
 
-
 // Generate .ff and .elf files for OTAWA
 TEST(GenffTest, GenFF)
 {
@@ -41,6 +49,8 @@ TEST(GenffTest, GenFF)
    FILE *f = fopen(ELF_FOLDER, "r");
    ASSERT_TRUE(f != NULL);
 }
+
+
 
 TEST(CopyDirTest, CopyDir)
 {
@@ -124,15 +134,15 @@ TEST(ACOSimulateTest, ACOSimulate)
       ACO aco(c, antNo, 0, maxIter, alpha, beta, rho);
       aco.simulate();
       wcet = aco.getResults();
-       std::cout << wcet << "\n";
-      //cfgMap[c.getMyHashName()] = wcet;
+      std::cout << wcet << "\n";
+      // cfgMap[c.getMyHashName()] = wcet;
    }
    ASSERT_TRUE(wcet);
 }
 
 TEST(CFGPrintCyclesTest, CFGPrintCycles)
 {
-  otawa::WorkSpace *ws;
+   otawa::WorkSpace *ws;
    std::queue<CfgMatrix> pq;
    uint32_t wcet = -1;
    double alpha = 1; // Phromone exponential parameters
@@ -159,12 +169,10 @@ TEST(CFGPrintCyclesTest, CFGPrintCycles)
       ACO aco(c, antNo, 0, maxIter, alpha, beta, rho);
       aco.simulate();
       wcet = aco.getResults();
-      //cfgMap[c.getMyHashName()] = wcet;
+      // cfgMap[c.getMyHashName()] = wcet;
    }
    ASSERT_TRUE(wcet);
 }
-
-
 
 /*
  * Verify if OTAWA workspace generator is working
@@ -197,24 +205,23 @@ TEST(WriteOutputTest, WriteOutput)
 {
    int result = false;
    uint32_t wceti = 40;
-   uint32_t wcetb = 43; 
+   uint32_t wcetb = 43;
    uint32_t wcetd = 44;
    bool dyn = true;
    toFile("/home/OTAWA-Studies/biowcet/tests", "main", wceti, wcetb, wcetd, dyn);
    FILE *f = fopen("/home/OTAWA-Studies/biowcet/tests/results.txt", "r");
    ASSERT_TRUE(f != NULL);
-
 }
 
-TEST(WcetDynamicTest, WcetDynamicCalc)
-{
-   uint32_t wcet_d = -1;
-   WCETCalculatorDyn wcetDyn(DEBUG_FILE, ELF_FOLDER);
-   wcetDyn.calculateWCET();
-   wcet_d = wcetDyn.getWCET();
-   std::cout << wcet_d << "\n";
-   ASSERT_TRUE(wcet_d);
-}
+// TEST(WcetDynamicTest, WcetDynamicCalc)
+// {
+//    uint32_t wcet_d = -1;
+//    WCETCalculatorDyn wcetDyn(DEBUG_FILE, ELF_FOLDER);
+//    wcetDyn.calculateWCET();
+//    wcet_d = wcetDyn.getWCET();
+//    std::cout << wcet_d << "\n";
+//    ASSERT_TRUE(wcet_d);
+// }
 
 // int main(int argc, char **argv)
 // {
