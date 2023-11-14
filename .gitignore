@@ -5,6 +5,7 @@
 *.png
 *.dot
 *.sh
+wcet
 .eld
 build
 png
