@@ -1,3 +1,0 @@
-WCET_IPET[main] = 40 cycles
-WCET_BIO[main] = 43 cycles
-WCET_DYNAMIC[main] = 44 cycles

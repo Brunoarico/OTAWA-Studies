@@ -1,2 +1,0 @@
-WCET_IPET[main] = 54 cycles
-WCET_BIO[main] = 55 cycles
