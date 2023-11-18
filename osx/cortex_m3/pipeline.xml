@@ -28,7 +28,7 @@
 				<fu id="LS">
 					<name>LS</name>
 					<width>1</width>
-					<latency>2</latency>
+					<latency>1</latency>
 					<mem>true</mem>	
 				</fu>
 			</fus>
