@@ -18,6 +18,8 @@
 #include "../cfgmatrix/CfgMatrix.h"
 #include "../utils/utilities.h"
 
+#define OSX_PATH "../../osx"
+
 class cfgGen {
    public:
     cfgGen(const std::string scriptPath, const std::string entryFunction, const std::string elfPath);

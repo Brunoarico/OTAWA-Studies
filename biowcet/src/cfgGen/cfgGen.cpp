@@ -22,7 +22,7 @@ otawa::WorkSpace *cfgGen::workspaceGenerator() {
         if (file.extension() != "osx")
             file = file.setExtension("osx");
         bool found = false;
-        elm::string paths = MANAGER.buildPaths("../../share/Otawa/scripts", "");
+        elm::string paths = elm::string(OSX_PATH);
         for (elm::Path::PathIter p(paths); p(); p++) {
             path = elm::Path(*p) / file;
             if (path.exists()) {
