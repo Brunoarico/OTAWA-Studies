@@ -7,6 +7,7 @@ WCETCalculatorDyn::WCETCalculatorDyn(const std::string scriptPath, const std::st
 }
 
 /**
+ * [HRD04]
  * Flashes the binary file to the microcontroller by executing a command that takes two arguments: the path of the st-flash tool and the path of the binary file.
  * The output of the command is logged to the console.
  * If the command fails to execute, an error message is printed to the console.
@@ -18,6 +19,7 @@ void WCETCalculatorDyn::flash() {
 }
 
 /**
+ * [HRD03]
  * Starts the OpenOCD server by executing a command that takes two arguments: the path of the OpenOCD executable and the path of the OpenOCD configuration file.
  * The output of the command is logged to the console.
  */
@@ -28,6 +30,7 @@ void WCETCalculatorDyn::startOpenocd() {
 }
 
 /**
+ * [HRD03]
  * Ends the OpenOCD server by executing a command that kills all running instances of OpenOCD.
  * The output of the command is not logged to the console.
  */
@@ -37,6 +40,7 @@ void WCETCalculatorDyn::endOpenocd() {
 }
 
 /**
+ * [HRD04]
  * Finds a specific substring in a given text and returns the integer value that follows it.
  * @param texto The text to search for the substring.
  * @param substring The substring to search for in the text.
@@ -53,6 +57,7 @@ uint32_t WCETCalculatorDyn::findWcetWord(const std::string& texto, const std::st
 }
 
 /**
+ * [HRD04]
  * Runs the GDB debugger to measure the dynamic worst-case execution time (WCET) of the program.
  * The GDB debugger is executed with a script file and the path of the ELF file to be debugged.
  * The output of the GDB debugger is parsed to find the WCET value.
@@ -66,6 +71,7 @@ uint32_t WCETCalculatorDyn::runGDB() {
 }
 
 /**
+ * [HRD01]
  * Calculates the dynamic worst-case execution time (WCET) of the program by flashing the binary file to the microcontroller, starting the OpenOCD server, running the GDB debugger, and ending the OpenOCD server.
  * The WCET value is stored in the wcet member variable.
  */

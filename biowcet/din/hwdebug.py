@@ -1,6 +1,7 @@
 import gdb
 import tqdm
 
+#[HRD05]
 n_measures = 10
 
 dados_x = []

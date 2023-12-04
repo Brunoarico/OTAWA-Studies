@@ -69,6 +69,7 @@ void showUsage(const char* programName) {
 }
 
 /**
+ * [HRD02]
  * Compiles the project by changing the current working directory to the project directory and executing the make command.
  * If the directory change is successful, the make command is executed and the output is logged to the console.
  * If the directory change fails, the program exits with an error code.
@@ -222,6 +223,7 @@ int main(int argc, char* argv[]) {
     elapsedB = endB - startB;
 
     if (dyn) {
+        //[HRD05]
         WCETCalculatorDyn wcetDyn(DEBUG_FILE, ELF_FOLDER);
         printInfo("Calculating Execution Time using the Hardware...", true);
         startD = std::chrono::high_resolution_clock::now();
