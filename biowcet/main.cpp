@@ -27,7 +27,7 @@ const char *asciiArt =
     "$$$$$$$  |  $$ |  $$ |  $$ |$$ $$/$$ $$ |$$ |   __ $$$$$/       $$ |   \n"
     "$$ |__$$ | _$$ |_ $$ \\__$$ |$$$$/  $$$$ |$$ \\__/  |$$ |_____    $$ |   \n"
     "$$    $$/ / $$   |$$    $$/ $$$/    $$$ |$$    $$/ $$       |   $$ |   \n"
-    "$$$$$$/  $$$$$$/  $$$$$$/  $$/      $$/  $$$$$$/  $$$$$$$$/    $$/    \n"
+    "$$$$$$$/  $$$$$$/  $$$$$$/  $$/      $$/  $$$$$$/  $$$$$$$$/    $$/    \n"
     "   v1.1                                                                \n"
     "                                                                       \n";
 
@@ -63,9 +63,9 @@ void showUsage(const char* programName) {
     printf("\t-v\t\tEnable verbose mode\n");
     printf("\t-h\t\tShow this help message\n");
     printf("EXAMPLES:\n");
-    printf("\t%s -s trivial -p /test_files/if/main.c\n", programName);
-    printf("\t%s -s trivial -p /test_files/if/main.c -v \n", programName);
-    printf("\t%s -s trivial -p /test_files/if/main.c -v -d\n", programName);
+    printf("\t%s -s trivial -p ./test_files/if/main.c\n", programName);
+    printf("\t%s -s trivial -p ./test_files/if/main.c -v \n", programName);
+    printf("\t%s -s trivial -p ./test_files/if/main.c -v -d\n", programName);
 }
 
 /**
