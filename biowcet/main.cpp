@@ -50,6 +50,8 @@ const char *asciiArt =
 //bool VERBOSE = false;
 
 /**
+ * [HRI02]
+ * [HRI06]
  * Shows the usage of the program.
  * @param programName The name of the program.
  */
@@ -121,6 +123,7 @@ std::string absolutePath(std::string path) {
 }
 
 /**
+ * [HRI07]
  * Writes the results of the WCET analysis to a file.
  * 
  * @param dir The directory where the results file will be saved.
@@ -162,7 +165,6 @@ int main(int argc, char* argv[]) {
     std::chrono::high_resolution_clock::time_point startI, endI, startB, endB, startD, endD;
     std::chrono::duration<double, std::milli> elapsedD, elapsedI, elapsedB;
 
-
     uint32_t wcet_d = -1;
     uint32_t wcet_i = -1;
     uint32_t wcet_b = -1;
@@ -175,22 +177,30 @@ int main(int argc, char* argv[]) {
     }
     
     while ((option = getopt(argc, argv, "s:p:vdh")) != -1) {
+        
+        
         switch (option) {
+            //[HRI11]
             case 's':
                 scriptPath = optarg;
                 break;
+            //[HRI01]    
             case 'p':
                 cPath = optarg;
                 break;
+            //[HRI09]
             case 'd':
                 dyn = true;
                 break;
+            //[HRI05]
             case 'v':
                 setVerbose(true);
                 break;
+            //[HRI06]
             case 'h':
                 showUsage(argv[0]);
                 return 0;
+            //[HRI02]    
             default:
                 showUsage(argv[0]);
                 return 1;
@@ -235,14 +245,14 @@ int main(int argc, char* argv[]) {
    
     
     
-
+    //[HRI12]
     if (wcet_i == -1)
         printError("No WCET_IPET computed");
     else{
         printResult("WCET_IPET[" + std::string(entry) + "] = " + std::to_string(wcet_i) + " cycles");
         printInfo("IPET consumed " + std::to_string(elapsedI.count()) + " ms", true);
     }
-
+    //[HRI13]
     if (wcet_b == -1)
         printError("No WCET_BIO computed");
     else{
@@ -252,6 +262,7 @@ int main(int argc, char* argv[]) {
 
 
     if(dyn) {
+        //[HRI14]
         if (wcet_d == -1)
             printError("No WCET_DYNAMIC computed");
         else{
