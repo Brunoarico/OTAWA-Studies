@@ -72,6 +72,7 @@ void showUsage(const char* programName) {
 
 /**
  * [HRD02]
+ * [HRG03]
  * Compiles the project by changing the current working directory to the project directory and executing the make command.
  * If the directory change is successful, the make command is executed and the output is logged to the console.
  * If the directory change fails, the program exits with an error code.
@@ -87,6 +88,7 @@ void compile() {
 }
 
 /**
+ * [HRG03]
  * Cleans the project directory by changing the current working directory to the project directory and executing the make clean command.
  * If the directory change is successful, the make clean command is executed and the output is logged to the console.
  * If the directory change fails, the program exits with an error code.
@@ -101,6 +103,7 @@ void clearDir() {
 }
 
 /**
+ * [HRG02]
  * Generates an ff file by executing a command that takes two arguments: the path of the ff file generator (a python script) and the path of the build folder.
  * The output of the command is logged to the console.
  * If the command fails to execute, an error message is printed to the console.

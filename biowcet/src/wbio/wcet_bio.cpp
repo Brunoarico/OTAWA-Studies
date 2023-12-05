@@ -12,6 +12,8 @@ WCETCalculatorBio::WCETCalculatorBio(std::set<CfgMatrix> cfgSet) {
 }
 
 /**
+ * [HRB01]
+ * [HRB03]
  * @brief Calculates the WCET (Worst-Case Execution Time) for each function in the program.
  *
  * This function calculates the WCET for each function in the program using the Ant Colony Optimization (ACO) algorithm.
@@ -43,6 +45,9 @@ void WCETCalculatorBio::calculateWCET() {
 }
 
 /**
+ * [HRB01]
+ * [HRG04]
+ * [HRG05]
  * @brief Replaces the dependencies in the Control Flow Graph (CFG) matrix with their corresponding function names.
  *
  * This function replaces the dependencies in the CFG matrix with their corresponding function names using the cfgMap.

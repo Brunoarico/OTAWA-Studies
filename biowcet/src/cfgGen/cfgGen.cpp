@@ -10,6 +10,13 @@ cfgGen::cfgGen(const std::string scriptPath, const std::string entryFunction, co
         
 }
 
+/**
+ * [HRG01]
+ * @brief Generates the workspace.
+ *
+ * This function generates the workspace using otawa from the architecture and the C file inserted in the input
+ *
+ */
 otawa::WorkSpace *cfgGen::workspaceGenerator() {
     elm::Path path = this->scriptPath;
     elm::string script = this->scriptPath;
@@ -43,6 +50,7 @@ otawa::WorkSpace *cfgGen::workspaceGenerator() {
 }
 
 /**
+ * [HRG01]
  * @brief Calculates the execution time of a basic block.
  *
  * This function calculates the execution time of a basic block.
@@ -84,6 +92,8 @@ uint32_t cfgGen::blockTime(otawa::Block *b) {
 }
 
 /**
+ * [HRG04]
+ * [HRG05]
  * @brief Converts the Control Flow Graph (CFG) information to a matrix.
  *
  * This function converts the CFG information to a matrix and sets the conversion time for each block.

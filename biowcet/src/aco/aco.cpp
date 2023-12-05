@@ -1,5 +1,5 @@
 #include "aco.h"
- 
+
 
 
 ACO::ACO(CfgMatrix graph, int antNo, int firstNode, int maxIter, double alpha, double beta, double rho) {
@@ -37,6 +37,10 @@ ACO::ACO(CfgMatrix graph, int antNo, int firstNode, int maxIter, double alpha, d
     }
 }
 
+/**
+ * [HRB01]
+ * @brief Function that helps with the size of tau0
+ */
 double ACO::mean(CfgMatrix array, int size) {
     double sum = 0.0;
     for (size_t i = 0; i < size; i++)
@@ -58,6 +62,7 @@ void ACO::initializeAnts() {
     }
 }
 
+//[Deletar]
 void ACO::printAnt(int antNo) {
     printf("\tAnt: %d\n", antNo);
     printf("\tTour: ");
@@ -198,6 +203,7 @@ void ACO::antsRun(int antNo)
 }
 
 /**
+ * [HRB07]
  * @brief Runs the Ant Colony Optimization algorithm for a given number of iterations.
  *
  * This function runs the Ant Colony Optimization algorithm for a given number of iterations.
@@ -215,6 +221,7 @@ void ACO::runColony() {
 }
 
 /**
+ * [HRB02]
  * @brief Calculates the fitness of an ant's tour.
  *
  * This function calculates the fitness of an ant's tour by summing the WCET (worst-case execution time) of each node in the tour.
@@ -230,6 +237,7 @@ int ACO::fitnessFunction(int antNo) {
 }
 
 /**
+ * [HRB02]
  * @brief Calculates the fitness of each ant's tour and finds the ant with the highest fitness.
  *
  * This function calculates the fitness of each ant's tour using the fitness function.
@@ -245,6 +253,7 @@ void ACO::calculateFitness() {
 }
 
 /**
+ * [HRB05]
  * @brief Prints the tour and WCET of an ant.
  *
  * This function prints the tour and WCET (worst-case execution time) of an ant.
@@ -269,6 +278,7 @@ void ACO::printWCEP(Ant a) {
 }
 
 /**
+ * [HRB07]
  * @brief Simulates the Ant Colony Optimization algorithm for a given number of iterations.
  *
  * This function simulates the Ant Colony Optimization algorithm for a given number of iterations.
@@ -317,6 +327,7 @@ uint32_t ACO::getResults() {
 }
 
 /**
+ * [HRB06]
  * @brief Updates the pheromone matrix (tau) based on the ant's tours.
  *
  * This function updates the pheromone matrix (tau) based on the tours of the ants in the colony.
@@ -343,6 +354,7 @@ void ACO::updatePhromone() {
 }
 
 /**
+ * [HRB04]
  * @brief Finds the ant with the highest fitness and updates the queen ant if necessary.
  *
  * This function finds the ant with the highest fitness value and updates the queen ant if its fitness value is surpassed.

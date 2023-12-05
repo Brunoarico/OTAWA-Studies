@@ -10,6 +10,8 @@
 #include "SparseMatrix.h"
 
 /**
+ * [HRG04]
+ * [HRG05]
  * @brief Sets the number of cycles between two nodes in the conventional control flow graph.
  *
  * @param nodeA The starting node.
@@ -22,6 +24,8 @@ void CfgMatrix::setConv(int nodeA, int nodeB, int cycles) {
 }
 
 /**
+ * [HRG04]
+ * [HRG05]
  * @brief Sets the number of cycles between two nodes in the loop control flow graph.
  *
  * @param nodeA The starting node.
@@ -33,11 +37,18 @@ void CfgMatrix::setLoop(int nodeA, int nodeB, int cycles) {
     adjMatrixLoop.setCycle(nodeA, nodeB, cycles);
 }
 
+/**
+ * [HRG04]
+ * [HRG05]
+ * @brief Sets the priority
+*/
 void CfgMatrix::setPriority(int priority) {
     this->priority = priority;
 }
 
 /**
+ * [HRG04]
+ * [HRG05]
  * @brief Sets the number of iterations for a given node.
  *
  * @param node The node to set the number of iterations for.
@@ -48,6 +59,8 @@ void CfgMatrix::setIteration(int node, int iterations) {
 }
 
 /**
+ * [HRG04]
+ * [HRG05]
  * @brief Sets the name of a given node.
  *
  * @param node The node to set the name for.
@@ -57,11 +70,18 @@ void CfgMatrix::setFuncCallName(int node, std::string name) {
     adjMatrixTotal.setName(node, name);
 }
 
+/**
+ * [HRG04]
+ * [HRG05]
+ * @brief Sets the name of a function.
+ */
 void CfgMatrix::setMyFunc(std::string name) {
     this->myFuckName = name;
 }
 
 /**
+ * [HRG04]
+ * [HRG05]
  * @brief Gets the number of cycles between two nodes in the conventional control flow graph.
  *
  * @param nodeA The starting node.
@@ -73,6 +93,8 @@ int CfgMatrix::getCycles(int nodeA, int nodeB) {
 }
 
 /**
+ * [HRG04]
+ * [HRG05]
  * @brief Gets the number of outgoing edges from a given node in the conventional control flow graph.
  *
  * @param node The node to get the number of outgoing edges from.
@@ -82,16 +104,28 @@ int CfgMatrix::getOuts(int node) {
     return adjMatrixTotal.getOuts(node);
 }
 
+/**
+ * [HRG04]
+ * [HRG05]
+ * @brief Gets the hash of a function.
+ */
 int CfgMatrix::getMyHashName() {
     std::hash<std::string> hasher;
     return -1 * std::abs(int(hasher(myFuckName)));
 }
 
+/**
+ * [HRG04]
+ * [HRG05]
+ * @brief Gets the name of a function.
+ */
 std::string CfgMatrix::getMyName() {
     return myFuckName;
 }
 
 /**
+ * [HRG04]
+ * [HRG05]
  * @brief Gets the size of the total adjacency matrix.
  *
  * @return The size of the total adjacency matrix.
@@ -101,6 +135,8 @@ size_t CfgMatrix::getSize() {
 }
 
 /**
+ * [HRG04]
+ * [HRG05]
  * @brief Gets the name of a given node.
  *
  * @param node The node to get the name for.
@@ -119,6 +155,8 @@ int CfgMatrix::getMaxCycle() {
 }
 
 /**
+ * [HRG04]
+ * [HRG05]
  * @brief Gets the hash value of the name of a given node.
  *
  * @param node The node to get the hash value for.
@@ -130,6 +168,8 @@ int CfgMatrix::getBlockNameHash(int node) {
 }
 
 /**
+ * [HRG04]
+ * [HRG05]
  * @brief Gets the number of iterations for a given node.
  *
  * @param node The node to get the number of iterations for.
@@ -143,6 +183,11 @@ int CfgMatrix::getIteration(int node) {
     return 0;
 }
 
+/**
+ * [HRG04]
+ * [HRG05]
+ * @brief Gets the number of loops.
+ */
 int CfgMatrix::isAloop(int node) {
     int loops = 0;
     for (int i = 0; i < getSize(); i++) {
@@ -155,6 +200,8 @@ int CfgMatrix::isAloop(int node) {
 }
 
 /**
+ * [HRG04]
+ * [HRG05]
  * @brief Gets all cycles starting from a given node.
  *
  * @param start_node The node to start the search from.
@@ -257,6 +304,8 @@ int CfgMatrix::findLoopHead(int start_node) {
 }
 
 /**
+ * [HRG04]
+ * [HRG05]
  * @brief Finds the head of the loop that contains the given node, if it exists and has a positive number of iterations.
  *
  * @param node The node to start the search from.
@@ -293,6 +342,8 @@ void CfgMatrix::exportDots(std::string funcname) {
 }
 
 /**
+ * [HRG04]
+ * [HRG05]
  * @brief Finds all cycles starting from a given node using depth-first search.
  *
  * @param node The current node being visited.
@@ -317,6 +368,8 @@ void CfgMatrix::dfs_cycles(int node, int start_node, std::vector<int>& path, std
 }
 
 /**
+ * [HRG04]
+ * [HRG05]
  * @brief Checks the number of nested loops in a given loop.
  *
  * @param loop A vector of integers representing the nodes in the loop.
