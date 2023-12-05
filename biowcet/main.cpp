@@ -217,6 +217,8 @@ int main(int argc, char* argv[]) {
     compile();
     genff();
 
+    //[HRI03]
+    //[HRI04]
     cfgGen otawaInstance(scriptPath, entry, getFolder(ELF_OTAWA_FOLDER));
 
     WCETCalculator wcetIpet(otawaInstance.workspaceGenerator());

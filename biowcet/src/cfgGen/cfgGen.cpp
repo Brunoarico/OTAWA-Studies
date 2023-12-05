@@ -23,7 +23,7 @@ otawa::WorkSpace *cfgGen::workspaceGenerator() {
     elm::string entry = this->entryFunction;
     PropList props;
 
-
+    //[HRI08]
     if (!path.exists() && !path.isAbsolute()) {
         elm::Path file = script;
         if (file.extension() != "osx")

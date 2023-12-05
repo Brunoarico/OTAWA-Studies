@@ -8,6 +8,7 @@ WCETCalculatorDyn::WCETCalculatorDyn(const std::string scriptPath, const std::st
 
 /**
  * [HRD04]
+ * [HRI10]
  * Flashes the binary file to the microcontroller by executing a command that takes two arguments: the path of the st-flash tool and the path of the binary file.
  * The output of the command is logged to the console.
  * If the command fails to execute, an error message is printed to the console.
