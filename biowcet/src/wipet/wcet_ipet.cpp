@@ -10,6 +10,7 @@ WCETCalculator::WCETCalculator(otawa::WorkSpace *ws) {
 }
 
 /**
+ * [HRIT01]
  * @brief Calculates the worst-case execution time (WCET) of the program.
  *
  * @throws elm::option::OptionException if the script file cannot be found.
@@ -19,6 +20,7 @@ void WCETCalculator::calculateWCET() {
 }
 
 /**
+ * [HRIT01]
  * @brief Returns the worst-case execution time (WCET) of the program.
  *
  * @return The WCET in cpu cycles.
